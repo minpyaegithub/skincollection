@@ -27,6 +27,7 @@
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
+    <!-- user management -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#taTpDropDown"
             aria-expanded="true" aria-controls="taTpDropDown">
@@ -42,6 +43,24 @@
             </div>
         </div>
     </li>
+    <!-- end user management -->
+    <!-- Start Patient -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#patient"
+            aria-expanded="true" aria-controls="patient">
+            <i class="fas fa-user-alt"></i>
+            <span>Patient</span>
+        </a>
+        <div id="patient" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Patient:</h6>
+                <a class="collapse-item" href="{{ route('patients.index') }}">List</a>
+                <a class="collapse-item" href="{{ route('users.create') }}">Add New</a>
+                <a class="collapse-item" href="{{ route('users.import') }}">Import Data</a>
+            </div>
+        </div>
+    </li>
+    <!-- end Patient -->
 
     <!-- Divider -->
     <hr class="sidebar-divider">
