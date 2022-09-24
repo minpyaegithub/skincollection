@@ -5,6 +5,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\PatientController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -52,6 +54,24 @@ Route::middleware('auth')->prefix('users')->name('users.')->group(function(){
     Route::post('/upload-users', [UserController::class, 'uploadUsers'])->name('upload');
 
     Route::get('export/', [UserController::class, 'export'])->name('export');
+
+});
+
+// Patient
+Route::middleware('auth')->prefix('patients')->name('patients.')->group(function(){
+    Route::get('/', [PatientController::class, 'index'])->name('index');
+    Route::get('/create', [PatientController::class, 'create'])->name('create');
+    Route::post('/store', [PatientController::class, 'store'])->name('store');
+    Route::get('/edit/{patient}', [PatientController::class, 'edit'])->name('edit');
+    Route::put('/update/{patient}', [PatientController::class, 'update'])->name('update');
+    Route::delete('/delete/{patient}', [PatientController::class, 'delete'])->name('destroy');
+    Route::get('/update/status/{patient_id}/{status}', [PatientController::class, 'updateStatus'])->name('status');
+
+    
+    Route::get('/import-patient', [PatientController::class, 'importPatients'])->name('import');
+    Route::post('/upload-patient', [PatientController::class, 'uploadPatients'])->name('upload');
+
+    Route::get('export/', [PatientController::class, 'export'])->name('export');
 
 });
 

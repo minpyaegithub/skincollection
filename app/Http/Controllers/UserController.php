@@ -38,7 +38,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        //DB::enableQueryLog();
         $users = User::with('roles')->paginate(10);
+        //dd($users);
+        //dd(DB::getQueryLog());
         return view('users.index', ['users' => $users]);
     }
     
