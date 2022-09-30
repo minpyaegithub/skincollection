@@ -47,7 +47,6 @@
 
     <!-- Logout Modal-->
     @include('common.logout-modal')
-
     <!-- Bootstrap core JavaScript-->
     <script src="{{asset('js/app.js')}}"></script>
 

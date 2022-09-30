@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Yajra\Datatables\Datatables;
+use Input;
 
 class PatientController extends Controller
 {
@@ -42,11 +43,10 @@ class PatientController extends Controller
 
     public function store(Request $request)
     {
-        // Validations
-        
         $token = rand(000000,999999);
         $created_time = date("Y-m-d", strtotime($request->dob)); 
 
+        // Validations
         $request->validate([
             'first_name'    => 'required',
             'last_name'     => 'required',
@@ -57,15 +57,29 @@ class PatientController extends Controller
             'address'    => 'required',
             'weight'     => 'required',
             'feet'     => 'required',
-            'inches'    => 'required'
+            'inches'    => 'required',
+            'photo.*' => 'image|mimes:jpeg,png,jpg,gif,svg'
             //'disease'   => 'required'
         ]);
 
          DB::beginTransaction();
         try {
 
-            // Store Data
-            $user = Patient::create([
+            $names = [];
+            if($request->images)
+            {  
+                foreach($request->images as $image)
+                {
+                    ///dd($image);
+                    //$destinationPath = 'content_images/';
+                    $filename = time().rand(1,99).'_'.$image->getClientOriginalName();
+                    $image->move(public_path('patient-photo'), $filename);
+                    array_push($names, $filename);          
+
+                }
+            }
+
+            $patient = Patient::create([
                 'first_name'    => $request->first_name,
                 'last_name'     => $request->last_name,
                 'email'         => $request->email,
@@ -77,8 +91,11 @@ class PatientController extends Controller
                 'feet'          => $request->feet,
                 'inches'        => $request->inches,
                 'disease'       => $request->disease,
+                'photo'         => json_encode($names),
                 'token'         => $token
-            ]);    
+            ]);
+
+            
 
             // Commit And Redirected To Listing
             DB::commit();
@@ -88,39 +105,6 @@ class PatientController extends Controller
             // Rollback and return with Error
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', $th->getMessage());
-        }
-    }
-
-    public function updateStatus($user_id, $status)
-    {
-        // Validation
-        $validate = Validator::make([
-            'user_id'   => $user_id,
-            'status'    => $status
-        ], [
-            'user_id'   =>  'required|exists:users,id',
-            'status'    =>  'required|in:0,1',
-        ]);
-
-        // If Validations Fails
-        if($validate->fails()){
-            return redirect()->route('users.index')->with('error', $validate->errors()->first());
-        }
-
-        try {
-            DB::beginTransaction();
-
-            // Update Status
-            User::whereId($user_id)->update(['status' => $status]);
-
-            // Commit And Redirect on index with Success Message
-            DB::commit();
-            return redirect()->route('users.index')->with('success','User Status Updated Successfully!');
-        } catch (\Throwable $th) {
-
-            // Rollback & Return Error Message
-            DB::rollBack();
-            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
@@ -143,13 +127,50 @@ class PatientController extends Controller
             'address'    => 'required',
             'weight'     => 'required',
             'feet'     => 'required',
-            'inches'    => 'required'
+            'inches'    => 'required',
+            'photo.*' => 'image|mimes:jpeg,png,jpg,gif,svg'
             //'disease'   => 'required'
         ]);
 
         DB::beginTransaction();
         try {
 
+            $names = [];
+            $preloaded = [];
+
+            $old_img = Patient::whereId($patient->id)->get()->toArray();
+            $old_img_arr = json_decode($old_img[0]['photo']);
+            
+
+            if($request->preloaded){
+                $preloaded = $request->preloaded;
+            }
+
+            if($request->images)
+            {  
+                foreach($request->images as $image)
+                {
+                    $filename = time().rand(1,99).'_'.$image->getClientOriginalName();
+                    $image->move(public_path('patient-photo'), $filename);
+                    //$image->storeAs('images', $filename);
+                    array_push($names, $filename);          
+
+                }
+            }
+            
+            $image_all = array_merge($names, $preloaded);
+
+            if($old_img_arr){
+                foreach($old_img_arr as $img){
+                    if (!in_array($img, $image_all)){
+                        if(file_exists(public_path('patient-photo/'.$img))){
+                            unlink(public_path('patient-photo/'.$img));
+                        }
+                    }
+                    
+                }
+            }
+            
             // Store Data
             $patient_updated = Patient::whereId($patient->id)->update([
                 'first_name'    => $request->first_name,
@@ -162,7 +183,8 @@ class PatientController extends Controller
                 'weight'        => $request->weight,
                 'feet'          => $request->feet,
                 'inches'        => $request->inches,
-                'disease'       => $request->disease
+                'disease'       => $request->disease,
+                'photo'         => json_encode($image_all)
             ]);
 
             // Commit And Redirected To Listing
@@ -181,8 +203,7 @@ class PatientController extends Controller
         DB::beginTransaction();
         try {
             // Delete Patient
-            dd($patient->id);
-            //$patient = Patient::whereId($patient->id)->delete();
+            $patient = Patient::whereId($patient->id)->delete();
 
             DB::commit();
             return $patient;
