@@ -55,12 +55,49 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Patient:</h6>
                 <a class="collapse-item" href="{{ route('patients.index') }}">List</a>
-                <a class="collapse-item" href="{{ route('users.create') }}">Add New</a>
+                <a class="collapse-item" href="{{ route('patients.create') }}">Add New</a>
                 <a class="collapse-item" href="{{ route('users.import') }}">Import Data</a>
             </div>
         </div>
     </li>
     <!-- end Patient -->
+     <!-- Start Pharmacy -->
+     <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pharmacy"
+            aria-expanded="true" aria-controls="pharmacy">
+            <i class="fas fa-user-alt"></i>
+            <span>Pharmacy</span>
+        </a>
+        <div id="pharmacy" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Pharmacy:</h6>
+                <a class="collapse-item" href="{{ route('pharmacy.index') }}">List</a>
+                <a class="collapse-item" href="{{ route('pharmacy.create') }}">Add New</a>
+                <a class="collapse-item" href="{{ route('pharmacy.import') }}">Import Data</a>
+            </div>
+        </div>
+    </li>
+    <!-- end Pharmacy -->
+
+    <!-- Start Treatment -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#treatment"
+            aria-expanded="true" aria-controls="treatment">
+            <i class="fas fa-user-alt"></i>
+            <span>Treatment</span>
+        </a>
+        <div id="treatment" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Treatment:</h6>
+                <a class="collapse-item" href="{{ route('treatment.index') }}">Category List</a>
+                <a class="collapse-item" href="{{ route('treatment.create') }}">Add Category</a>
+            </div>
+
+        </div>
+
+            
+    </li>
+    <!-- end Pharmacy -->
 
     <!-- Divider -->
     <hr class="sidebar-divider">

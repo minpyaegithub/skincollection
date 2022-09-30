@@ -8,7 +8,7 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Add Patients</h1>
+        <h1 class="h3 mb-0 text-gray-800">Edit Patients</h1>
         <a href="{{route('patients.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                 class="fas fa-arrow-left fa-sm text-white-50"></i> Back</a>
     </div>
@@ -21,7 +21,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Edit Patient</h6>
         </div>
-        <form method="POST" action="{{route('patients.update', ['patient' => $patient->id])}}">
+        <form method="POST" action="{{route('patients.update', ['patient' => $patient->id])}}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="card-body">
@@ -274,11 +274,26 @@
                         </div>  
                     </div>
 
+                    {{-- photo --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Photo<span style="color:red;">*</span></label>
+                            </div>
+                            <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
+                                <!-- <form action="url" enctype="multipart/form-data"> -->
+                                    <div class="input-images" value="{{$patient->photo}}"></div>
+                                <!-- </form> -->
+                            </div>
+                        </div>  
+                    </div>
+
+
                 </div>
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-success btn-user float-right mb-3">Save</button>
+                <button type="submit" class="btn btn-success btn-user float-right mb-3">Update</button>
                 <a class="btn btn-primary float-right mr-3 mb-3" href="{{ route('patients.index') }}">Cancel</a>
             </div>
         </form>
@@ -291,6 +306,10 @@
 
 <script>
     $(function () {
+        var photo_arr = {!! json_encode($patient->photo) !!};
+        if(photo_arr == null){
+            photo_arr = "[]";
+        }
         $("#txt_date").datepicker({
             changeMonth: true,
             changeYear: true,
@@ -306,6 +325,21 @@
                 //ValidateDOB(dateString);
             }
         });
+
+        
+        var img_arr = JSON.parse(photo_arr);
+        console.log("photo_arr: ", photo_arr, " img_arr: ", img_arr);
+        var photo = [];
+        for (var i = 0; i < img_arr.length; i++) {
+           var obj = {id: img_arr[i], src: '/patient-photo/'+img_arr[i]};
+           photo.push(obj);
+        }
+        let preloaded = photo;
+        $('.input-images').imageUploader({
+            preloaded: preloaded,
+            preloadedInputName: 'preloaded',
+        });
+       // console.log(JSON.parse(photo));
     });
 
     $('.datepicker-open').click(function(event) {

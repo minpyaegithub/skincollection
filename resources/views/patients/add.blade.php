@@ -21,7 +21,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Add New Patient</h6>
         </div>
-        <form method="POST" action="{{route('patients.store')}}">
+        <form method="POST" action="{{route('patients.store')}}" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
                 <div class="form-group">
@@ -268,6 +268,20 @@
                         </div>  
                     </div>
 
+                    {{-- photo --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Photo<span style="color:red;">*</span></label>
+                            </div>
+                            <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
+                                <!-- <form action="url" enctype="multipart/form-data"> -->
+                                    <div class="input-images"></div>
+                                <!-- </form> -->
+                            </div>
+                        </div>  
+                    </div>
+
                 </div>
             </div>
 
@@ -300,6 +314,9 @@
                 //ValidateDOB(dateString);
             }
         });
+
+        $('.input-images').imageUploader();
+
     });
 
     $('.datepicker-open').click(function(event) {

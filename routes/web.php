@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PharmacyController;
+use App\Http\Controllers\TreatmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,3 +77,33 @@ Route::middleware('auth')->prefix('patients')->name('patients.')->group(function
 
 });
 
+
+// Pharmacy
+Route::middleware('auth')->prefix('pharmacy')->name('pharmacy.')->group(function(){
+    Route::get('/', [PharmacyController::class, 'index'])->name('index');
+    Route::get('/create', [PharmacyController::class, 'create'])->name('create');
+    Route::post('/store', [PharmacyController::class, 'store'])->name('store');
+    Route::get('/edit/{pharmacy}', [PharmacyController::class, 'edit'])->name('edit');
+    Route::put('/update/{pharmacy}', [PharmacyController::class, 'update'])->name('update');
+    Route::delete('/delete/{pharmacy}', [PharmacyController::class, 'delete'])->name('destroy');
+
+    
+    Route::get('/import-pharmacy', [PharmacyController::class, 'importPharmacy'])->name('import');
+    Route::post('/upload-pharmacy', [PharmacyController::class, 'uploadPharmacy'])->name('upload');
+
+    Route::get('export/', [PharmacyController::class, 'export'])->name('export');
+
+});
+
+// Treatment
+Route::middleware('auth')->prefix('treatment')->name('treatment.')->group(function(){
+    Route::get('/', [TreatmentController::class, 'index'])->name('index');
+    Route::get('/create', [TreatmentController::class, 'create'])->name('create');
+    Route::post('/store', [TreatmentController::class, 'store'])->name('store');
+    Route::get('/edit/{treatment}', [TreatmentController::class, 'edit'])->name('edit');
+    Route::put('/update/{treatment}', [TreatmentController::class, 'update'])->name('update');
+    Route::delete('/delete/{treatment}', [TreatmentController::class, 'delete'])->name('destroy');
+
+    Route::get('export/', [TreatmentController::class, 'export'])->name('export');
+
+});
