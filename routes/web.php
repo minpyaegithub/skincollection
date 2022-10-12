@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\TreatmentController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\AppointmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +26,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Auth::routes(['register' => false]);
+Auth::routes(['register' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -95,6 +97,33 @@ Route::middleware('auth')->prefix('pharmacy')->name('pharmacy.')->group(function
 
 });
 
+// Purchase
+Route::middleware('auth')->prefix('purchase')->name('purchase.')->group(function(){
+    Route::get('/', [PurchaseController::class, 'index'])->name('index');
+    Route::get('/create', [PurchaseController::class, 'create'])->name('create');
+    Route::post('/store', [PurchaseController::class, 'store'])->name('store');
+    Route::get('/edit/{purchase}', [PurchaseController::class, 'edit'])->name('edit');
+    Route::put('/update/{purchase}', [PurchaseController::class, 'update'])->name('update');
+    Route::delete('/delete/{purchase}', [PurchaseController::class, 'delete'])->name('destroy');
+
+    
+    Route::get('/import-purchase', [PurchaseController::class, 'importPurchase'])->name('import');
+    Route::post('/upload-purchase', [PurchaseController::class, 'uploadPurchase'])->name('upload');
+
+    Route::get('export/', [PurchaseController::class, 'export'])->name('export');
+
+});
+
+// Appointment
+Route::middleware('auth')->prefix('appointments')->name('appointments.')->group(function(){
+    Route::get('/', [AppointmentController::class, 'index'])->name('index');
+    Route::get('/create', [AppointmentController::class, 'create'])->name('create');
+    Route::post('/store', [AppointmentController::class, 'store'])->name('store');
+    Route::get('/edit/{appointment}', [AppointmentController::class, 'edit'])->name('edit');
+    Route::put('/update/{appointment}', [AppointmentController::class, 'update'])->name('update');
+    Route::delete('/delete/{appointment}', [AppointmentController::class, 'delete'])->name('destroy');
+});
+
 // Treatment
 Route::middleware('auth')->prefix('treatment')->name('treatment.')->group(function(){
     Route::get('/', [TreatmentController::class, 'index'])->name('index');
@@ -105,5 +134,8 @@ Route::middleware('auth')->prefix('treatment')->name('treatment.')->group(functi
     Route::delete('/delete/{treatment}', [TreatmentController::class, 'delete'])->name('destroy');
 
     Route::get('export/', [TreatmentController::class, 'export'])->name('export');
+
+    Route::get('/saveIndex', [TreatmentController::class, 'saveIndex'])->name('saveIndex');
+    Route::get('/updateIndex', [TreatmentController::class, 'updateIndex'])->name('updateIndex');
 
 });

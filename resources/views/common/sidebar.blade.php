@@ -61,6 +61,22 @@
         </div>
     </li>
     <!-- end Patient -->
+     <!-- Start Appointment -->
+     <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#appointment"
+            aria-expanded="true" aria-controls="appointment">
+            <i class="fas fa-user-alt"></i>
+            <span>Appointment</span>
+        </a>
+        <div id="appointment" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Appointment:</h6>
+                <a class="collapse-item" href="{{ route('appointments.index') }}">List</a>
+                <a class="collapse-item" href="{{ route('appointments.create') }}">Create Appointment</a>
+            </div>
+        </div>
+    </li>
+    <!-- end Appointment -->
      <!-- Start Pharmacy -->
      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pharmacy"
@@ -78,6 +94,24 @@
         </div>
     </li>
     <!-- end Pharmacy -->
+
+    <!-- Start Purchase -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#purchase"
+            aria-expanded="true" aria-controls="purchase">
+            <i class="fas fa-user-alt"></i>
+            <span>Purchase</span>
+        </a>
+        <div id="purchase" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Purchase:</h6>
+                <a class="collapse-item" href="{{ route('purchase.index') }}">List</a>
+                <a class="collapse-item" href="{{ route('purchase.create') }}">Add New</a>
+                <a class="collapse-item" href="{{ route('purchase.import') }}">Import Data</a>
+            </div>
+        </div>
+    </li>
+    <!-- end Purchase -->
 
     <!-- Start Treatment -->
     <li class="nav-item">

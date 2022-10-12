@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Treatment;
-use App\Models\Pharmacy;
 use App\Models\TreatmentPackage;
+use App\Models\Pharmacy;
 use App\Exports\TreatmentExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +34,16 @@ class TreatmentController extends Controller
         
         return view('treatment.index', ['treatment' => $treatment]);
     }
+
+    public function saveIndex(){
+        $treatment = Treatment::all();
+        return redirect()->route('treatment.index',['treatment' => $treatment])->with('success','Treatment Created Successfully.');
+    }
+
+    public function updateIndex(){
+        $treatment = Treatment::all();
+        return redirect()->route('treatment.index',['treatment' => $treatment])->with('success','Treatment Updated Successfully.');
+    }
     
     public function create()
     {
@@ -49,13 +59,6 @@ class TreatmentController extends Controller
         $tbl_values = $request->tbl_values;
         $price = $request->price;
         $phar_id;$qty=0;
-        //dd($tbl_values);
-        
-        // Validations
-        $request->validate([
-            'name'    => 'required',
-            'price'   => 'required'
-        ]);
 
          DB::beginTransaction();
         try {
@@ -85,44 +88,84 @@ class TreatmentController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('treatment.index')->with('success','Treatment Created Successfully.');
+            return response()->json([
+                'message' => 'success'
+            ]);
+            //return redirect()->route('treatment.index')->with('success','Treatment Created Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error
             DB::rollBack();
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return response()->json([
+                'message' => 'fail'
+            ]);
+            //return redirect()->back()->withInput()->with('error', $th->getMessage());
         }
     }
 
     public function edit(Treatment $treatment)
     {
-        return view('treatment.edit')->with(['treatment'  => $treatment ]);
+        $pharmacy = Pharmacy::all();
+        $treatment_phar = TreatmentPackage::join('pharmacies', 'pharmacies.id', '=', 'treatment_packages.phar_id')
+                            ->where('treatment_packages.treatment_id', '=', $treatment->id)
+                            ->get(['pharmacies.name', 'treatment_packages.phar_id', 'treatment_packages.qty']);
+
+        return view('treatment.edit')->with(['treatment'  => $treatment, 'pharmacy'=>$pharmacy, 'treatment_phar'=> $treatment_phar]);
     }
 
     public function update(Request $request, Treatment $treatment)
     {
-        // Validations
-        $request->validate([
-            'name'    => 'required'
-        ]);
 
         DB::beginTransaction();
         try {
 
             // Store Data
-            $pharmacy_updated = Treatment::whereId($treatment->id)->update([
-                'name' => $request->name,
-                'type' => $request->type,
+            $name = $request->name;
+            $price = $request->price;
+            $tbl_values = $request->tbl_values;
+            $price = $request->price;
+            $phar_id;$qty=0;
+
+            $treatment_updated = Treatment::whereId($treatment->id)->update([
+                'name' => $name,
+                'price' => $price,
             ]);
+            if($tbl_values){
+                foreach($tbl_values as $tbl_value){
+                    $phar_id = $tbl_value['phar_id'];
+                    $qty = $tbl_value['qty'];
+
+                    $treatment_phar = TreatmentPackage::where('treatment_id', '=', $treatment->id)->where('phar_id', '=', $phar_id)->first();
+                    if($treatment_phar === null){
+                        TreatmentPackage::create([
+                            'treatment_id' => $treatment->id,
+                            'phar_id'      => $phar_id,
+                            'qty'          => $qty
+            
+                        ]);
+                    } else {
+                        TreatmentPackage::where('phar_id', $phar_id)->update([
+                            'phar_id'  => $phar_id,
+                            'qty'      => $qty
+                        ]);
+                    }
+
+                    
+                }
+            }
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('treatment.index')->with('success','Treatment Updated Successfully.');
+            return response()->json([
+                'message' => 'success'
+            ]);
 
         } catch (\Throwable $th) {
             // Rollback and return with Error
             DB::rollBack();
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return response()->json([
+                'message' => 'fail'
+            ]);
         }
     }
 
@@ -131,15 +174,20 @@ class TreatmentController extends Controller
         DB::beginTransaction();
         try {
 
-            $treatment = Treatment::whereId($treatment->id)->delete();
+            Treatment::whereId($treatment->id)->delete();
+            TreatmentPackage::where('treatment_id', $treatment->id)->delete();
 
             DB::commit();
-            return $treatment;
+            return response()->json([
+                'message' => 'success'
+            ]);
             //return redirect()->route('patients.index')->with('success', 'Patient Deleted Successfully!.');
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('error', $th->getMessage());
+            return response()->json([
+                'message' => 'fail'
+            ]);
         }
     }
 
