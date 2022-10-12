@@ -39,7 +39,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Type</th>
+                                <th>Price</th>
                                 <th>Created Time</th>
                                 <th>Action</th>
                             </tr>
@@ -48,7 +48,7 @@
                             @foreach ($treatment as $treat)
                                 <tr>
                                     <td>{{ $treat->name }}</td>
-                                    <td>{{ $treat->type }}</td>
+                                    <td>{{ $treat->price }}</td>
                                     <td>{{ $treat->created_at->format('d-m-Y') }}</td>
 
                                     <td style="display: flex">
@@ -77,7 +77,7 @@
 
 <script>
 $(document).ready(function(){
-    
+    $('div.alert').delay(3000).slideUp(300);
     $('#tbl_treatment').DataTable({
         "lengthChange": true,
         "info": false, 
@@ -103,7 +103,7 @@ $(document).ready(function(){
                 var table = $('#tbl_treatment').DataTable();
                 table.row( $(this).parents('tr') ).remove().draw();
                 
-                   $.ajax({
+                $.ajax({
                   url: url,
                   type: 'DELETE',
                   dataType: 'json',

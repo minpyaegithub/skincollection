@@ -21,7 +21,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Add New Treatment</h6>
         </div>
-        <form method="POST" action="{{route('treatment.store')}}">
+        <form method="POST" action="#">
             @csrf
             <div class="card-body">
                 <div class="form-group">
@@ -35,21 +35,20 @@
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 
                             type="text" 
-                            class="form-control @error('name') is-invalid @enderror" 
+                            class="form-control" 
                             id="txt_name"
                             placeholder="Name" 
                             name="name" 
-                            value="{{ old('name') }}" required>
-                                @error('name')
-                                    <span class="text-danger">{{$message}}</span>
-                                @enderror
+                            value="" required>
+
+                                    <span style="display:none;" id="err_name" class="text-danger"></span>
                             </div>
 
                         </div>  
                     </div>
 
 
-                    {{-- Type --}}
+                    {{-- Price --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
@@ -58,14 +57,12 @@
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 
                             type="number" 
-                            class="form-control @error('price') is-invalid @enderror" 
+                            class="form-control" 
                             id="txt_price"
                             placeholder="0.00" 
                             name="price"
-                            value="{{ old('price') }}" required>
-                                @error('price')
-                                    <span class="text-danger">{{$message}}</span>
-                                @enderror
+                            value="" required>
+                                <span style="display:none;" id="err_price" class="text-danger">price field is required</span>
                             </div>
                         </div>  
                     </div>
@@ -127,8 +124,7 @@
 <script>
     var pharmacy = {!! json_encode($pharmacy->toArray()) !!};
     $(function () {
-        console.log('pharmacy ', pharmacy);
-
+        
         $('#select_pharmacy').select2({
             //minimumInputLength: 3
         });
@@ -146,6 +142,21 @@
 
         $("#btn_save").on("click", function() {
             var tbl_values =[];
+
+            if($("#txt_name").val() == ''){
+                $("#err_name").text('name field is required');
+                $("#err_name").show();
+                return false;
+            }else{
+                $("#err_name").hide();
+            }
+
+            if($("#txt_price").val() == ''){
+                $("#err_price").show();
+                return false;
+            }else{
+                $("#err_price").hide();
+            }
             
             $('#tbl_pharmacy tr').each(function(){
                 var o={};
@@ -163,20 +174,22 @@
             var price = $("#txt_price").val();
             var data = {name:name, price:price, tbl_values:tbl_values};
 
-            // $.ajaxSetup({
-                
-            // });
             $.ajax({
                 headers: {
-                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                type:'POST',
                url:'{{route('treatment.store')}}',
                data: data,
                success:function(data) {
-                console.log(data);
-                    console.log('success');
-                  //$("#msg").html(data.msg);
+                    console.log(data);
+                    if(data.message == 'fail'){
+                        $("#err_name").text('Name is Already Exists');
+                        $("#err_name").show();
+                    }else{
+                        $("#err_name").hide();
+                        window.location.href = "{{ route('treatment.saveIndex')}}";
+                    }
                }
             });
 

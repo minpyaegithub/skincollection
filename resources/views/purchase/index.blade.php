@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
-@section('title', 'Patients List')
+@section('title', 'Purchase List')
 
 @section('content')
     <div class="container-fluid">
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Pharmacy</h1>
+            <h1 class="h3 mb-0 text-gray-800">Purchase</h1>
             <div class="row">
                 <div class="col-md-6">
-                    <a href="{{ route('pharmacy.create') }}" class="btn btn-sm btn-primary">
+                    <a href="{{ route('purchase.create') }}" class="btn btn-sm btn-primary">
                         <i class="fas fa-plus"></i> Add New
                     </a>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ route('pharmacy.export') }}" class="btn btn-sm btn-success">
+                    <a href="{{ route('purchase.export') }}" class="btn btn-sm btn-success">
                         <i class="fas fa-check"></i> Export To Excel
                     </a>
                 </div>
@@ -30,39 +30,37 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">All Pharmacy</h6>
+                <h6 class="m-0 font-weight-bold text-primary">All Purchase</h6>
 
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="tbl_pharmacy" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="tbl_purchase" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Name</th>
                                 <th>Selling Price</th>
                                 <th>Net Price</th>
                                 <th>Qty</th>
-                                <th>Expire Date</th>
                                 <th>Created Time</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($pharmacy as $phar)
+                            @foreach ($purchase as $pur)
                                 <tr>
-                                    <td>{{ $phar->name }}</td>
-                                    <td>{{ $phar->selling_price }}</td>
-                                    <td>{{ $phar->net_price }}</td>
-                                    <td>{{ $phar->qty }}</td>
-                                    <td>{{ $phar->expire_date->format('d-m-Y') }}</td>
-                                    <td>{{ $phar->created_at->format('d-m-Y') }}</td>
+                                    <td>{{ $pur->name }}</td>
+                                    <td>{{ $pur->selling_price }}</td>
+                                    <td>{{ $pur->net_price }}</td>
+                                    <td>{{ $pur->qty }}</td>
+                                    <td>{{ $pur->created_time->format('d-m-Y') }}</td>
 
                                     <td style="display: flex">
-                                        <a href="{{ route('pharmacy.edit', ['pharmacy' => $phar->id]) }}"
+                                        <a href="{{ route('purchase.edit', ['purchase' => $pur->id]) }}"
                                             class="btn btn-primary m-2">
                                             <i class="fa fa-pen"></i>
                                         </a>
-                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('pharmacy.destroy', ['pharmacy' => $phar->id]) }}">
+                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('purchase.destroy', ['purchase' => $pur->id]) }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -84,7 +82,7 @@
 <script>
 $(document).ready(function(){
     $('div.alert').delay(3000).slideUp(300);
-    $('#tbl_pharmacy').DataTable({
+    $('#tbl_purchase').DataTable({
         "lengthChange": true,
         "info": false, 
         "searching": true,
@@ -106,7 +104,7 @@ $(document).ready(function(){
               confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
               if (result.value) {
-                var table = $('#tbl_pharmacy').DataTable();
+                var table = $('#tbl_purchase').DataTable();
                 table.row( $(this).parents('tr') ).remove().draw();
                    $.ajax({
                   url: url,
