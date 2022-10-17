@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\AppointmentTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Yajra\Datatables\Datatables;
 use Input;
+use Carbon\Carbon;
 
 class AppointmentController extends Controller
 {
@@ -33,24 +35,67 @@ class AppointmentController extends Controller
     
     public function create()
     {
-       
-        return view('appointment.add');
+        $appointments = Appointment::whereDate('date', Carbon::today())->get()->toArray();
+        $times = [];
+        foreach($appointments as $appointment){
+            foreach(explode(',', $appointment['time']) as $time){
+                array_push($times, $time);
+            }
+           
+        }
+        $filter_time = array_filter($times, 'strlen');
+        $unique_time = array_unique($filter_time);
+        $appointment_times = AppointmentTime::all();
+        return view('appointment.add', ['appointments' => $unique_time, 'appointment_times'=> $appointment_times]);
+    }
+
+    public function list(Request $request)
+    {
+        $date = date("Y-m-d", strtotime($request->date)); 
+        $appointments = Appointment::whereDate('date', $date)->get()->toArray();
+        $times = [];
+        foreach($appointments as $appointment){
+            foreach(explode(',', $appointment['time']) as $time){
+                array_push($times, $time);
+            }
+           
+        }
+        
+        $filter_time = array_filter($times, 'strlen');
+        $unique_time = array_unique($filter_time);
+        return response()->json([json_encode($unique_time)]);
+    }
+
+    public function view(Request $request)
+    {
+        $date = date("Y-m-d", strtotime($request->date)); 
+        $time = $request->time;
+        $query = 'select * from appointments where DATE(date) = "'.$date.'" and FIND_IN_SET("'.$time.'",time)';
+        $appointments = DB::select($query);
+        return response()->json([$appointments]);
     }
 
     public function store(Request $request)
     {
-        $date = date("Y-m-d", strtotime($request->date)); 
-
-         DB::beginTransaction();
+        $date = date("Y-m-d", strtotime($request->date));
+        DB::beginTransaction();
         try {
-
-            $appointment = Appointment::create([
-                'name'          => $request->name,
-                'phone'         => $request->phone,
-                'description'   => $request->description,
-                'time'          => $request->time,
-                'date'          => $date
-            ]);
+            $appointment = Appointment::where(['name' => $request->name, 'phone' => $request->phone])->first();
+            if($appointment === null ){
+                Appointment::create([
+                    'name'          => $request->name,
+                    'phone'         => $request->phone,
+                    'description'   => $request->description,
+                    'time'          => implode(',', $request->time),
+                    'date'          => $date
+                ]);
+            }else{
+                return response()->json([
+                    'message' => 'duplicate'
+                ]);
+                //$appointment->update(['time' => $appointment->time . $request->time . ',']);
+            }
+            
 
             // Commit And Redirected To Listing
             DB::commit();
@@ -112,15 +157,19 @@ class AppointmentController extends Controller
         DB::beginTransaction();
         try {
             // Delete Patient
-            $appointment = Purchase::whereId($purchase->id)->delete();
+            $appointment = Appointment::whereId($appointment->id)->delete();
 
             DB::commit();
-            return $appointment;
+            return response()->json([
+                'message' => 'success'
+            ]);
             //return redirect()->route('patients.index')->with('success', 'Patient Deleted Successfully!.');
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('error', $th->getMessage());
+            return response()->json([
+                'message' => 'fail'
+            ]);
         }
     }
 
