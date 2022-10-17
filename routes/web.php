@@ -117,6 +117,8 @@ Route::middleware('auth')->prefix('purchase')->name('purchase.')->group(function
 // Appointment
 Route::middleware('auth')->prefix('appointments')->name('appointments.')->group(function(){
     Route::get('/', [AppointmentController::class, 'index'])->name('index');
+    Route::get('/list', [AppointmentController::class, 'list'])->name('list');
+    Route::get('/view', [AppointmentController::class, 'view'])->name('view');
     Route::get('/create', [AppointmentController::class, 'create'])->name('create');
     Route::post('/store', [AppointmentController::class, 'store'])->name('store');
     Route::get('/edit/{appointment}', [AppointmentController::class, 'edit'])->name('edit');
