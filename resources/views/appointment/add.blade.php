@@ -167,6 +167,7 @@
 <script>
 var appointment_times = {!!json_encode($appointment_times -> toArray()) !!};
 $(function() {
+    $('div.alert').delay(3000).slideUp(300);
     $("#select_time").select2({});
 
     $("#txt_date").datepicker({
@@ -207,7 +208,7 @@ $(function() {
                         '<td>'+appointment['time'] +'</td>'+
                         '<td>'+appointment['description'] +'</td>'+
                         '<td style="display: flex">'+
-                            '<a class="btn btn-primary m-2">' +
+                            '<a class="btn btn-primary m-2" href="/appointments/edit/'+appointment['id']+'">' +
                                 '<i class="fa fa-pen"></i>'+
                             '</a>'+
                             '<button class="btn btn-danger m-2" value="'+appointment['id']+'" id="delete_icon">' +

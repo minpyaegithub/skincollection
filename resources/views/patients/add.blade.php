@@ -40,7 +40,6 @@
                             placeholder="First Name" 
                             name="first_name" 
                             value="{{ old('first_name') }}">
-                            <span style="color:#4e73df;">first name</span>
                                 @error('first_name')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
@@ -54,8 +53,6 @@
                                 placeholder="Last Name" 
                                 name="last_name" 
                                 value="{{ old('last_name') }}">
-
-                                <span style="color:#4e73df;">last name</span>
 
                                     @error('last_name')
                                         <span class="text-danger">{{$message}}</span>
@@ -146,9 +143,9 @@
                                     type="text" 
                                     class="datepicker form-control @error('dob') is-invalid @enderror" 
                                     id="txt_date"
-                                    placeholder="Date of Birth" 
+                                    placeholder="d-m-y" 
                                     name="dob" 
-                                    value="{{ old('dob') }}" readonly>
+                                    value="{{ old('dob') }}">
                                     <span id="lblError" style = "color:Red"></span>
                                     @error('dob')
                                         <span class="text-danger">{{$message}}</span>
@@ -156,7 +153,7 @@
                             </div>
 
                             <div class="col-sm-1 mb-3 mt-3 mb-sm-0" style="margin-left:-23px;">
-                                <img class="datepicker-open" src="{{asset('jqueryui-1.13/images/calendar.png')}}" width="41px;" alt="">
+                                <img class="datepicker-open" src="{{asset('plugin/jqueryui-1.13/images/calendar.png')}}" width="41px;" alt="">
                             </div>
                         
                         </div>
@@ -223,7 +220,6 @@
                                     placeholder="feet" 
                                     name="feet"
                                     value="{{ old('feet') }}">
-                                    <span style="color:#4e73df;">feet</span>
                                     @error('feet')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -236,7 +232,6 @@
                                     placeholder="inches" 
                                     name="inches"
                                     value="{{ old('inches') }}">
-                                    <span style="color:#4e73df;">inches</span>
                                     @error('inches')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -313,7 +308,7 @@
                 $("#lblError").html('Age is : ' + age + ' Year');
                 //ValidateDOB(dateString);
             }
-        });
+        }).datepicker("setDate", 'now');
 
         $('.input-images').imageUploader();
 

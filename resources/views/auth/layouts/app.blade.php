@@ -6,7 +6,7 @@
 
 <body class="bg-gradient-primary">
 
-    <div class="container" id="wrapper">
+    <div class="container" >
 
         {{-- Content Goes Here FOR Before AUTH --}}
         @yield('content')

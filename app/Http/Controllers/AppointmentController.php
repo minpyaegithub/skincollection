@@ -29,8 +29,8 @@ class AppointmentController extends Controller
 
     public function index()
     {
-        $apointments = Appointment::all();
-        return view('appointments.index', ['appointment' => $appointment]);
+        $appointments = Appointment::all();
+        return view('appointment.index', ['appointments' => $appointments]);
     }
     
     public function create()
@@ -114,19 +114,16 @@ class AppointmentController extends Controller
 
     public function edit(Appointment $appointment)
     {
-        return view('appointments.edit')->with(['appointment'  => $appointment ]);
+        $appointment_times = AppointmentTime::all();
+        return view('appointment.edit')->with(['appointment'  => $appointment, 'appointment_times' => $appointment_times ]);
     }
 
     public function update(Request $request, Appointment $appointment)
     {
-        $created_time = date("Y-m-d", strtotime($request->created_time)); 
         // Validations
         $request->validate([
             'name'    => 'required',
-            'selling_price' => 'required|numeric',
-            'net_price' => 'required|numeric',
-            'qty' => 'required|numeric',
-            'created_time'     => 'required'
+            'phone' => 'required|numeric'
         ]);
 
         DB::beginTransaction();
@@ -135,15 +132,14 @@ class AppointmentController extends Controller
             // Store Data
             $purchase_updated = Appointment::whereId($appointment->id)->update([
                 'name'          => $request->name,
-                'selling_price' => $request->selling_price,
-                'net_price'     => $request->net_price,
-                'qty'           => $request->qty,
-                'created_time'   => $created_time
+                'phone'         => $request->phone,
+                'description'   => $request->description,
+                'time'          => implode(',', $request->time)
             ]);
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('appointments.index')->with('success','Appointment Updated Successfully.');
+            return redirect()->route('appointments.create')->with('success','Appointment Updated Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error
