@@ -1,22 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Purchase List')
+@section('title', 'Appointment List')
 
 @section('content')
     <div class="container-fluid">
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Purchase</h1>
+            <h1 class="h3 mb-0 text-gray-800">Appointment</h1>
             <div class="row">
-                <div class="col-md-6">
-                    <a href="{{ route('purchase.create') }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-plus"></i> Add New
-                    </a>
-                </div>
-                <div class="col-md-6">
-                    <a href="{{ route('purchase.export') }}" class="btn btn-sm btn-success">
-                        <i class="fas fa-check"></i> Export To Excel
+                <div class="col-md-12">
+                    <a href="{{ route('appointments.create') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus"></i> Add Appointment
                     </a>
                 </div>
                 
@@ -30,35 +25,36 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">All Purchase</h6>
-
+                <h6 class="m-0 font-weight-bold text-primary">All Appointment</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="tbl_purchase" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="tbl_appointment" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Selling Price</th>
-                                <th>Net Price</th>
-                                <th>Created Time</th>
+                                <th>Phone</th>
+                                <th>Appointment Date</th>
+                                <th>Time</th>
+                                <th>Description</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($purchase as $pur)
+                            @foreach ($appointments as $appointment)
                                 <tr>
-                                    <td>{{ $pur->name }}</td>
-                                    <td>{{ $pur->selling_price }}</td>
-                                    <td>{{ $pur->net_price }}</td>
-                                    <td>{{ $pur->created_time }}</td>
-                                   
+                                    <td>{{ $appointment->name }}</td>
+                                    <td>{{ $appointment->phone }}</td>
+                                    <td>{{ $appointment->date->format('d-m-Y') }}</td>
+                                    <th>{{ $appointment->time }}</th>
+                                    <th>{{ $appointment->description }}</th>
+
                                     <td style="display: flex">
-                                        <a href="{{ route('purchase.edit', ['purchase' => $pur->id]) }}"
+                                        <a href="{{ route('appointments.edit', ['appointment' => $appointment->id]) }}"
                                             class="btn btn-primary m-2">
                                             <i class="fa fa-pen"></i>
                                         </a>
-                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('purchase.destroy', ['purchase' => $pur->id]) }}">
+                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('appointments.destroy', ['appointment' => $appointment->id]) }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -80,7 +76,7 @@
 <script>
 $(document).ready(function(){
     $('div.alert').delay(3000).slideUp(300);
-    $('#tbl_purchase').DataTable({
+    $('#tbl_appointment').DataTable({
         "lengthChange": true,
         "info": false, 
         "searching": true,
@@ -102,9 +98,10 @@ $(document).ready(function(){
               confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
               if (result.value) {
-                var table = $('#tbl_purchase').DataTable();
+                var table = $('#tbl_appointment').DataTable();
                 table.row( $(this).parents('tr') ).remove().draw();
-                   $.ajax({
+                
+                $.ajax({
                   url: url,
                   type: 'DELETE',
                   dataType: 'json',

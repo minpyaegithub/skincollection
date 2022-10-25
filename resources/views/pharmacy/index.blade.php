@@ -41,8 +41,6 @@
                                 <th>Name</th>
                                 <th>Selling Price</th>
                                 <th>Net Price</th>
-                                <th>Qty</th>
-                                <th>Expire Date</th>
                                 <th>Created Time</th>
                                 <th>Action</th>
                             </tr>
@@ -53,8 +51,6 @@
                                     <td>{{ $phar->name }}</td>
                                     <td>{{ $phar->selling_price }}</td>
                                     <td>{{ $phar->net_price }}</td>
-                                    <td>{{ $phar->qty }}</td>
-                                    <td>{{ $phar->expire_date->format('d-m-Y') }}</td>
                                     <td>{{ $phar->created_at->format('d-m-Y') }}</td>
 
                                     <td style="display: flex">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Purchase;
 use App\Exports\PurchaseExport;
+use App\Models\Pharmacy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -28,23 +29,23 @@ class PurchaseController extends Controller
 
     public function index()
     {
-        $purchase = Purchase::all();
+        //$purchase = Purchase::all();
+        $query = 'SELECT pur.id,phar.name, pur.selling_price, pur.net_price, DATE_FORMAT(pur.created_time,"%d-%m-%Y") AS created_time FROM purchases pur LEFT JOIN pharmacies phar on pur.phar_id = phar.id ORDER BY pur.created_time DESC';
+        $purchase = DB::select($query);
         return view('purchase.index', ['purchase' => $purchase]);
     }
     
     public function create()
     {
-       
-        return view('purchase.add');
+        $pharmacy = Pharmacy::all();
+        return view('purchase.add', ['pharmacy' => $pharmacy]);
     }
 
     public function store(Request $request)
     {
         $created_time = date("Y-m-d", strtotime($request->created_time)); 
-
         // Validations
         $request->validate([
-            'name'    => 'required',
             'selling_price' => 'required|numeric',
             'net_price' => 'required|numeric',
             'qty' => 'required|numeric',
@@ -55,11 +56,16 @@ class PurchaseController extends Controller
         try {
 
             $purchase = Purchase::create([
-                'name'          => $request->name,
+                'phar_id'       => $request->phar_id,
                 'selling_price' => $request->selling_price,
                 'net_price'     => $request->net_price,
                 'qty'           => $request->qty,
-                'created_time'   => $created_time
+                'created_time'  => $created_time
+            ]);
+
+            $pharmacy_updated = Pharmacy::whereId($request->phar_id)->update([
+                'selling_price' => $request->selling_price,
+                'net_price'     => $request->net_price
             ]);
 
             // Commit And Redirected To Listing
@@ -75,7 +81,8 @@ class PurchaseController extends Controller
 
     public function edit(Purchase $purchase)
     {
-        return view('purchase.edit')->with(['purchase'  => $purchase ]);
+        $pharmacy = Pharmacy::all();
+        return view('purchase.edit')->with(['purchase'  => $purchase, 'pharmacy' => $pharmacy ]);
     }
 
     public function update(Request $request, Purchase $purchase)
@@ -83,7 +90,6 @@ class PurchaseController extends Controller
         $created_time = date("Y-m-d", strtotime($request->created_time)); 
         // Validations
         $request->validate([
-            'name'    => 'required',
             'selling_price' => 'required|numeric',
             'net_price' => 'required|numeric',
             'qty' => 'required|numeric',
@@ -95,11 +101,16 @@ class PurchaseController extends Controller
 
             // Store Data
             $purchase_updated = Purchase::whereId($purchase->id)->update([
-                'name'          => $request->name,
+                'phar_id'       => $request->phar_id,
                 'selling_price' => $request->selling_price,
                 'net_price'     => $request->net_price,
                 'qty'           => $request->qty,
-                'created_time'   => $created_time
+                'created_time'  => $created_time
+            ]);
+
+            $pharmacy_updated = Pharmacy::whereId($request->phar_id)->update([
+                'selling_price' => $request->selling_price,
+                'net_price'     => $request->net_price
             ]);
 
             // Commit And Redirected To Listing

@@ -26,26 +26,20 @@
             <div class="card-body">
                 <div class="form-group">
 
-                    {{-- Name --}}
+                {{-- Pharmacy --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Name<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Select Medicine</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                            <input 
-                            type="text" 
-                            class="form-control @error('name') is-invalid @enderror" 
-                            id="txt_name"
-                            placeholder="Name" 
-                            name="name" 
-                            value="{{ old('name') }}">
-                                @error('name')
-                                    <span class="text-danger">{{$message}}</span>
-                                @enderror
+                                <select class="form-control" name="phar_id" id="select_pharmacy">
+                                    @foreach ($pharmacy as $phar)
+                                        <option value="{{$phar->id}}">{{$phar->name}}</option>
+                                    @endforeach
+                                </select> 
                             </div>
-
-                        </div>  
+                        </div>
                     </div>
 
 
@@ -127,9 +121,9 @@
                                     type="text" 
                                     class="datepicker form-control @error('created_time') is-invalid @enderror" 
                                     id="txt_date"
-                                    placeholder="Created Time" 
+                                    placeholder="d-m-y" 
                                     name="created_time" 
-                                    value="{{ old('created_time') }}" readonly>
+                                    value="{{ old('created_time') }}">
                                     @error('created_time')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -160,6 +154,10 @@
 
 <script>
     $(function () {
+        $('#select_pharmacy').select2({
+            //minimumInputLength: 3
+        });
+
         $("#txt_date").datepicker({
             changeMonth: true,
             changeYear: true,
@@ -170,7 +168,7 @@
              yearRange: ':+20',
             onSelect: function (value, ui) {
             }
-        });
+        }).datepicker("setDate", 'now');
 
     });
 

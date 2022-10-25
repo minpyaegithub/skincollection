@@ -97,5 +97,11 @@
 @endsection
 
 @section('scripts')
+<script>
+    $(document).ready(function(){
+        $('div.alert').delay(3000).slideUp(300);
+    });
+</script>
+
     
 @endsection

@@ -47,22 +47,14 @@ class PharmacyController extends Controller
 
         // Validations
         $request->validate([
-            'name'    => 'required',
-            'selling_price' => 'required|numeric',
-            'net_price' => 'required|numeric',
-            'qty' => 'required|numeric',
-            'expire_date'     => 'required'
+            'name'    => 'required'
         ]);
 
          DB::beginTransaction();
         try {
 
             $pharmacy = Pharmacy::create([
-                'name'          => $request->name,
-                'selling_price' => $request->selling_price,
-                'net_price'     => $request->net_price,
-                'qty'           => $request->qty,
-                'expire_date'   => $expire_date
+                'name'          => $request->name
             ]);
 
             // Commit And Redirected To Listing
@@ -86,11 +78,7 @@ class PharmacyController extends Controller
         $expire_date = date("Y-m-d", strtotime($request->expire_date)); 
         // Validations
         $request->validate([
-            'name'    => 'required',
-            'selling_price' => 'required|numeric',
-            'net_price' => 'required|numeric',
-            'qty' => 'required|numeric',
-            'expire_date'     => 'required'
+            'name'    => 'required'
         ]);
 
         DB::beginTransaction();
@@ -98,11 +86,7 @@ class PharmacyController extends Controller
 
             // Store Data
             $pharmacy_updated = Pharmacy::whereId($pharmacy->id)->update([
-                'name'          => $request->name,
-                'selling_price' => $request->selling_price,
-                'net_price'     => $request->net_price,
-                'qty'           => $request->qty,
-                'expire_date'   => $expire_date
+                'name'          => $request->name
             ]);
 
             // Commit And Redirected To Listing

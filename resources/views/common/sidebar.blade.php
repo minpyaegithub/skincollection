@@ -1,11 +1,11 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul style="background:#161513;" class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-university"></i>
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" style="height:110px;" href="{{ route('home') }}">
+        <div class="">
+            <img src="{{asset('logo/logo.png')}}" width="79%;">
         </div>
-        <div class="sidebar-brand-text mx-3">Skin Collection</div>
+        <!-- <div class="sidebar-brand-text mx-3">Skin Collection</div> -->
     </a>
 
     <!-- Divider -->
@@ -48,7 +48,7 @@
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#patient"
             aria-expanded="true" aria-controls="patient">
-            <i class="fas fa-user-alt"></i>
+            <i class="fa-solid fa-hospital-user"></i>
             <span>Patient</span>
         </a>
         <div id="patient" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -65,7 +65,7 @@
      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#appointment"
             aria-expanded="true" aria-controls="appointment">
-            <i class="fas fa-user-alt"></i>
+            <i class="fa-solid fa-calendar-check"></i>
             <span>Appointment</span>
         </a>
         <div id="appointment" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -81,7 +81,7 @@
      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pharmacy"
             aria-expanded="true" aria-controls="pharmacy">
-            <i class="fas fa-user-alt"></i>
+            <i class="fa-sharp fa-solid fa-tablets"></i>
             <span>Pharmacy</span>
         </a>
         <div id="pharmacy" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -99,7 +99,7 @@
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#purchase"
             aria-expanded="true" aria-controls="purchase">
-            <i class="fas fa-user-alt"></i>
+            <i class="fa-solid fa-cart-shopping"></i>
             <span>Purchase</span>
         </a>
         <div id="purchase" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -117,7 +117,7 @@
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#treatment"
             aria-expanded="true" aria-controls="treatment">
-            <i class="fas fa-user-alt"></i>
+            <i class="fa-solid fa-hand-holding-medical"></i>
             <span>Treatment</span>
         </a>
         <div id="treatment" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">

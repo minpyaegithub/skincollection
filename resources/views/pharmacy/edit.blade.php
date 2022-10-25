@@ -49,101 +49,6 @@
                         </div>  
                     </div>
 
-
-                    {{-- Selling Price --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Selling Price<span style="color:red;">*</span></label>
-                            </div>
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                            <input 
-                            type="number" 
-                            class="form-control @error('selling_price') is-invalid @enderror" 
-                            id="txt_selling_price"
-                            placeholder="Selling Price" 
-                            name="selling_price" 
-                            value="{{ old('selling_price') ?  old('selling_price') : $pharmacy->selling_price}}">
-
-                            @error('selling_price')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                            </div>
-                        </div>  
-                    </div>
-
-                    {{-- Net Price --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Net Price<span style="color:red;">*</span></label>
-                            </div>
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                            <input 
-                            type="number" 
-                            class="form-control @error('net_price') is-invalid @enderror" 
-                            id="txt_net_price"
-                            placeholder="Net Price" 
-                            name="net_price" 
-                            value="{{ old('net_price') ?  old('net_price') : $pharmacy->net_price}}">
-
-                            @error('net_price')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                            </div>
-                        </div>  
-                    </div>
-
-                    {{-- Qty --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Quantity<span style="color:red;">*</span></label>
-                            </div>
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                            <input 
-                            type="number" 
-                            class="form-control @error('qty') is-invalid @enderror" 
-                            id="txt_qty"
-                            placeholder="Quantity" 
-                            name="qty" 
-                            value="{{ old('qty') ?  old('qty') : $pharmacy->qty}}">
-
-                            @error('qty')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                            </div>
-                        </div>  
-                    </div>
-
-
-                    {{-- Expire Date --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Expire Date<span style="color:red;">*</span></label>
-                            </div>
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                                <input
-                                    type="text" 
-                                    class="datepicker form-control @error('expire_date') is-invalid @enderror" 
-                                    id="txt_date"
-                                    placeholder="Expire Date" 
-                                    name="expire_date" 
-                                    value="{{ old('expire_date') ?  old('expire_date') : $pharmacy->expire_date}}" readonly>
-                                    @error('expire_date')
-                                        <span class="text-danger">{{$message}}</span>
-                                    @enderror
-                            </div>
-
-                            <div class="col-sm-1 mb-3 mt-3 mb-sm-0" style="margin-left:-23px;">
-                                <img class="datepicker-open" src="{{asset('jqueryui-1.13/images/calendar.png')}}" width="41px;" alt="">
-                            </div>
-                        
-                        </div>
-                            
-                        </div>
-
                 </div>
             </div>
 
@@ -161,24 +66,9 @@
 
 <script>
     $(function () {
-        $("#txt_date").datepicker({
-            changeMonth: true,
-            changeYear: true,
-            // showOn: 'button',
-            //buttonImageOnly: true,
-            //buttonImage: 'images/calendar.gif',
-             dateFormat: 'dd-mm-yy',
-             yearRange: ':+20',
-            onSelect: function (value, ui) {
-            }
-        });
 
     });
 
-    $('.datepicker-open').click(function(event) {
-        event.preventDefault();
-        $('.datepicker').focus();
-    });
 </script>
 <style>
 
