@@ -10,6 +10,7 @@ use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,4 +141,14 @@ Route::middleware('auth')->prefix('treatment')->name('treatment.')->group(functi
     Route::get('/saveIndex', [TreatmentController::class, 'saveIndex'])->name('saveIndex');
     Route::get('/updateIndex', [TreatmentController::class, 'updateIndex'])->name('updateIndex');
 
+});
+
+//invoice
+Route::middleware('auth')->prefix('invoices')->name('invoices.')->group(function(){
+    Route::get('/', [InvoiceController::class, 'index'])->name('index');
+    Route::get('/create', [InvoiceController::class, 'create'])->name('create');
+    Route::post('/store', [InvoiceController::class, 'store'])->name('store');
+    Route::get('/edit/{invoice}', [InvoiceController::class, 'edit'])->name('edit');
+    Route::put('/update/{invoice}', [InvoiceController::class, 'update'])->name('update');
+    Route::delete('/delete/{invoice}', [InvoiceController::class, 'delete'])->name('destroy');
 });

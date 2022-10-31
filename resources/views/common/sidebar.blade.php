@@ -133,6 +133,22 @@
     </li>
     <!-- end Pharmacy -->
 
+    <!-- Start Purchase -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#invoice"
+            aria-expanded="true" aria-controls="invoice">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Invoice</span>
+        </a>
+        <div id="invoice" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Invoice:</h6>
+                <a class="collapse-item" href="{{ route('invoices.index') }}">List</a>
+                <a class="collapse-item" href="{{ route('invoices.create') }}">Create</a>
+            </div>
+        </div>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 

@@ -159,6 +159,10 @@
 
 <script>
     $(function () {
+        $('#select_pharmacy').select2({
+            //minimumInputLength: 3
+        });
+        
         $("#txt_date").datepicker({
             changeMonth: true,
             changeYear: true,
