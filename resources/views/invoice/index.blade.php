@@ -13,13 +13,7 @@
                     <a href="{{ route('invoices.create') }}" class="btn btn-sm btn-primary">
                         <i class="fas fa-plus"></i> Add New
                     </a>
-                </div>
-                <div class="col-md-6">
-                    <a href="{{ route('invoices.export') }}" class="btn btn-sm btn-success">
-                        <i class="fas fa-check"></i> Export To Excel
-                    </a>
-                </div>
-                
+                </div>          
             </div>
 
         </div>
