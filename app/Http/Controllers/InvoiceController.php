@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Treatment;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -31,13 +33,14 @@ class InvoiceController extends Controller
         $invoices = Invoice::all();
         //dd(DB::getQueryLog());
         //return datatables($patients)->toJson();
-        return view('invoices.index', ['invoices' => $invoices]);
+        return view('invoice.index', ['invoices' => $invoices]);
     }
     
     public function create()
     {
-       
-        return view('invoices.add');
+        $treatments = Treatment::orderBy('name', 'asc')->get();
+        $patients = Patient::orderBy('first_name', 'asc')->get();
+        return view('invoice.add', ['patients' => $patients, 'treatments' => $treatments]);
     }
 
     public function store(Request $request)
@@ -98,7 +101,7 @@ class InvoiceController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('patients.index')->with('success','Patient Created Successfully.');
+            return redirect()->route('invoices.index')->with('success','Invoice Created Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error
@@ -107,9 +110,9 @@ class InvoiceController extends Controller
         }
     }
 
-    public function edit(Patient $patient)
+    public function edit(Invoice $invoice)
     {
-        return view('invoices.edit')->with(['invoices'  => $invoice ]);
+        return view('invoice.edit')->with(['invoices'  => $invoice ]);
     }
 
     public function update(Request $request, Invoice $invoice)
