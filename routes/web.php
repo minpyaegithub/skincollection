@@ -11,6 +11,7 @@ use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PDFController;
 
 /*
 |--------------------------------------------------------------------------
@@ -152,3 +153,8 @@ Route::middleware('auth')->prefix('invoices')->name('invoices.')->group(function
     Route::put('/update/{invoice}', [InvoiceController::class, 'update'])->name('update');
     Route::delete('/delete/{invoice}', [InvoiceController::class, 'delete'])->name('destroy');
 });
+
+
+Route::get('/generate-invoice-pdf/{invoice}', [PDFController::class, 'generateInvoicePDF'])->name('generateInvoicePDF');
+Route::get('/invoice/{invoice}', [PDFController::class, 'generateInvoice'])->name('generateInvoice');
+//Route::get('/generate-invoice-pdf', array('as'=> 'generate.invoice.pdf', 'uses' => 'PDFController@generateInvoicePDF'));
