@@ -3,7 +3,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" style="height:110px;" href="{{ route('home') }}">
         <div class="">
-            <img src="{{asset('logo/logo.png')}}" width="79%;">
+            <img src="{{asset('logo/logo.jpg')}}" width="79%;">
         </div>
         <!-- <div class="sidebar-brand-text mx-3">Skin Collection</div> -->
     </a>

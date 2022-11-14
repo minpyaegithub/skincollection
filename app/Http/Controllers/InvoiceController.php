@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\Treatment;
 use App\Models\Patient;
+use App\Models\Pharmacy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -40,73 +41,63 @@ class InvoiceController extends Controller
     {
         $treatments = Treatment::orderBy('name', 'asc')->get();
         $patients = Patient::orderBy('first_name', 'asc')->get();
-        return view('invoice.add', ['patients' => $patients, 'treatments' => $treatments]);
+        $pharmacies = Pharmacy::orderBy('name', 'asc')->get();
+        $invoice_number = $this->invoiceNumber();
+        return view('invoice.add', 
+        ['patients' => $patients, 
+            'treatments' => $treatments, 
+            'invoice_number'=> $invoice_number, 
+            'pharmacies' => $pharmacies
+        ]);
+    }
+
+    function invoiceNumber()
+    {
+        $latest = Invoice::latest()->first();
+
+        if (! $latest) {
+            return 'SKC0001';
+        }
+
+        $string = preg_replace("/[^0-9\.]/", '', $latest->invoice_no);
+
+        return 'SKC' . sprintf('%04d', $string+1);
     }
 
     public function store(Request $request)
     {
-        $token = rand(000000,999999);
-        $created_time = date("Y-m-d", strtotime($request->dob)); 
-
-        // Validations
-        $request->validate([
-            'first_name'    => 'required',
-            'last_name'     => 'required',
-            //'email'         => 'required|unique:users,email',
-            'phone' => 'required|numeric',
-            'gender'    => 'required',
-            'dob'     => 'required',
-            'address'    => 'required',
-            'weight'     => 'required',
-            'feet'     => 'required',
-            'inches'    => 'required',
-            'photo.*' => 'image|mimes:jpeg,png,jpg,gif,svg'
-            //'disease'   => 'required'
-        ]);
-
-         DB::beginTransaction();
+        $tbl_values = $request->tbl_values;
+        $created_time = date("Y-m-d", strtotime($request->invoice_date)); 
+        
+        DB::beginTransaction();
         try {
-
-            $names = [];
-            if($request->images)
-            {  
-                foreach($request->images as $image)
-                {
-                    ///dd($image);
-                    //$destinationPath = 'content_images/';
-                    $filename = time().rand(1,99).'_'.$image->getClientOriginalName();
-                    $image->move(public_path('patient-photo'), $filename);
-                    array_push($names, $filename);          
-
+            
+            if($tbl_values){
+                foreach($tbl_values as $tbl_value){
+                    $invoice = Invoice::create([
+                        'invoice_no'    => $request->invoice_no,
+                        'patient_id'    => $request->patient_id,
+                        'created_time'  => $created_time,
+                        'type'          => $request->type,
+                        'treatment_id'  => $tbl_value['select_treatment'],
+                        'price'  => $tbl_value['price'],
+                        'discount'   => $tbl_value['discount'],
+                        'sub_total'     => $tbl_value['sub_total'],
+                        'discount_type' => $tbl_value['discount_type']
+                    ]);
                 }
             }
 
-            $invoice = Invoice::create([
-                'first_name'    => $request->first_name,
-                'last_name'     => $request->last_name,
-                'email'         => $request->email,
-                'phone'         => $request->phone,
-                'gender'        => $request->gender,
-                'dob'           => $created_time,
-                'address'       => $request->address,
-                'weight'        => $request->weight,
-                'feet'          => $request->feet,
-                'inches'        => $request->inches,
-                'disease'       => $request->disease,
-                'photo'         => json_encode($names),
-                'token'         => $token
-            ]);
-
-            
-
-            // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('invoices.index')->with('success','Invoice Created Successfully.');
-
+            return response()->json([
+                'message' => 'success'
+            ]);
         } catch (\Throwable $th) {
             // Rollback and return with Error
             DB::rollBack();
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return response()->json([
+                'message' => 'fail'
+            ]);
         }
     }
 
