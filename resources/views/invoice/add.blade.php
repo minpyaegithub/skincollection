@@ -66,11 +66,10 @@
                                     <div class="col-sm-1"></div>
                                     {{-- Date --}}
                                     <div class="col-sm-3">
-                                    <label style="margin-top:9px;">Invoice Date<span style="color:red;">*</span></label>
-                                    <input type="text" class="datepicker form-control" id="txt_date" placeholder="d-m-y" 
-                                            name="created_time">
-                                        
-                                            <span style="display:none;" id="err_date" class="text-danger"></span>
+                                        <label style="margin-top:9px;">Invoice Date<span style="color:red;">*</span></label>
+                                        <input type="text" class="datepicker form-control" id="txt_date" placeholder="d-m-y" 
+                                                name="created_time">
+                                        <span style="display:none;" id="err_date" class="text-danger"></span>
                                         
                                     </div>
                                     <div class="col-sm-1 mb-3 mt-3 mb-sm-0" style="margin-left:-23px;">
@@ -199,6 +198,19 @@
                                     <label style="margin-top:9px;">Invoice No.</label>
                                     <input type="text" class="form-control" id="txt_sale_invoice" placeholder="" name="txt_sale_invoice" value="{{$invoice_number}}" readonly>
                                 </div>
+                                <div class="col-sm-1"></div>
+                                    {{-- Date --}}
+                                    <div class="col-sm-3">
+                                        <label style="margin-top:9px;">Invoice Date<span style="color:red;">*</span></label>
+                                        <input type="text" class="datepicker form-control" id="txt_sale_date" placeholder="d-m-y" 
+                                                name="created_time">
+                                        <span style="display:none;" id="err_sale_date" class="text-danger"></span>
+                                        
+                                    </div>
+                                    <div class="col-sm-1 mb-3 mt-3 mb-sm-0" style="margin-left:-23px;">
+                                        <img class="datepicker-open" src="{{asset('plugin/jqueryui-1.13/images/calendar.png')}}"
+                                            width="41px;" style="margin-top: 23px;">
+                                    </div>
                             </div>
                         </div>
                         <div class="form-group" style="margin-top:52px;">
@@ -270,9 +282,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="card-footer">
+                    <button type="button" id="btn_sale_save" class="btn btn-success btn-user float-right mb-3">Save</button>
+                </div>
+            </div>
         </div>
-    </div>
-</form>
+        </form>
 
         
     </div>
@@ -320,6 +335,15 @@
        // addrow();
 
         $("#txt_date").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-mm-yy',
+            yearRange: ':+20',
+            onSelect: function (value, ui) {
+            }
+        }).datepicker("setDate", 'now');
+
+        $("#txt_sale_date").datepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-mm-yy',
@@ -459,7 +483,6 @@
                 }  
             });
 
-            console.log(tbl_values);
             var data = {invoice_no:invoice_no, patient_id:patient_id, 
                        invoice_date:invoice_date, type:'treatment',
                        tbl_values,tbl_values};
@@ -472,8 +495,8 @@
                url:'{{route('invoices.store')}}',
                data: data,
                success:function(data) {
-                 window.open('/invoice/'+invoice_no);
-                 window.location.reload();
+                 window.open('/invoice/'+invoice_no+'/treatment');
+                 //window.location.reload();
                }
             });
 
@@ -481,6 +504,52 @@
 
         
     });
+
+    $("#btn_sale_save").on("click", function() {
+            
+            var tbl_values =[];
+            let invoice_no = $("#txt_sale_invoice").val();
+            let invoice_date = $("#txt_sale_date").val();
+
+            if($("#txt_sale_date").val() == ''){
+                $("#err_sale_date").text('Invoice Date field is required');
+                $("#err_sale_date").show();
+                return false;
+            }else{
+                $("#err_sale_date").hide();
+            }
+
+
+            $('#tbl_sale tr.tr_clone').each(function(){
+                var o={};
+                var inputs = $(this).find('select, input');
+                if(inputs.length != 0){
+                    inputs.each(function(){
+                        o[$(this).attr('name')]=this.value;
+                    });
+
+                    tbl_values.push(o);
+                }  
+            });
+
+            var data = {invoice_no:invoice_no,
+                       invoice_date:invoice_date, type:'sale',
+                       tbl_values,tbl_values};
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+               type:'POST',
+               url:'{{route('invoices.store')}}',
+               data: data,
+               success:function(data) {
+                 window.open('/invoice/'+invoice_no+'/sale');
+                 window.location.reload();
+               }
+            });
+
+        });
     //addrow();
 
     function calculate(element){
@@ -490,7 +559,7 @@
             let sub_total=0;
             let discount_price = 0;
             if(type == 'percent'){
-                if(isNaN(discount) || isNaN(price)){
+                if(isNaN(discount)){
                     sub_total = price;
                 }else{
                     discount_price = (price * discount/100);
@@ -499,7 +568,7 @@
                 
             }else{
 
-                if(isNaN(discount) || isNaN(price)){
+                if(isNaN(discount)){
                     discount = 0;
                 }
                 console.log(discount);

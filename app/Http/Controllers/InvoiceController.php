@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\Treatment;
 use App\Models\Patient;
+use App\Models\Sale;
 use App\Models\Pharmacy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,8 @@ class InvoiceController extends Controller
     public function index()
     {
         //DB::enableQueryLog();
-        $invoices = Invoice::all();
+        $query = "select id,count(*) as count,invoice_no,price,SUM(sub_total) total,type, DATE_FORMAT(created_time, '%d %M %Y') created_time FROM invoices GROUP BY invoice_no";
+        $invoices = DB::select($query);
         //dd(DB::getQueryLog());
         //return datatables($patients)->toJson();
         return view('invoice.index', ['invoices' => $invoices]);
@@ -72,21 +74,60 @@ class InvoiceController extends Controller
         DB::beginTransaction();
         try {
             
-            if($tbl_values){
-                foreach($tbl_values as $tbl_value){
-                    $invoice = Invoice::create([
-                        'invoice_no'    => $request->invoice_no,
-                        'patient_id'    => $request->patient_id,
-                        'created_time'  => $created_time,
-                        'type'          => $request->type,
-                        'treatment_id'  => $tbl_value['select_treatment'],
-                        'price'  => $tbl_value['price'],
-                        'discount'   => $tbl_value['discount'],
-                        'sub_total'     => $tbl_value['sub_total'],
-                        'discount_type' => $tbl_value['discount_type']
-                    ]);
+                if($tbl_values){
+                    if($request->type == 'treatment'){
+                        foreach($tbl_values as $tbl_value){
+                            $treatment_id = $tbl_value['select_treatment'];
+                            Invoice::create([
+                                'invoice_no'    => $request->invoice_no,
+                                'patient_id'    => $request->patient_id,
+                                'created_time'  => $created_time,
+                                'type'          => $request->type,
+                                'treatment_id'  => $treatment_id,
+                                'price'  => $tbl_value['price'],
+                                'discount'   => $tbl_value['discount'],
+                                'sub_total'     => $tbl_value['sub_total'],
+                                'discount_type' => $tbl_value['discount_type']
+                            ]);
+
+                            $query = "select * from treatment_packages where treatment_id="."'$treatment_id'";
+                            $treatment_packages = DB::select($query);
+
+                            foreach($treatment_packages as $treatment_package){
+                                Sale::create([
+                                    'invoice_no'    => $request->invoice_no,
+                                    'phar_id'  => $treatment_package->phar_id,
+                                    'qty'  => $treatment_package->qty,
+                                    'price'  => $tbl_value['price'],
+                                    'created_time'  => $created_time,
+                                ]);
+                            }
+                        }
+                    }else{
+                        foreach($tbl_values as $tbl_value){
+                            Invoice::create([
+                                'invoice_no'    => $request->invoice_no,
+                                'created_time'  => $created_time,
+                                'type'          => $request->type,
+                                'phar_id'  => $tbl_value['select_pharmacy'],
+                                'qty'  => $tbl_value['qty'],
+                                'price'  => $tbl_value['price'],
+                                'discount'   => $tbl_value['discount'],
+                                'sub_total'     => $tbl_value['sub_total'],
+                                'discount_type' => $tbl_value['discount_type']
+                            ]);
+
+                            Sale::create([
+                                'invoice_no'    => $request->invoice_no,
+                                'phar_id'  => $tbl_value['select_pharmacy'],
+                                'qty'  => $tbl_value['qty'],
+                                'price'  => $tbl_value['price'],
+                                'created_time'  => $created_time,
+                            ]);
+                        }
+                    }
+                    
                 }
-            }
 
             DB::commit();
             return response()->json([
@@ -154,15 +195,16 @@ class InvoiceController extends Controller
         }
     }
 
-    public function delete(Invoice $invoice)
+    public function delete($invoice_no)
     {
         DB::beginTransaction();
         try {
             // Delete Patient
-            $invoice = Invoice::whereId($invoice->id)->delete();
+            $invoice = Invoice::where('invoice_no', '=' ,$invoice_no)->delete();
+            $sale = Sale::where('invoice_no', '=' ,$invoice_no)->delete();
 
             DB::commit();
-            return $invoice;
+            return $invoice_no;
             //return redirect()->route('patients.index')->with('success', 'Patient Deleted Successfully!.');
 
         } catch (\Throwable $th) {

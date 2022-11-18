@@ -118,8 +118,8 @@
     </div>
 
     <div class="w-100 mt-10" style="text-align:center;margin-bottom:15px;">
-        <p class="m-0 pt-5 text-bold w-100"> လိပ်စာ - ဗိုလ်မှူးဖိုးကွန်းလမ်း (မြန်မာ့အလှ ဟိုတယ် မျက်စောင်းထိုး) </p>
-        <p class="m-0 pt-5 text-bold w-100"> ပျိုကညာဖက်ရှင်ဆိုင်အပေါ်ထပ်။ </p>
+        <p class="m-0 pt-5 text-bold w-100"> လိပ်စာ - ၁၆/၃၊ ဗိုလ်မှူးဖိုးကွန်းလမ်း၊</p>
+        <p class="m-0 pt-5 text-bold w-100"> မြန်မာ့အလှဧည့်ရိပ်သာနှင့်မျက်နှာချင်းဆိုင်။ </p>
         <p class="m-0 pt-5 text-bold w-100"> ဖုန်း -09400650300 </p>
         <p class="m-0 pt-5 text-bold w-100"> Opening Hours - From 8AM to 8PM </p>
         <hr>
@@ -132,12 +132,12 @@
             <p class="m-0 pt-5 text-bold w-100">Invoice No - <span class="gray-color">{{$invoices[0]->invoice_no}}</span></p>
             <p class="m-0 pt-5 text-bold w-100">Invoice Date - <span class="gray-color">{{$invoices[0]->created_time}}</span></p>
         </div>
-
+        @if($invoices[0]->type == 'treatment')
         <div class="float-right">
             <p class="m-0 pt-5 w-100">{{$invoices[0]->first_name}} {{$invoices[0]->last_name}}</p>
             <p class="m-0 pt-5 w-100">{{$invoices[0]->phone}}</p>
         </div>
-        
+        @endif
     </div>
 
     <div style="clear: both;"></div>
@@ -146,20 +146,44 @@
 <div class="table-section bill-tbl w-100 mt-10">
     <table class="table w-100 mt-10">
         <tr>
+        @if($invoices[0]->type == 'treatment')
             <th class="w-50">Treatment Name</th>
             <th class="w-50">Price</th>
             <th class="w-50">Discount</th>
             <th class="w-50">Subtotal</th>
+        @else
+            <th class="w-50">Pharmacy Name</th>
+            <th class="w-50">Price</th>
+            <th class="w-50">Quantity</th>
+            <th class="w-50">Discount</th>
+            <th class="w-50">Subtotal</th>
+        @endif
+            
         </tr>
 
         @foreach($invoices as $invoice)
         <tr align="center">
-            <td>{{$invoice->treatment_name}}</td>
-            <td>{{$invoice->price}}</td>
-            @if($invoice->discount_type == 'mmk')
-                <td>{{$invoice->discount}} MMK</td>
+            @if($invoices[0]->type == 'treatment')
+                <td>{{$invoice->treatment_name}}</td>
+                <td>{{$invoice->price}}</td>
             @else
-                <td>{{$invoice->discount}} %</td>
+                <td>{{$invoice->phar_name}}</td>
+                <td>{{$invoice->price}}</td>
+                <td>{{$invoice->qty}}</td>
+            @endif
+            
+            @if($invoice->discount_type == 'mmk')
+                @if($invoice->discount)
+                    <td>{{$invoice->discount}} MMK</td>
+                @else
+                    <td> - </td>
+                @endif
+            @else
+                @if($invoice->discount)
+                    <td>{{$invoice->discount}} %</td>
+                @else
+                    <td> - </td>
+                @endif
             @endif
             <td>{{$invoice->sub_total}}</td>
         </tr>
