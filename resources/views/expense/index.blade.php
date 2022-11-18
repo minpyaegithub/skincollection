@@ -1,31 +1,21 @@
 @extends('layouts.app')
 
-@section('title', 'Invoices List')
+@section('title', 'Expense List')
 
 @section('content')
     <div class="container-fluid">
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Invoices</h1>
+            <h1 class="h3 mb-0 text-gray-800">Expense</h1>
             <div class="row">
-            
                 <div class="col-md-12">
-                    <a href="{{ route('invoices.create') }}" class="btn btn-sm btn-primary">
+                    <a href="{{ route('expense.create') }}" class="btn btn-sm btn-primary">
                         <i class="fas fa-plus"></i> Add New
                     </a>
-                </div>          
+                </div>      
             </div>
 
-        </div>
-
-        <div class="col-sm-2 mb-4">
-            <label style="margin-top:9px;">Type<span style="color:red;">*</span></label>
-                <select class="form-control" name="type" id="select_type">
-                        <option value="">All</option>
-                        <option value="treatment">Treatment</option>
-                        <option value="sale">Sale</option>   
-                </select>
         </div>
 
         {{-- Alert Messages --}}
@@ -34,37 +24,35 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">All Invoice</h6>
+                <h6 class="m-0 font-weight-bold text-primary">All Expense</h6>
 
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="tbl_invoice" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="tbl_expense" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Invoice No</th>
-                                <th>Total</th>
-                                <th>Type</th>
-                                <th width="10%">Item Count</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Description</th>
                                 <th>Created Time</th>
-                                <th width="10%">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($invoices as $invoice)
+                            @foreach ($expense as $exp)
                                 <tr>
-                                    <td>{{ $invoice->invoice_no }}</td>
-                                    <td>{{ $invoice->total }}</td>
-                                    <td>{{ $invoice->type }}</td>
-                                    <td>{{ $invoice->count }}</td>
-                                    <td>{{ $invoice->created_time }}</td>
-
+                                    <td>{{ $exp->category }}</td>
+                                    <td>{{ $exp->amount }}</td>
+                                    <td>{{ $exp->description }}</td>
+                                    <td>{{ $exp->created_time->format('d-m-Y') }}</td>
+                                   
                                     <td style="display: flex">
-                                        <a href="{{ route('generateInvoice', ['invoice' => $invoice->invoice_no, 'type'=>$invoice->type]) }}"
-                                            class="btn btn-primary m-2" target="_blank">
-                                            <i class="fa-solid fa-eye"></i>
+                                        <a href="{{ route('expense.edit', ['expense' => $exp->id]) }}"
+                                            class="btn btn-primary m-2">
+                                            <i class="fa fa-pen"></i>
                                         </a>
-                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('invoices.destroy', ['invoice' => $invoice->invoice_no]) }}">
+                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('expense.destroy', ['expense' => $exp->id]) }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -86,10 +74,11 @@
 <script>
 $(document).ready(function(){
     $('div.alert').delay(3000).slideUp(300);
-    $('#tbl_invoice').DataTable({
+    $('#tbl_expense').DataTable({
         "lengthChange": true,
         "info": true, 
         "searching": true,
+        "aaSorting": []
     }).on('click', '#delete_icon', function (e) { 
         e.preventDefault();
          $.ajaxSetup({
@@ -108,10 +97,9 @@ $(document).ready(function(){
               confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
               if (result.value) {
-                var table = $('#tbl_invoice').DataTable();
+                var table = $('#tbl_expense').DataTable();
                 table.row( $(this).parents('tr') ).remove().draw();
-                
-                $.ajax({
+                   $.ajax({
                   url: url,
                   type: 'DELETE',
                   dataType: 'json',
@@ -125,14 +113,6 @@ $(document).ready(function(){
               }
             })
       });
-
-      $('#select_type').on('change', function() {
-            var table = $('#tbl_invoice').DataTable();
-            table
-            .columns( 2 )
-            .search( this.value )
-            .draw();
-        });
             
 });
 

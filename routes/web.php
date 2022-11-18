@@ -12,6 +12,8 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\WeightController;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,7 +156,27 @@ Route::middleware('auth')->prefix('invoices')->name('invoices.')->group(function
     Route::delete('/delete/{invoice}', [InvoiceController::class, 'delete'])->name('destroy');
 });
 
+// Expense
+Route::middleware('auth')->prefix('expense')->name('expense.')->group(function(){
+    Route::get('/', [ExpenseController::class, 'index'])->name('index');
+    Route::get('/create', [ExpenseController::class, 'create'])->name('create');
+    Route::post('/store', [ExpenseController::class, 'store'])->name('store');
+    Route::get('/edit/{expense}', [ExpenseController::class, 'edit'])->name('edit');
+    Route::put('/update/{expense}', [ExpenseController::class, 'update'])->name('update');
+    Route::delete('/delete/{expense}', [ExpenseController::class, 'delete'])->name('destroy');
+});
 
-Route::get('/generate-invoice-pdf/{invoice}', [PDFController::class, 'generateInvoicePDF'])->name('generateInvoicePDF');
-Route::get('/invoice/{invoice}', [PDFController::class, 'generateInvoice'])->name('generateInvoice');
+// weight
+Route::middleware('auth')->prefix('weight')->name('weight.')->group(function(){
+    Route::get('/', [WeightController::class, 'index'])->name('index');
+    Route::get('/create', [WeightController::class, 'create'])->name('create');
+    Route::post('/store', [WeightController::class, 'store'])->name('store');
+    Route::get('/edit/{weight}', [WeightController::class, 'edit'])->name('edit');
+    Route::put('/update/{weight}', [WeightController::class, 'update'])->name('update');
+    Route::delete('/delete/{weight}', [WeightController::class, 'delete'])->name('destroy');
+});
+
+
+Route::get('/generate-invoice-pdf/{invoice}/{type}', [PDFController::class, 'generateInvoicePDF'])->name('generateInvoicePDF');
+Route::get('/invoice/{invoice}/{type}', [PDFController::class, 'generateInvoice'])->name('generateInvoice');
 //Route::get('/generate-invoice-pdf', array('as'=> 'generate.invoice.pdf', 'uses' => 'PDFController@generateInvoicePDF'));

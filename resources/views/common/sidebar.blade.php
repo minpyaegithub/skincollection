@@ -149,6 +149,38 @@
         </div>
     </li>
 
+     <!-- Start Expense -->
+     <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#expense"
+            aria-expanded="true" aria-controls="expense">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Expense</span>
+        </a>
+        <div id="expense" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Expense:</h6>
+                <a class="collapse-item" href="{{ route('expense.index') }}">List</a>
+                <a class="collapse-item" href="{{ route('expense.create') }}">Create</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Start Patient Weight -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#weight"
+            aria-expanded="true" aria-controls="weight">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Patient Weight</span>
+        </a>
+        <div id="weight" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Patient Weight:</h6>
+                <a class="collapse-item" href="{{ route('weight.index') }}">List</a>
+                <a class="collapse-item" href="{{ route('weight.create') }}">Create</a>
+            </div>
+        </div>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 
