@@ -57,6 +57,12 @@ class PharmacyController extends Controller
                 'name'          => $request->name
             ]);
 
+            DB::table('out_of_stocks')->insert(
+                [
+                    'phar_id' => $pharmacy->id
+                ]
+            );
+
             // Commit And Redirected To Listing
             DB::commit();
             return redirect()->route('pharmacy.index')->with('success','Pharmacy Created Successfully.');
@@ -105,7 +111,8 @@ class PharmacyController extends Controller
         DB::beginTransaction();
         try {
             // Delete Patient
-            $pharmacy = Pharmacy::whereId($pharmacy->id)->delete();
+            $phar = Pharmacy::whereId($pharmacy->id)->delete();
+            DB::table('out_of_stocks')->where('phar_id','=',$pharmacy->id)->delete();
 
             DB::commit();
             return $pharmacy;

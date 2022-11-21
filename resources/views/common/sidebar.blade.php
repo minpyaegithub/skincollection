@@ -12,13 +12,21 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
+    <li class="nav-item active" id="home">
         <a class="nav-link" href="{{ route('home') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
 
     <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <li class="nav-item" id="inventory-home">
+        <a class="nav-link" href="{{ route('inventory-home') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Inventory Dashboard</span></a>
+    </li>
+
     <hr class="sidebar-divider">
 
     <!-- Heading -->

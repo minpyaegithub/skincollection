@@ -33,6 +33,7 @@ Route::get('/', function () {
 Auth::routes(['register' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/inventory-home', [App\Http\Controllers\HomeController::class, 'Inventoryindex'])->name('inventory-home');
 
 // Profile Routes
 Route::prefix('profile')->name('profile.')->middleware('auth')->group(function(){

@@ -9,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} | @yield('title')</title>
+    <title>{{ config('app.name', 'Skin Collections') }} | @yield('title')</title>
 
     {{-- ICON --}}
     <link rel="shortcut icon" type="image/jpg" href="{{ asset('images/icon.png') }}"/>
@@ -21,7 +21,7 @@
     <!-- Font Awesome UI KIT-->
     <!-- <script src="{{ asset('js/app.js') }}"></script> -->
     <!-- <script src="https://kit.fontawesome.com/f75ab26951.js" crossorigin="anonymous"></script> -->
-    
+    <script src="{{asset('plugin/echarts/echarts.min.js')}}" type="text/javascript" defer></script>
     <script src="{{asset('plugin/jqueryui-1.13/jquery-ui.min.js')}}" type="text/javascript" defer></script>
     <script src="{{asset('plugin/sweetalert2/sweetalert2.min.js')}}" defer></script>
     <script src="{{asset('plugin/DataTables/datatables.min.js')}}" defer></script>

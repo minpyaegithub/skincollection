@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Inventory Dashboard')
 
 @section('content')
 <div class="container-fluid">
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800"><i class="fa-solid fa-gauge-high"></i> Dashboard </h1>
+        <h1 class="h3 mb-0 text-gray-800"><i class="fa-solid fa-gauge-high"></i> Inventory Dashboard </h1>
     </div>
 
     <!-- Content Row -->
@@ -20,11 +20,11 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-sm font-weight-bold text-primary text-uppercase mb-1">
-                                Total Patient</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($total_patient[0]->count)</div>
+                                Total Purchase</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convert($total_purchase[0]->total)</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fa-solid fa-user-plus fa-2x text-gray-400"></i>
+                            <i class="fa-solid fa-money-bill-1-wave fa-2x text-gray-400"></i>
                         </div>
                     </div>
                 </div>
@@ -38,11 +38,11 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-sm font-weight-bold text-success text-uppercase mb-1">
-                                Today Patient</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($today_patient[0]->count)</div>
+                                Total Sale</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convert($total_sale[0]->total)</div>
                         </div>
                         <div class="col-auto">
-                        <i class="fa-solid fa-user-plus fa-2x text-gray-400"></i>
+                            <i class="fa-solid fa-money-bill-1-wave fa-2x text-gray-400"></i>
                         </div>
                     </div>
                 </div>
@@ -56,11 +56,11 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-sm font-weight-bold text-info text-uppercase mb-1">
-                                Total Apointment</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($total_appointment[0]->count)</div>
+                                Total Medicine</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($total_stock[0]->total)</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fa-regular fa-calendar-check fa-2x text-gray-400"></i>
+                            <i class="fa-solid fa-pills fa-2x text-gray-400"></i>
                         </div>
                     </div>
                 </div>
@@ -74,11 +74,11 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-sm font-weight-bold text-warning text-uppercase mb-1">
-                                Today Apointment</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($today_appointment[0]->count)</div>
+                                Out of Stock Medicine</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($out_of_stock)</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fa-regular fa-calendar-check fa-2x text-gray-400"></i>
+                            <i class="fa-solid fa-pills fa-2x text-gray-400"></i>
                         </div>
                     </div>
                 </div>
@@ -86,9 +86,49 @@
         </div>
         
     </div>
-    <div class="card shadow">
+    <div class="card shadow mb-4">
         <div class="card-body">
             <div id="main" style="width:100%;height:500px;"></div>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                    <table class="table table-bordered" id="tbl_stock" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Medicine Name</th>
+                                <th>Quantity</th>
+                                <th>Available Quantity</th>
+                                <th>Added On</th>
+                                <th>Updated On</th>
+                                <th width="10%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($stock_details as $stock_detail)
+                                <tr>
+                                    <td>{{ $stock_detail->name }}</td>
+                                    <td>{{ $stock_detail->qty }}</td>
+                                    <td>{{ $stock_detail->available_qty }}</td>
+                                    <td>{{ $stock_detail->created_time }}</td>
+                                    <td>{{ $stock_detail->updated_at }}</td>
+                                   
+                                    <td style="display: flex">
+                                        <a href="{{ route('purchase.create') }}"
+                                            class="btn btn-primary m-2">
+                                            <i class="fa-solid fa-plus"></i> Purchase
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
         </div>
     </div>
 
@@ -98,13 +138,20 @@
 
 <script type="text/javascript">
 
-    var patients = {!! json_encode($patient_monthly) !!};
+    var patients = {!! json_encode($sale_monthly) !!};
 
     $(function () {
 
-        $("#inventory-home").removeClass("active");
-        $("#home").addClass("active");
-       
+        $("#home").removeClass("active");
+        $("#inventory-home").addClass("active");
+        
+        $('#tbl_stock').DataTable({
+            "lengthChange": true,
+            "info": true, 
+            "searching": true,
+            "aaSorting": []
+        })
+
         patient_chart();
         function patient_chart(){
 
@@ -114,7 +161,7 @@
 
             for(var i in patients) {
                 date.push(patients[i].date);
-                count.push(patients[i].count);
+                count.push(patients[i].total);
             }
 
             // Initialize the echarts instance based on the prepared dom
@@ -123,7 +170,7 @@
             // Specify the configuration items and data for the chart
             var option = {
                     title: {
-                        text: 'Patients Chart List',
+                        text: 'Sale Chart List',
                         x:'center'
                     },
                     tooltip: { trigger: 'item'},
