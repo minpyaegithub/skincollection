@@ -496,7 +496,7 @@
                data: data,
                success:function(data) {
                  window.open('/invoice/'+invoice_no+'/treatment');
-                 //window.location.reload();
+                 window.location.reload();
                }
             });
 

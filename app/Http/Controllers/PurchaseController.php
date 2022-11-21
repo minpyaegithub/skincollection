@@ -63,11 +63,21 @@ class PurchaseController extends Controller
                 'created_time'  => $created_time
             ]);
 
+            $pur_latest = Purchase::where('phar_id', $request->phar_id)->orderBy('created_time', 'desc')->first();
             $pharmacy_updated = Pharmacy::whereId($request->phar_id)->update([
-                'selling_price' => $request->selling_price,
-                'net_price'     => $request->net_price
+                'selling_price' => $pur_latest->selling_price,
+                'net_price'     => $pur_latest->net_price
             ]);
 
+            $query = 'select SUM(qty) total, phar_id from purchases where phar_id='.$request->phar_id.' GROUP BY phar_id';
+            $stocks = DB::select($query);
+            foreach($stocks as $stock){
+                DB::table('out_of_stocks')->where('phar_id', $request->phar_id)->update(
+                    [
+                        'total' => $stock->total
+                    ]
+                );
+            }
             // Commit And Redirected To Listing
             DB::commit();
             return redirect()->route('purchase.index')->with('success','Purchase Created Successfully.');
@@ -108,10 +118,21 @@ class PurchaseController extends Controller
                 'created_time'  => $created_time
             ]);
 
+            $pur_latest = Purchase::where('phar_id', $request->phar_id)->orderBy('created_time', 'desc')->first();
             $pharmacy_updated = Pharmacy::whereId($request->phar_id)->update([
-                'selling_price' => $request->selling_price,
-                'net_price'     => $request->net_price
+                'selling_price' => $pur_latest->selling_price,
+                'net_price'     => $pur_latest->net_price
             ]);
+
+            $query = 'select SUM(qty) total, phar_id from purchases where phar_id='.$request->phar_id.' GROUP BY phar_id';
+            $stocks = DB::select($query);
+            foreach($stocks as $stock){
+                DB::table('out_of_stocks')->where('phar_id', $request->phar_id)->update(
+                    [
+                        'total' => $stock->total
+                    ]
+                );
+            }
 
             // Commit And Redirected To Listing
             DB::commit();
@@ -129,10 +150,32 @@ class PurchaseController extends Controller
         DB::beginTransaction();
         try {
             // Delete Patient
-            $purchase = Purchase::whereId($purchase->id)->delete();
+            $purchases = Purchase::whereId($purchase->id)->delete();
+
+            $pur_latest = Purchase::where('phar_id', $purchase->phar_id)->orderBy('created_time', 'desc')->first();
+            if($pur_latest){
+                $pharmacy_updated = Pharmacy::whereId($purchase->phar_id)->update([
+                    'selling_price' => $pur_latest->selling_price,
+                    'net_price'     => $pur_latest->net_price
+                ]);
+            }
+            
+
+            $query = 'select SUM(qty) total, phar_id from purchases where phar_id='.$purchase->phar_id.' GROUP BY phar_id';
+            $stocks = DB::select($query);
+            if($stocks){
+                $total = $stocks[0]->total;
+            }else{
+                $total = 0;
+            }
+            DB::table('out_of_stocks')->where('phar_id', $purchase->phar_id)->update(
+                [
+                    'total' => $total
+                ]
+            );
 
             DB::commit();
-            return $purchase;
+            return $purchases;
             //return redirect()->route('patients.index')->with('success', 'Patient Deleted Successfully!.');
 
         } catch (\Throwable $th) {

@@ -140,11 +140,8 @@
         $("#txt_date").datepicker({
             changeMonth: true,
             changeYear: true,
-            // showOn: 'button',
-            //buttonImageOnly: true,
-            //buttonImage: 'images/calendar.gif',
-             dateFormat: 'dd-mm-yy',
-             yearRange: ':+20',
+            dateFormat: 'dd-mm-yy',
+            yearRange: ':+20',
             onSelect: function (value, ui) {
             }
         });

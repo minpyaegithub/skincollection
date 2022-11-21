@@ -90,7 +90,7 @@ class InvoiceController extends Controller
                                 'discount_type' => $tbl_value['discount_type']
                             ]);
 
-                            $query = "select * from treatment_packages where treatment_id="."'$treatment_id'";
+                            $query = "select * from treatment_packages LEFT JOIN pharmacies phar ON treatment_packages.phar_id=phar.id where treatment_id="."'$treatment_id'";
                             $treatment_packages = DB::select($query);
 
                             foreach($treatment_packages as $treatment_package){
@@ -98,18 +98,29 @@ class InvoiceController extends Controller
                                     'invoice_no'    => $request->invoice_no,
                                     'phar_id'  => $treatment_package->phar_id,
                                     'qty'  => $treatment_package->qty,
-                                    'price'  => $tbl_value['price'],
+                                    'price'  => $treatment_package->selling_price,
                                     'created_time'  => $created_time,
                                 ]);
+
+                                $query = 'select SUM(qty) total, phar_id from sales where phar_id='.$treatment_package->phar_id.' GROUP BY phar_id';
+                                $stocks = DB::select($query);
+                                foreach($stocks as $stock){
+                                    DB::table('out_of_stocks')->where('phar_id', $treatment_package->phar_id)->update(
+                                        [
+                                            'sale' => $stock->total
+                                        ]
+                                    );
+                                }
                             }
                         }
                     }else{
                         foreach($tbl_values as $tbl_value){
+                            $phar_id = $tbl_value['select_pharmacy'];
                             Invoice::create([
                                 'invoice_no'    => $request->invoice_no,
                                 'created_time'  => $created_time,
                                 'type'          => $request->type,
-                                'phar_id'  => $tbl_value['select_pharmacy'],
+                                'phar_id'  => $phar_id,
                                 'qty'  => $tbl_value['qty'],
                                 'price'  => $tbl_value['price'],
                                 'discount'   => $tbl_value['discount'],
@@ -119,11 +130,27 @@ class InvoiceController extends Controller
 
                             Sale::create([
                                 'invoice_no'    => $request->invoice_no,
-                                'phar_id'  => $tbl_value['select_pharmacy'],
+                                'phar_id'  => $phar_id,
                                 'qty'  => $tbl_value['qty'],
                                 'price'  => $tbl_value['price'],
                                 'created_time'  => $created_time,
                             ]);
+
+                            $query = 'select SUM(qty) total, phar_id from sales where phar_id='.$phar_id.' GROUP BY phar_id';
+                            $stocks = DB::select($query);
+                            
+                                foreach($stocks as $stock){
+                                   
+                                    DB::table('out_of_stocks')->where('phar_id', $phar_id)->update(
+                                        [
+                                            'sale' => $stock->total
+                                        ]
+                                    );
+                                    
+                                    
+                                }
+                        
+                            
                         }
                     }
                     

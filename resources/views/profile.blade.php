@@ -14,7 +14,9 @@
         @include('common.alert')
 
         {{-- Page Content --}}
-        <div class="row">
+        <div class="card">
+            <div class="card-body">
+            <div class="row">
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                     <img class="rounded-circle mt-5" width="150px" src="{{ asset('admin/img/undraw_profile.svg') }}">
@@ -112,8 +114,19 @@
             </div>
 
         </div>
+            </div>
+        </div>
+        
 
 
 
     </div>
+@endsection
+@section('scripts')
+
+<script>
+$(document).ready(function(){
+    $('div.alert').delay(3000).slideUp(300);
+});
+</script>
 @endsection
