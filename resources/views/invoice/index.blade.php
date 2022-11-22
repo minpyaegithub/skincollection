@@ -61,7 +61,7 @@
 
                                     <td style="display: flex">
                                         <a href="{{ route('generateInvoice', ['invoice' => $invoice->invoice_no, 'type'=>$invoice->type]) }}"
-                                            class="btn btn-primary m-2" target="_blank">
+                                            class="btn btn-info m-2" target="_blank">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
                                         <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('invoices.destroy', ['invoice' => $invoice->invoice_no]) }}">

@@ -43,11 +43,9 @@
                                 <th>Mobile</th>
                                 <th>Gender</th>
                                 <th>DOB</th>
-                                <th>Address</th>
                                 <th>Weight</th>
                                 <th>Height</th>
                                 <th>Token</th>
-                                <th>Disease</th>
                                 <th>Created Time</th>
                                 <th>Action</th>
                             </tr>
@@ -59,17 +57,19 @@
                                     <td>{{ $patient->email }}</td>
                                     <td>{{ $patient->phone }}</td>
                                     <td>{{ $patient->gender }}</td>
-
                                     <td>{{ $patient->dob }}</td>
-                                    <td>{{ $patient->address }}</td>
                                     <td>{{ $patient->weight }} lbs</td>
 
                                     <td>{{ $patient->feet }}' {{ $patient->inches }}"</td>
                                     <td>{{ $patient->token }}</td>
-                                    <td>{{ $patient->disease }}</td>
                                     <td>{{ $patient->created_at->format('d-m-Y') }}</td>
 
                                     <td style="display: flex">
+                                        <a href="{{ route('patients.profile', ['patient' => $patient->id]) }}"
+                                            class="btn btn-info m-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+
                                         <a href="{{ route('patients.edit', ['patient' => $patient->id]) }}"
                                             class="btn btn-primary m-2">
                                             <i class="fa fa-pen"></i>

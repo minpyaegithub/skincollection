@@ -113,6 +113,17 @@ class PatientController extends Controller
         return view('patients.edit')->with(['patient'  => $patient ]);
     }
 
+    public function profile(Patient $patient)
+    {
+        $patient_weight_query = 'select DISTINCT DATE(created_time) date,weight FROM weights WHERE patient_id="'.$patient->id.'" and MONTH(created_time) = MONTH(CURRENT_DATE()) AND YEAR(created_time) = YEAR(CURRENT_DATE()) GROUP BY DATE(created_time) ORDER BY created_time asc';
+        $patient_weight = DB::select($patient_weight_query);
+
+        $query = 'select id,count(*) as count,invoice_no,price,SUM(sub_total) total,type, DATE_FORMAT(created_time, "%d %M %Y") created_time FROM invoices WHERE patient_id="'.$patient->id.'" and type="treatment" GROUP BY invoice_no ORDER BY created_time asc ';
+        $invoices = DB::select($query);
+
+        return view('patients.profile')->with(['patient'  => $patient, 'patient_weight'=> $patient_weight, 'invoices'=>$invoices ]);
+    }
+
     public function update(Request $request, Patient $patient)
     {
         $created_time = date("Y-m-d", strtotime($request->dob));

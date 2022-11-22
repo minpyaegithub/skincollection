@@ -149,7 +149,11 @@
             "lengthChange": true,
             "info": true, 
             "searching": true,
-            "aaSorting": []
+            "aaSorting": [],
+            // "dom": 'Bfrtip',
+            // "buttons": [
+            //         'copy', 'csv', 'excel', 'pdf', 'print'
+            //     ]
         })
 
         patient_chart();
