@@ -76,7 +76,7 @@ class HomeController extends Controller
         $sale_monthly_query = 'select DISTINCT DATE(created_time) date,SUM(price * qty) AS total FROM sales WHERE MONTH(created_time) = MONTH(CURRENT_DATE()) AND YEAR(created_time) = YEAR(CURRENT_DATE()) GROUP BY DATE(created_time) ORDER BY created_time asc';
         $sale_monthly = DB::select($sale_monthly_query);
 
-        $stock_detail_query = 'select phar.name, SUM(total - sale) available_qty, pur.qty, pur.created_time, pur.updated_at FROM purchases pur LEFT JOIN out_of_stocks ostock ON pur.phar_id=ostock.phar_id LEFT JOIN pharmacies phar ON pur.phar_id=phar.id GROUP BY pur.phar_id ORDER BY available_qty asc';
+        $stock_detail_query = 'select phar.name, SUM(total - sale) available_qty, pur.qty, pur.created_time, pur.updated_at FROM pharmacies phar LEFT JOIN out_of_stocks ostock ON phar.id=ostock.phar_id LEFT JOIN purchases pur ON phar.id=pur.phar_id GROUP BY phar.id ORDER BY available_qty asc';
         $stock_details = DB::select($stock_detail_query);
         //dd($patient_monthly);
         return view('inventory-home', [

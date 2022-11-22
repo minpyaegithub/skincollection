@@ -76,6 +76,7 @@ Route::middleware('auth')->prefix('patients')->name('patients.')->group(function
     Route::delete('/delete/{patient}', [PatientController::class, 'delete'])->name('destroy');
     Route::get('/update/status/{patient_id}/{status}', [PatientController::class, 'updateStatus'])->name('status');
 
+    Route::get('/profile/{patient}', [PatientController::class, 'profile'])->name('profile');
     
     Route::get('/import-patient', [PatientController::class, 'importPatients'])->name('import');
     Route::post('/upload-patient', [PatientController::class, 'uploadPatients'])->name('upload');
