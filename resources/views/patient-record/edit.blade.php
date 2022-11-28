@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Add Patient Weight')
+@section('title', 'Edit Patient Record')
 
 @section('content')
 
@@ -8,8 +8,8 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Add Patient Weight</h1>
-        <a href="{{route('weight.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+        <h1 class="h3 mb-0 text-gray-800">Edit Record</h1>
+        <a href="{{route('record.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                 class="fas fa-arrow-left fa-sm text-white-50"></i> Back</a>
     </div>
 
@@ -19,14 +19,15 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Add New Weight</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Edit Record</h6>
         </div>
-        <form method="POST" action="{{route('weight.store')}}">
+        <form method="POST" action="{{route('record.update', ['record' => $record->id])}}">
             @csrf
+            @method('PUT')
             <div class="card-body">
                 <div class="form-group">
 
-                {{-- Patient --}}
+                {{-- Pharmacy --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
@@ -34,9 +35,12 @@
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <select class="form-control" name="patient_id" id="select_patient">
-                                <option id="" value="">Select Patient</option>
                                     @foreach ($patients as $patient)
-                                        <option id="{{$patient->token}}" value="{{$patient->id}}">{{$patient->first_name}} {{$patient->last_name}}</option>
+                                        @if($patient->id == $record->patient_id)
+                                            <option id="{{$patient->token}}" value="{{$patient->id}}" selected>{{$patient->first_name}} {{$patient->last_name}}</option>
+                                        @else
+                                            <option id="{{$patient->token}}" value="{{$patient->id}}">{{$patient->first_name}} {{$patient->last_name}}</option>
+                                        @endif
                                     @endforeach
                                 </select> 
                             </div>
@@ -59,30 +63,32 @@
                         </div>  
                     </div>
 
-
                     {{-- Weight --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Weight<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Note</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                            <input
-                            type="number" 
-                            class="form-control @error('weight') is-invalid @enderror" 
-                            id="txt_weight"
-                            placeholder="eg - 102" 
-                            name="weight" 
-                            value="{{ old('weight') }}">
-
-                            @error('weight')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
+                            <textarea
+                                    type="text" 
+                                    class="form-control @error('description') is-invalid @enderror" 
+                                    id="txt_description"
+                                    placeholder="note" 
+                                    name="description" 
+                                    rows="4"
+                                    value="">
+                                    {{ old('description') ?  old('description') : $record->description}}
+                                    </textarea>
+                                    @error('description')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
                             </div>
                         </div>  
                     </div>
 
-                    {{-- Expire Date --}}
+
+                {{-- Expire Date --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
@@ -95,7 +101,7 @@
                                     id="txt_date"
                                     placeholder="d-m-y" 
                                     name="created_time" 
-                                    value="{{ old('created_time') }}">
+                                    value="{{ old('created_time') ?  old('created_time') : $record->created_time->format('d-m-Y') }}" >
                                     @error('created_time')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -113,8 +119,8 @@
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-success btn-user float-right mb-3">Save</button>
-                <a class="btn btn-primary float-right mr-3 mb-3" href="{{ route('weight.index') }}">Cancel</a>
+                <button type="submit" class="btn btn-success btn-user float-right mb-3">Update</button>
+                <a class="btn btn-primary float-right mr-3 mb-3" href="{{ route('record.index') }}">Cancel</a>
             </div>
         </form>
     </div>
@@ -130,17 +136,17 @@
             //minimumInputLength: 3
         });
 
+        let token = $("#select_patient").children(":selected").attr('id');
+        $("#txt_token").val(token);
+        
         $("#txt_date").datepicker({
             changeMonth: true,
             changeYear: true,
-            // showOn: 'button',
-            //buttonImageOnly: true,
-            //buttonImage: 'images/calendar.gif',
-             dateFormat: 'dd-mm-yy',
-            //  yearRange: ':+20',
+            dateFormat: 'dd-mm-yy',
+            yearRange: ':+20',
             onSelect: function (value, ui) {
             }
-        }).datepicker("setDate", 'now');
+        });
 
     });
 
@@ -153,6 +159,7 @@
         let token = $(this).children(":selected").attr('id');
         $("#txt_token").val(token);
     });
+
 </script>
 <style>
 

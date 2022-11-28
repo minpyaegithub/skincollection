@@ -338,7 +338,7 @@
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-mm-yy',
-            yearRange: ':+20',
+            // yearRange: ':+20',
             onSelect: function (value, ui) {
             }
         }).datepicker("setDate", 'now');
@@ -694,15 +694,4 @@
             
     }
 </script>
-<style>
-.select2-selection {
-    height: 35px !important;
-}
-.select2-selection__rendered {
-line-height: 35px !important;
-}
-.select2-selection__arrow{
-    height: 35px !important;
-}
-</style>
 @endsection

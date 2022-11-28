@@ -230,6 +230,24 @@ class InvoiceController extends Controller
             $invoice = Invoice::where('invoice_no', '=' ,$invoice_no)->delete();
             $sale = Sale::where('invoice_no', '=' ,$invoice_no)->delete();
 
+            $phar_query = 'select phar_id from sales where invoice_no="'.$invoice_no.'" GROUP BY phar_id';
+            $phars = DB::select($phar_query);
+            foreach($phars as $phar){
+                $query = 'select SUM(qty) total, phar_id from sales where invoice_no="'.$invoice_no.'" GROUP BY phar_id';
+                $stocks = DB::select($query);
+
+                foreach($stocks as $stock){
+                
+                    DB::table('out_of_stocks')->where('phar_id', '=', $stock->phar_id)->update(
+                        [
+                            'sale' => $stock->total
+                        ]
+                    );
+                    
+                }
+            }
+            
+
             DB::commit();
             return $invoice_no;
             //return redirect()->route('patients.index')->with('success', 'Patient Deleted Successfully!.');

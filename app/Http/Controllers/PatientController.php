@@ -29,7 +29,7 @@ class PatientController extends Controller
     public function index()
     {
         //DB::enableQueryLog();
-        $patients = Patient::all();
+        $patients = Patient::orderBy('created_at','desc')->get();
         //dd(DB::getQueryLog());
         //return datatables($patients)->toJson();
         return view('patients.index', ['patients' => $patients]);
@@ -51,14 +51,14 @@ class PatientController extends Controller
             'first_name'    => 'required',
             'last_name'     => 'required',
             //'email'         => 'required|unique:users,email',
-            'phone' => 'required|numeric',
+            //'phone' => 'required|numeric',
             'gender'    => 'required',
             'dob'     => 'required',
-            'address'    => 'required',
-            'weight'     => 'required',
-            'feet'     => 'required',
-            'inches'    => 'required',
-            'photo.*' => 'image|mimes:jpeg,png,jpg,gif,svg'
+            //'address'    => 'required',
+            //'weight'     => 'required',
+           // 'feet'     => 'required',
+            //'inches'    => 'required',
+           // 'photo.*' => 'image|mimes:jpeg,png,jpg,gif,svg'
             //'disease'   => 'required'
         ]);
 
@@ -72,7 +72,7 @@ class PatientController extends Controller
                 {
                     ///dd($image);
                     //$destinationPath = 'content_images/';
-                    $filename = time().rand(1,99).'_'.$image->getClientOriginalName();
+                    $filename = time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
                     $image->move(public_path('patient-photo'), $filename);
                     array_push($names, $filename);          
 
@@ -121,7 +121,14 @@ class PatientController extends Controller
         $query = 'select id,count(*) as count,invoice_no,price,SUM(sub_total) total,type, DATE_FORMAT(created_time, "%d %M %Y") created_time FROM invoices WHERE patient_id="'.$patient->id.'" and type="treatment" GROUP BY invoice_no ORDER BY created_time asc ';
         $invoices = DB::select($query);
 
-        return view('patients.profile')->with(['patient'  => $patient, 'patient_weight'=> $patient_weight, 'invoices'=>$invoices ]);
+        $photo_query = 'select photo.id, photo.patient_id, photo.photo, DATE_FORMAT(photo.created_time, "%d %M %Y") created_time FROM photos photo WHERE photo.patient_id="'.$patient->id.'" GROUP BY photo.created_time ORDER BY photo.created_time desc ';
+        $photos = DB::select($photo_query);
+
+        $record_query = 'select id, description, DATE_FORMAT(created_time, "%d %M %Y") created_time FROM records WHERE patient_id="'.$patient->id.'"  ORDER BY created_time desc ';
+        $records = DB::select($record_query);
+        //dd($photos);
+
+        return view('patients.profile')->with(['patient'  => $patient, 'patient_weight'=> $patient_weight, 'invoices'=>$invoices, 'photos'=>$photos, 'records'=>$records ]);
     }
 
     public function update(Request $request, Patient $patient)
@@ -132,14 +139,14 @@ class PatientController extends Controller
             'first_name'    => 'required',
             'last_name'     => 'required',
             //'email'         => 'required|unique:users,email',
-            'phone' => 'required|numeric',
+            //'phone' => 'required|numeric',
             'gender'    => 'required',
             'dob'     => 'required',
-            'address'    => 'required',
-            'weight'     => 'required',
-            'feet'     => 'required',
-            'inches'    => 'required',
-            'photo.*' => 'image|mimes:jpeg,png,jpg,gif,svg'
+           // 'address'    => 'required',
+           // 'weight'     => 'required',
+           // 'feet'     => 'required',
+           // 'inches'    => 'required',
+           // 'photo.*' => 'image|mimes:jpeg,png,jpg,gif,svg'
             //'disease'   => 'required'
         ]);
 
@@ -161,7 +168,7 @@ class PatientController extends Controller
             {  
                 foreach($request->images as $image)
                 {
-                    $filename = time().rand(1,99).'_'.$image->getClientOriginalName();
+                    $filename = time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
                     $image->move(public_path('patient-photo'), $filename);
                     //$image->storeAs('images', $filename);
                     array_push($names, $filename);          
@@ -214,6 +221,16 @@ class PatientController extends Controller
         DB::beginTransaction();
         try {
             // Delete Patient
+            $old_img = Patient::whereId($patient->id)->get()->toArray();
+            $old_img_arr = json_decode($old_img[0]['photo']);
+            if($old_img_arr){
+                foreach($old_img_arr as $img){
+                    if(file_exists(public_path('patient-photo/'.$img))){
+                        unlink(public_path('patient-photo/'.$img));
+                    }
+                    
+                }
+            }
             $patient = Patient::whereId($patient->id)->delete();
 
             DB::commit();

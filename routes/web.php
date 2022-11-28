@@ -14,7 +14,8 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\WeightController;
-
+use App\Http\Controllers\PatientPhotoController;
+use App\Http\Controllers\PatientRecordController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -176,6 +177,26 @@ Route::middleware('auth')->prefix('weight')->name('weight.')->group(function(){
     Route::get('/edit/{weight}', [WeightController::class, 'edit'])->name('edit');
     Route::put('/update/{weight}', [WeightController::class, 'update'])->name('update');
     Route::delete('/delete/{weight}', [WeightController::class, 'delete'])->name('destroy');
+});
+
+// Patient Photo
+Route::middleware('auth')->prefix('photo')->name('photo.')->group(function(){
+    Route::get('/', [PatientPhotoController::class, 'index'])->name('index');
+    Route::get('/create', [PatientPhotoController::class, 'create'])->name('create');
+    Route::post('/store', [PatientPhotoController::class, 'store'])->name('store');
+    Route::get('/edit/{photo}', [PatientPhotoController::class, 'edit'])->name('edit');
+    Route::put('/update/{photo}', [PatientPhotoController::class, 'update'])->name('update');
+    Route::delete('/delete/{photo}', [PatientPhotoController::class, 'delete'])->name('destroy');
+});
+
+// Patient Record
+Route::middleware('auth')->prefix('record')->name('record.')->group(function(){
+    Route::get('/', [PatientRecordController::class, 'index'])->name('index');
+    Route::get('/create', [PatientRecordController::class, 'create'])->name('create');
+    Route::post('/store', [PatientRecordController::class, 'store'])->name('store');
+    Route::get('/edit/{record}', [PatientRecordController::class, 'edit'])->name('edit');
+    Route::put('/update/{record}', [PatientRecordController::class, 'update'])->name('update');
+    Route::delete('/delete/{record}', [PatientRecordController::class, 'delete'])->name('destroy');
 });
 
 

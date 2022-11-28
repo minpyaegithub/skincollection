@@ -13,9 +13,9 @@
         <div class="card o-hidden border-0 shadow-lg my-5">
             <div class="card-body p-0">
                 <!-- Nested Row within Card Body -->
-                <div class="row">
+                <div class="row" style="background:#161513">
                     <div class="col-lg-6">
-                        <img src="{{asset('logo/logo.png')}}" width="100%;" height="100%">
+                        <img src="{{asset('logo/logo.jpg')}}" width="100%;" height="100%">
                     </div>
                     <div class="col-lg-6">
                         <div class="p-5">

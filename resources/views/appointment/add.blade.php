@@ -93,7 +93,7 @@
                                         <div class="form-group">
                                             <label for="time" class="col-form-label">Time:</label>
                                             <div class="">
-                                                <select class="form-control" style="width: 100%" name="time[]"
+                                                <select class="form-control select2" style="width: 100%" name="time[]"
                                                     id="select_time" multiple>
                                                     @foreach($appointment_times as $appointment_time)
                                                     <option value="{{$appointment_time->time}}">
@@ -168,7 +168,9 @@
 var appointment_times = {!!json_encode($appointment_times -> toArray()) !!};
 $(function() {
     $('div.alert').delay(3000).slideUp(300);
-    $("#select_time").select2({});
+    $("#select_time").select2({
+        // width: "100%",
+    });
 
     $("#txt_date").datepicker({
         changeMonth: true,
