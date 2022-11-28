@@ -338,6 +338,7 @@
         $('.input-images').imageUploader({
             preloaded: preloaded,
             preloadedInputName: 'preloaded',
+            maxFiles: 1,
         });
        // console.log(JSON.parse(photo));
     });

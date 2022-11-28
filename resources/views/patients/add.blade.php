@@ -73,7 +73,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Email<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Email</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 
@@ -95,7 +95,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Mobile Number<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Mobile Number</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 
@@ -164,7 +164,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Address<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Address</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <input
@@ -185,7 +185,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Weight<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Weight</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <input
@@ -210,7 +210,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Height<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Height</label>
                             </div>
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
                                 <input
@@ -243,7 +243,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Disease<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Disease</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <textarea
@@ -267,7 +267,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Photo<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Photo</label>
                             </div>
                             <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
                                 <!-- <form action="url" enctype="multipart/form-data"> -->
@@ -310,7 +310,9 @@
             }
         }).datepicker("setDate", 'now');
 
-        $('.input-images').imageUploader();
+        $('.input-images').imageUploader({
+            maxFiles: 1,
+        });
 
     });
 

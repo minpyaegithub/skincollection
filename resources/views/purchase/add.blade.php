@@ -33,7 +33,7 @@
                                 <label style="margin-top:9px;">Select Medicine</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                                <select class="form-control" name="phar_id" id="select_pharmacy">
+                                <select class="form-control" style="width:100%" name="phar_id" id="select_pharmacy">
                                     @foreach ($pharmacy as $phar)
                                         <option value="{{$phar->id}}">{{$phar->name}}</option>
                                     @endforeach
@@ -165,7 +165,7 @@
             //buttonImageOnly: true,
             //buttonImage: 'images/calendar.gif',
              dateFormat: 'dd-mm-yy',
-             yearRange: ':+20',
+            //  yearRange: ':+20',
             onSelect: function (value, ui) {
             }
         }).datepicker("setDate", 'now');
@@ -177,7 +177,4 @@
         $('.datepicker').focus();
     });
 </script>
-<style>
-
-</style>
 @endsection

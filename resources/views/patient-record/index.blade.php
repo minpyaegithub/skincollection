@@ -1,22 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Patients List')
+@section('title', 'Patient Record Lists')
 
 @section('content')
     <div class="container-fluid">
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Patients</h1>
+            <h1 class="h3 mb-0 text-gray-800">Patient Record</h1>
             <div class="row">
-                <div class="col-md-6">
-                    <a href="{{ route('patients.create') }}" class="btn btn-sm btn-primary">
+                <div class="col-md-12">
+                    <a href="{{ route('record.create') }}" class="btn btn-sm btn-primary">
                         <i class="fas fa-plus"></i> Add New
-                    </a>
-                </div>
-                <div class="col-md-6">
-                    <a href="{{ route('patients.export') }}" class="btn btn-sm btn-success">
-                        <i class="fas fa-check"></i> Export To Excel
                     </a>
                 </div>
                 
@@ -30,51 +25,35 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">All Patient</h6>
+                <h6 class="m-0 font-weight-bold text-primary">All Patient Record Lists</h6>
 
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="tbl_patient" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="tbl_record" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Mobile</th>
-                                <th>Gender</th>
-                                <th>DOB</th>
-                                <th>Weight</th>
-                                <th>Height</th>
-                                <th>Token</th>
-                                <th>Created Time</th>
-                                <th>Action</th>
+                                <th width="15%">Name</th>
+                                <th>Note</th>
+                                <th width="8%">Created Time</th>
+                                <th width="5%">Token</th>
+                                <th width="10%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($patients as $patient)
+                            @foreach ($records as $record)
                                 <tr>
-                                    <td>{{ $patient->first_name }} {{ $patient->last_name }}</td>
-                                    <td>{{ $patient->email }}</td>
-                                    <td>{{ $patient->phone }}</td>
-                                    <td>{{ $patient->gender }}</td>
-                                    <td>{{ $patient->dob }}</td>
-                                    <td>{{ $patient->weight }} lbs</td>
-
-                                    <td>{{ $patient->feet }}' {{ $patient->inches }}"</td>
-                                    <td>{{ $patient->token }}</td>
-                                    <td>{{ $patient->created_at->format('d-m-Y') }}</td>
-
-                                    <td style="display: flex">
-                                        <a href="{{ route('patients.profile', ['patient' => $patient->id]) }}"
-                                            class="btn btn-info m-2">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </a>
-
-                                        <a href="{{ route('patients.edit', ['patient' => $patient->id]) }}"
+                                    <td>{{ $record->first_name }} {{ $record->last_name }}</td>
+                                    <td>{{ $record->description }}</td>
+                                    <td>{{ $record->created_time }}</td>
+                                    <td>{{ $record->token }}</td>
+                                   
+                                    <td>
+                                        <a href="{{ route('record.edit', ['record' => $record->id]) }}"
                                             class="btn btn-primary m-2">
                                             <i class="fa fa-pen"></i>
                                         </a>
-                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('patients.destroy', ['patient' => $patient->id]) }}">
+                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('record.destroy', ['record' => $record->id]) }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -96,9 +75,9 @@
 <script>
 $(document).ready(function(){
     $('div.alert').delay(3000).slideUp(300);
-    $('#tbl_patient').DataTable({
+    $('#tbl_record').DataTable({
         "lengthChange": true,
-        "info": false, 
+        "info": true, 
         "searching": true,
         "aaSorting": []
     }).on('click', '#delete_icon', function (e) { 
@@ -119,9 +98,8 @@ $(document).ready(function(){
               confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
               if (result.value) {
-                var table = $('#tbl_patient').DataTable();
+                var table = $('#tbl_record').DataTable();
                 table.row( $(this).parents('tr') ).remove().draw();
-                
                    $.ajax({
                   url: url,
                   type: 'DELETE',
@@ -129,6 +107,8 @@ $(document).ready(function(){
                   data: {method: '_DELETE', submit: true}
               }).always(function (data) {
                     console.log(data);
+                    $("#alert-delete").show();
+                    $('div.alert').delay(3000).slideUp(300);
               });
                 
               }

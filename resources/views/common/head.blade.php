@@ -40,4 +40,19 @@
     <link href="{{asset('plugin/image-uploader/dist/image-uploader.min.css')}}" rel="stylesheet" type="text/css">
     <!-- <link href="{{asset('plugin/select2/css/select2.min.css')}}" rel="stylesheet" type="text/css"> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css" rel="stylesheet" type="text/css">
+    <style>
+        .select2-selection {
+            height: 35px !important;
+        }
+        .select2-selection__rendered {
+            line-height: 35px !important;
+        }
+        .select2-selection__arrow{
+            height: 35px !important;
+        }
+        .select2-selection--multiple{
+            overflow: hidden !important;
+            height: auto !important;
+        }
+    </style>
 </head>

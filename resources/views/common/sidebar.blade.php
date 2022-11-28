@@ -189,6 +189,38 @@
         </div>
     </li>
 
+    <!-- Start Patient Photo -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#photo"
+            aria-expanded="true" aria-controls="photo">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Patient Photo</span>
+        </a>
+        <div id="photo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Patient Photo:</h6>
+                <a class="collapse-item" href="{{ route('photo.index') }}">List</a>
+                <a class="collapse-item" href="{{ route('photo.create') }}">Create</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Start Patient Record -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#record"
+            aria-expanded="true" aria-controls="record">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Patient Record</span>
+        </a>
+        <div id="record" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Patient Record:</h6>
+                <a class="collapse-item" href="{{ route('record.index') }}">List</a>
+                <a class="collapse-item" href="{{ route('record.create') }}">Create</a>
+            </div>
+        </div>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 
