@@ -6,7 +6,6 @@
 # Node artifact files
 public/patient-photo
 node_modules/
-dist/
 
 # Compiled Java class files
 *.class
