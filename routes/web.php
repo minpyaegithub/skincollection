@@ -128,6 +128,8 @@ Route::middleware('auth')->prefix('appointments')->name('appointments.')->group(
     Route::get('/view', [AppointmentController::class, 'view'])->name('view');
     Route::get('/create', [AppointmentController::class, 'create'])->name('create');
     Route::post('/store', [AppointmentController::class, 'store'])->name('store');
+    Route::get('/editAppointment/', [AppointmentController::class, 'editAppointment'])->name('editAppointment');
+    Route::post('/updateAppointment/', [AppointmentController::class, 'updateAppointment'])->name('updateAppointment');
     Route::get('/edit/{appointment}', [AppointmentController::class, 'edit'])->name('edit');
     Route::put('/update/{appointment}', [AppointmentController::class, 'update'])->name('update');
     Route::delete('/delete/{appointment}', [AppointmentController::class, 'delete'])->name('destroy');
