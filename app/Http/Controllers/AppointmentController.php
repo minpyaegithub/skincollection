@@ -46,7 +46,7 @@ class AppointmentController extends Controller
         $filter_time = array_filter($times, 'strlen');
         $unique_time = array_unique($filter_time);
         $appointment_times = AppointmentTime::all();
-        return view('appointment.add', ['appointments' => $unique_time, 'appointment_times'=> $appointment_times]);
+        return view('appointment.add', ['booking_times' => $unique_time,'appointments'=>$appointments, 'appointment_times'=> $appointment_times]);
     }
 
     public function list(Request $request)
@@ -61,9 +61,11 @@ class AppointmentController extends Controller
            
         }
         
-        $filter_time = array_filter($times, 'strlen');
-        $unique_time = array_unique($filter_time);
-        return response()->json([json_encode($unique_time)]);
+        
+        $unique_time = array_unique($times);
+        //$filter_time = array_filter($times, 'strlen');
+        //dd($unique_time);
+        return response()->json([json_encode($unique_time),$appointments]);
     }
 
     public function view(Request $request)
@@ -75,26 +77,35 @@ class AppointmentController extends Controller
         return response()->json([$appointments]);
     }
 
+    public function editAppointment(Request $request)
+    {
+        $id = $request->id; 
+        $query = 'select * from appointments where id = "'.$id.'"';
+        $appointments = DB::select($query);
+        return response()->json([$appointments]);
+    }
+
     public function store(Request $request)
     {
         $date = date("Y-m-d", strtotime($request->date));
         DB::beginTransaction();
         try {
-            $appointment = Appointment::where(['name' => $request->name, 'phone' => $request->phone])->first();
-            if($appointment === null ){
+            //$appointment = Appointment::where(['name' => $request->name, 'phone' => $request->phone])->first();
+            //if($appointment === null ){
                 Appointment::create([
                     'name'          => $request->name,
                     'phone'         => $request->phone,
                     'description'   => $request->description,
+                    'status'        => $request->status,
                     'time'          => implode(',', $request->time),
                     'date'          => $date
                 ]);
-            }else{
-                return response()->json([
-                    'message' => 'duplicate'
-                ]);
+            //}else{
+               // return response()->json([
+                    //'message' => 'duplicate'
+               // ]);
                 //$appointment->update(['time' => $appointment->time . $request->time . ',']);
-            }
+           // }
             
 
             // Commit And Redirected To Listing
@@ -130,10 +141,11 @@ class AppointmentController extends Controller
         try {
 
             // Store Data
-            $purchase_updated = Appointment::whereId($appointment->id)->update([
+            $appointment_updated = Appointment::whereId($appointment->id)->update([
                 'name'          => $request->name,
                 'phone'         => $request->phone,
                 'description'   => $request->description,
+                'status'        => $request->status,
                 'time'          => implode(',', $request->time)
             ]);
 
@@ -145,6 +157,37 @@ class AppointmentController extends Controller
             // Rollback and return with Error
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', $th->getMessage());
+        }
+    }
+
+    public function updateAppointment(Request $request)
+    {
+        // Validations
+
+        DB::beginTransaction();
+        try {
+
+            // Store Data
+            $appointment_updated = Appointment::whereId($request->id)->update([
+                'name'          => $request->name,
+                'phone'         => $request->phone,
+                'description'   => $request->description,
+                'status'        => $request->status,
+                'time'          => implode(',', $request->time)
+            ]);
+
+            // Commit And Redirected To Listing
+            DB::commit();
+            return response()->json([
+                'message' => 'success'
+            ]);
+
+        } catch (\Throwable $th) {
+            // Rollback and return with Error
+            DB::rollBack();
+            return response()->json([
+                'message' => 'fail'
+            ]);
         }
     }
 

@@ -50,24 +50,47 @@
                     <div class="form-group" id="appointment_div">
                         <div class="row">
                             @foreach ($appointment_times as $appointment_time)
-                            @if (in_array($appointment_time->time, $appointments))
-                            <div class="col-sm-2 mb-2 mt-2 mb-sm-0 appointment-box" style="background:red"
-                                name="{{$appointment_time->time}}" value="{{$appointment_time->time}}">
+                                @if (in_array($appointment_time->time, $booking_times))
+                                
+                                <div class="col-sm-4 mb-4 mt-4 mb-sm-0 appointment-box" style="background:red"
+                                    name="{{$appointment_time->time}}" value="{{$appointment_time->time}}">
                                 <span>{{$appointment_time->custom_time}}</span><br>
-                                <button type="button" id="btn_view" value="{{$appointment_time->time}}"
-                                    class="btn btn-dark btn-sm btn-view">view</button>
+                                @foreach ($appointments as $appointment)
+                                    @if (in_array($appointment_time->time, explode(',', $appointment['time'])))
+                                <label class="appointment-info">
+                                    <span>{{$appointment['name']}} - </span>
+                                    <span>{{$appointment['phone']}} </span>
+                                    <span>{{substr($appointment['description'], 0, 20)}} </span>
+                                    @if($appointment['status'] == 0)
+                                        <span style="color:orange;"> Pending </span>
+                                    @else
+                                        <span style="color:green;"> Finish </span>
+                                    @endif
+                                    <span value="{{$appointment['id']}}" class="edit" style="margin: 0px 7px 0px 7px;">
+                                        <a href="#"><i class="fa-solid fa-pen-to-square fa-xl"> </i></a>
+                                    </span>
+                                    <span value="{{$appointment['id']}}" class="delete">
+                                        <a href="#"> <i class="fa-solid fa-xmark fa-xl"></i></a>
+                                    </span>
+                                </label>
+                                @endif
+                                @endforeach
+                               
+                                <!-- <button type="button" id="btn_view" value="{{$appointment_time->time}}"
+                                    class="btn btn-dark btn-sm btn-view">view</button> -->
                             </div>
 
                             @else
-                            <div class="col-sm-2 mb-2 mt-2 mb-sm-0 appointment-box" name="{{$appointment_time->time}}"
+                            <div class="col-sm-4 mb-4 mt-4 mb-sm-0 appointment-box" name="{{$appointment_time->time}}"
                                 value="{{$appointment_time->time}}">
-                                <span>{{$appointment_time->custom_time}}</span>
+                                <span>{{$appointment_time->custom_time}}</span><br>
                             </div>
                             @endif
+                            
                             @endforeach
                         </div>
                     </div>
-
+                    <!-- start create appointment -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -93,12 +116,21 @@
                                         <div class="form-group">
                                             <label for="time" class="col-form-label">Time:</label>
                                             <div class="">
-                                                <select class="form-control select2" style="width: 100%" name="time[]"
+                                                <select class="form-control select2" style="width: 100%" name="edit-time[]"
                                                     id="select_time" multiple>
                                                     @foreach($appointment_times as $appointment_time)
                                                     <option value="{{$appointment_time->time}}">
                                                         {{$appointment_time->custom_time}}</option>
                                                     @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="time" class="col-form-label">Status:</label>
+                                            <div class="">
+                                                <select class="form-control" style="width: 100%" name="edit-status" id="status">
+                                                    <option value="0" selected>Pending</option>
+                                                    <option value="1">Finish</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -116,7 +148,88 @@
                         </div>
                     </div>
               
-                      <!-- end appointment create -->
+                <!-- end appointment create -->
+                <!-- start edit appointment -->
+                <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModal">Edit Appointment</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="name" class="col-form-label">Name:</label>
+                                            <input 
+                                            type="text" 
+                                            class="form-control" 
+                                            id="edit_name"
+                                            placeholder="Name" 
+                                            name="name" 
+                                            value="">
+                                            <span style="display:none;" id="edit_err_name" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="phone" class="col-form-label">Phone:</label>
+                                            <input 
+                                            type="number"
+                                            class="form-control" 
+                                            id="edit_phone"
+                                            placeholder="eg.0912345679" 
+                                            name="phone" 
+                                            value="">
+                                            <span style="display:none;" id="edit_err_phone" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="time" class="col-form-label">Time:</label>
+                                            <div class="">
+                                            <select class="form-control" style="width: 100%" name="time[]"
+                                                id="edit_select_time" multiple>
+                                                @foreach($appointment_times as $appointment_time)
+                                                    <option value="{{$appointment_time->time}}">
+                                                        {{$appointment_time->custom_time}}</option>
+                                                @endforeach
+                                            </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="time" class="col-form-label">Status:</label>
+                                            <div class="">
+                                                <select class="form-control" style="width: 100%" name="status" id="edit_status">
+                                                    <option value="0" selected>Pending</option>
+                                                    <option value="1">Finish</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="description" class="col-form-label">Description:</label>
+                                            <textarea
+                                                type="text" 
+                                                class="form-control" 
+                                                id="edit_description"
+                                                placeholder="Description" 
+                                                name="description" 
+                                                rows="4"
+                                                value="">
+                                                
+                                                </textarea>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" id="btn_update"> Update </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+              
+                <!-- end appointment edit -->
+
                     <div class="modal fade" id="viewModal" tabindex="-1" role="dialog"
                             aria-labelledby="viewModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
@@ -169,6 +282,9 @@ var appointment_times = {!!json_encode($appointment_times -> toArray()) !!};
 $(function() {
     $('div.alert').delay(3000).slideUp(300);
     $("#select_time").select2({
+        // width: "100%",
+    });
+    $("#edit_select_time").select2({
         // width: "100%",
     });
 
@@ -224,6 +340,40 @@ $(function() {
         });
     });
 
+    $(document).on('click', '.edit', function(e) {
+        e.stopPropagation();
+        $("#editModal").modal('show');
+        var id = $(this).attr('value');
+        $("#btn_update").val(id);
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'GET',
+            url: '{{route('appointments.editAppointment')}}',
+            data: {id: id},
+            success: function(data) {
+                $("#edit_select_time").val(null).trigger("change"); 
+                var appointments = data[0];
+                console.log(appointments[0]['name']);
+                $("#edit_name").val(appointments[0]['name']);
+                $("#edit_phone").val(appointments[0]['phone']);
+                $("#edit_description").val(appointments[0]['description']);
+                $("select#edit_status").val(appointments[0]['status']);
+                var time = appointments[0]['time'];
+                $.each(time.split(","), function(i,e){
+                    $("#edit_select_time option[value='" + e + "']").prop("selected", true);
+                });
+                
+                $("#edit_select_time").select2();
+
+                
+                
+            }
+        });
+    });
+
     $(document).on('click', 'div.appointment-box', function(e) {
         e.preventDefault();
         var time = $(this).attr('name');
@@ -256,17 +406,51 @@ $(function() {
 
     });
 
+    $(document).on('click', '.delete', function (e) { 
+        e.stopPropagation();
+        var id = $(this).attr('value');
+        var date = $("#txt_date").val();
+         $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+          swal({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+              if (result.value) {
+                $.ajax({
+                  type: 'DELETE',
+                  url: '/appointments/delete/'+id,
+                  dataType: 'json',
+                  data: {method: '_DELETE', submit: true}
+              }).always(function (data) {
+                    appointment_create_structure(date);
+              });
+                
+              }
+            })
+      });
+
     $("#btn_save").click(function() {
         var name = $("#name").val();
         var date = $("#txt_date").val();
         var phone = $("#phone").val();
         var time = $("#select_time").val();
+        var status = $("#status").val();
         var description = $("#description").val();
         var data = {
             name: name,
             date: date,
             phone: phone,
             time: time,
+            status: status, 
             description: description
         };
         if (name == '') {
@@ -312,11 +496,65 @@ $(function() {
         });
     });
 
+    $("#btn_update").click(function() {
+        var id = $(this).attr('value');
+        var name = $("#edit_name").val();
+        var date = $("#txt_date").val();
+        var phone = $("#edit_phone").val();
+        var time = $("#edit_select_time").val();
+        var status = $("#edit_status").val();
+        var description = $("#edit_description").val();
+        var data = {
+            name: name,
+            id: id,
+            phone: phone,
+            time: time,
+            status: status, 
+            description: description
+        };
+        if (name == '') {
+            $("#edit_err_name").text('name field is required');
+            $("#edit_err_name").show();
+            return false;
+        } else {
+            $("#edit_err_name").hide();
+        }
+
+        if (phone == '') {
+            $("#edit_err_phone").text('phone field is required');
+            $("#edit_err_phone").show();
+            return false;
+        } else {
+            $("#edit_err_phone").hide();
+        }
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'POST',
+            url: '{{route('appointments.updateAppointment')}}',
+            data: data,
+            success: function(data) {
+                var html = '';
+                console.log(data);
+                if (data.message == 'success') {
+                    $("#edit_name").val('');
+                    $("#edit_phone").val('');
+                    $("#edit_select_time").val('');
+                    $("#edit_description").val('');
+                    appointment_create_structure(date);
+                    $("#editModal").modal('hide');
+                }
+
+            }
+        });
+    });
+
 
 });
 
 function appointment_create_structure(date) {
-    console.log(appointment_times);
     $("#appointment_div div.row").empty();
     $.ajax({
         headers: {
@@ -329,27 +567,54 @@ function appointment_create_structure(date) {
         },
         success: function(data) {
             var html = '';
-            var appointments = data[0];
+            var appointments = data[1];
+            var booking_times = data[0];
+            console.log(booking_times);
             for (var appointment_time of appointment_times) {
-                if (appointments.includes(appointment_time['time'])) {
-                    console.log(appointment_time['time']);
-                    html +=
-                        '<div class="col-sm-2 mb-2 mt-2 mb-sm-0 appointment-box" style="background:red" name="' +
-                        appointment_time['time'] + '" value="' + appointment_time['time'] + '">' +
-                        '<span>' + appointment_time['custom_time'] + '</span><br>' +
-                        '<button type="button" id="btn_view" value="' + appointment_time['time'] +
-                        '" class="btn btn-dark btn-sm btn-view">view</button>' +
-                        ' </div>';
+                if (booking_times.includes(appointment_time['time'])) {    
+                    html +='<div class="col-sm-4 mb-4 mt-4 mb-sm-0 appointment-box" style="background:red" name="' +
+                            appointment_time['time'] + '" value="' + appointment_time['time'] + '">' +
+                            '<span>' + appointment_time['custom_time'] + '</span><br>';
+                        for(var appointment of appointments){
+                            let time = appointment['time'];
+                            if (time.split(',').includes(appointment_time['time'])) {
+                            html += '<label class="appointment-info">'+
+                            '<span>'+ appointment['name'] + ' - ' + '</span>' +
+                                '<span>' + appointment['phone'] +'</span>' +
+                                    '<span> ' + appointment['description'].substring(0,20) + ' </span>';
+                                    if(appointment['status'] == 0)
+                                     html +=   '<span style="color:orange;"> ' + 'Pending' + ' </span>';
+                                    else
+                                       html += '<span style="color:green;"> ' + 'Finish' + ' </span>' ;
+                                    
+                                 html += ' <span value="'+appointment['id']+'" class="edit" style="margin: 0px 7px 0px 7px;"> ' +
+                                        '<a href="#">' +
+                                            '<i class="fa-solid fa-pen-to-square fa-xl"> </i>' + '</a>' +
+                                    ' </span> '+
+                                    '<span value="'+appointment['id']+'" class="delete"> ' +
+                                        '<a href="#">'+ 
+                                        '<i class="fa-solid fa-xmark fa-xl"></i>'+'</a>'+
+                                    ' </span>' +
+                                '</label>';
+                            }
+                        }
+                        html += ' </div>';
                 } else {
-                    html += '<div class="col-sm-2 mb-2 mt-2 mb-sm-0 appointment-box" name="' +
+
+                    html += '<div class="col-sm-4 mb-4 mt-4 mb-sm-0 appointment-box" name="' +
                         appointment_time['time'] + '" value="' + appointment_time['time'] + '">' +
                         '<span>' + appointment_time['custom_time'] + '</span><br>' +
                         '</div>';
-                }
-
+                
             }
-            $("#appointment_div div.row").append(html);
+
         }
+        
+    
+    $("#appointment_div div.row").append(html); 
+        
+}    
+        
     });
 }
 
@@ -363,11 +628,18 @@ $('.datepicker-open').click(function(event) {
     /* width: 300px; */
     border: 2px solid;
     background: green;
-    padding: 50px;
+    padding: 5px;
     /* margin: 2px; */
     color: white;
     font-size: 20px;
     text-align: center;
+    height:200px;
+}
+.appointment-info {
+    font-size: 9px;
+    float: left;
+    display: list-item;
+    margin-left: 2em;
 }
 </style>
 @endsection
