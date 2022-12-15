@@ -29,7 +29,7 @@ class PatientPhotoController extends Controller
     public function index()
     {
         //$purchase = Purchase::all();
-        $query = 'SELECT photos.id, patient.token, patient.first_name, patient.last_name, DATE_FORMAT(photos.created_time,"%d-%m-%Y") AS created_time FROM photos photos LEFT JOIN patients patient on photos.patient_id = patient.id ORDER BY photos.created_time DESC';
+        $query = 'SELECT photos.id, photos.description, patient.token, patient.first_name, patient.last_name, DATE_FORMAT(photos.created_time,"%d-%m-%Y") AS created_time FROM photos photos LEFT JOIN patients patient on photos.patient_id = patient.id ORDER BY photos.created_time DESC';
         $photos = DB::select($query);
         return view('patient-photo.index', ['photos' => $photos]);
     }
@@ -68,6 +68,7 @@ class PatientPhotoController extends Controller
 
             $photo = Photo::create([
                 'patient_id'    => $request->patient_id,
+                'description'   => $request->description,
                 'photo'         => json_encode($names),
                 'created_time'  => $created_time
             ]);
@@ -140,6 +141,7 @@ class PatientPhotoController extends Controller
             // Store Data
             $photo_updated = Photo::whereId($photo->id)->update([
                 'patient_id'    => $request->patient_id,
+                'description'   => $request->description,
                 'created_time'  => $created_time,
                 'photo'         => json_encode($image_all)
             ]);

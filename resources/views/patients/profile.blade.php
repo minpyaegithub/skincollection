@@ -139,7 +139,7 @@
                     <div id="patient-record" class="tab-pane fade">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="table-responsive">
-                            <a href="{{ route('record.create') }}?id={{$patient->id}}" target="_blank" style="float:right;margin-bottom:7px;" class="btn btn-sm btn-primary">
+                            <a href="{{ route('photo.create') }}?id={{$patient->id}}" target="_blank" style="float:right;margin-bottom:7px;" class="btn btn-sm btn-primary">
                                 <i class="fas fa-plus"></i> Add New
                             </a>
                                 <!-- <h4 style="text-align:center;">Record</h4> -->
@@ -158,11 +158,11 @@
                                                 <td width="17%">{{ $record->created_time }}</td>
 
                                                 <td width="15%">
-                                                <a href="{{ route('record.edit', ['record' => $record->id]) }}"
+                                                <a href="{{ route('photo.edit', ['photo' => $record->id]) }}"
                                                     class="btn btn-primary m-2">
                                                     <i class="fa fa-pen"></i>
                                                 </a>
-                                                <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('record.destroy', ['record' => $record->id]) }}">
+                                                <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('photo.destroy', ['photo' => $record->id]) }}">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                                 </td>

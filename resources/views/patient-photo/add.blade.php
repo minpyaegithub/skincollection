@@ -63,6 +63,30 @@
                         </div>  
                     </div>
 
+                    {{-- Description --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Note</label>
+                            </div>
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                            <textarea
+                                    type="text" 
+                                    class="form-control @error('description') is-invalid @enderror" 
+                                    id="txt_description"
+                                    placeholder="note" 
+                                    name="description" 
+                                    rows="4"
+                                    value="">
+                                    {{ old('description') }}
+                                    </textarea>
+                                    @error('description')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- Created Time --}}
                     <div class="form-group">
                         <div class="row">

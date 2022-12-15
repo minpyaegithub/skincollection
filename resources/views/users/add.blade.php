@@ -28,7 +28,7 @@
 
                     {{-- First Name --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>First Name</label>
+                        <label>First Name <span style="color:red;">*</span></label>
                         <input 
                             type="text" 
                             class="form-control form-control-user @error('first_name') is-invalid @enderror" 
@@ -44,7 +44,7 @@
 
                     {{-- Last Name --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Last Name</label>
+                        <label>Last Name <span style="color:red;">*</span></label>
                         <input 
                             type="text" 
                             class="form-control form-control-user @error('last_name') is-invalid @enderror" 
@@ -60,7 +60,7 @@
 
                     {{-- Email --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Email</label>
+                        <label>Email <span style="color:red;">*</span></label>
                         <input 
                             type="email" 
                             class="form-control form-control-user @error('email') is-invalid @enderror" 
@@ -76,7 +76,7 @@
 
                     {{-- Mobile Number --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Mobile Number</label>
+                        <label>Mobile Number</label>
                         <input 
                             type="text" 
                             class="form-control form-control-user @error('mobile_number') is-invalid @enderror" 
@@ -92,7 +92,7 @@
 
                     {{-- Role --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Role</label>
+                         <label>Role <span style="color:red;">*</span></label>
                         <select class="form-control form-control-user @error('role_id') is-invalid @enderror" name="role_id">
                             <option selected disabled>Select Role</option>
                             @foreach ($roles as $role)
@@ -106,13 +106,29 @@
 
                     {{-- Status --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
-                        <span style="color:red;">*</span>Status</label>
+                        <label>Status <span style="color:red;">*</span></label>
                         <select class="form-control form-control-user @error('status') is-invalid @enderror" name="status">
                             <option selected disabled>Select Status</option>
                             <option value="1" selected>Active</option>
                             <option value="0">Inactive</option>
                         </select>
                         @error('status')
+                            <span class="text-danger">{{$message}}</span>
+                        @enderror
+                    </div>
+
+                    {{-- Password --}}
+                    <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
+                        <label>Password <span style="color:red;">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control form-control-user @error('password') is-invalid @enderror" 
+                            id="password"
+                            placeholder="password" 
+                            name="password" 
+                            value="{{ old('password') }}">
+
+                        @error('password')
                             <span class="text-danger">{{$message}}</span>
                         @enderror
                     </div>

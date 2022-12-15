@@ -15,9 +15,9 @@
                 <!-- Nested Row within Card Body -->
                 <div class="row" style="background:#161513">
                     <div class="col-lg-6">
-                        <img src="{{asset('logo/logo.jpg')}}" width="100%;" height="100%">
+                        <img src="{{asset('logo/logo-gold.png')}}" width="100%;" style="margin-top:25px;">
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-6">  
                         <div class="p-5">
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
