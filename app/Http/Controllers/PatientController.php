@@ -90,6 +90,7 @@ class PatientController extends Controller
                 'weight'        => $request->weight,
                 'feet'          => $request->feet,
                 'inches'        => $request->inches,
+                'BMI'           => $request->bmi,
                 'disease'       => $request->disease,
                 'photo'         => json_encode($names),
                 'token'         => $token
@@ -124,7 +125,7 @@ class PatientController extends Controller
         $photo_query = 'select photo.id, photo.patient_id, photo.photo, DATE_FORMAT(photo.created_time, "%d %M %Y") created_time FROM photos photo WHERE photo.patient_id="'.$patient->id.'" GROUP BY photo.created_time ORDER BY photo.created_time desc ';
         $photos = DB::select($photo_query);
 
-        $record_query = 'select id, description, DATE_FORMAT(created_time, "%d %M %Y") created_time FROM records WHERE patient_id="'.$patient->id.'"  ORDER BY created_time desc ';
+        $record_query = 'select id, description, DATE_FORMAT(created_time, "%d %M %Y") created_time FROM photos WHERE patient_id="'.$patient->id.'"  ORDER BY created_time desc ';
         $records = DB::select($record_query);
         //dd($photos);
 
@@ -201,6 +202,7 @@ class PatientController extends Controller
                 'weight'        => $request->weight,
                 'feet'          => $request->feet,
                 'inches'        => $request->inches,
+                'BMI'           => $request->bmi,
                 'disease'       => $request->disease,
                 'photo'         => json_encode($image_all)
             ]);

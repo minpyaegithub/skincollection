@@ -71,9 +71,10 @@ class UserController extends Controller
             'first_name'    => 'required',
             'last_name'     => 'required',
             'email'         => 'required|unique:users,email',
-            'mobile_number' => 'required|numeric|digits:10',
+            // 'mobile_number' => 'required|numeric|digits:10',
             'role_id'       =>  'required|exists:roles,id',
             'status'       =>  'required|numeric|in:0,1',
+            'password'     => 'required'
         ]);
 
         DB::beginTransaction();
@@ -87,7 +88,7 @@ class UserController extends Controller
                 'mobile_number' => $request->mobile_number,
                 'role_id'       => $request->role_id,
                 'status'        => $request->status,
-                'password'      => Hash::make($request->first_name.'@'.$request->mobile_number)
+                'password'      => Hash::make($request->password)
             ]);
 
             // Delete Any Existing Role
@@ -174,7 +175,7 @@ class UserController extends Controller
             'first_name'    => 'required',
             'last_name'     => 'required',
             'email'         => 'required|unique:users,email,'.$user->id.',id',
-            'mobile_number' => 'required|numeric|digits:10',
+            //'mobile_number' => 'required|numeric|digits:10',
             'role_id'       =>  'required|exists:roles,id',
             'status'       =>  'required|numeric|in:0,1',
         ]);

@@ -3,7 +3,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" style="height:110px;" href="{{ route('home') }}">
         <div class="">
-            <img src="{{asset('logo/logo.jpg')}}" width="79%;">
+            <img src="{{asset('logo/logo-gold.png')}}" width="79%;">
         </div>
         <!-- <div class="sidebar-brand-text mx-3">Skin Collection</div> -->
     </a>
@@ -194,7 +194,7 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#photo"
             aria-expanded="true" aria-controls="photo">
             <i class="fa-solid fa-cart-shopping"></i>
-            <span>Patient Photo</span>
+            <span>Patient Record</span>
         </a>
         <div id="photo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
@@ -206,7 +206,7 @@
     </li>
 
     <!-- Start Patient Record -->
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#record"
             aria-expanded="true" aria-controls="record">
             <i class="fa-solid fa-cart-shopping"></i>
@@ -219,7 +219,7 @@
                 <a class="collapse-item" href="{{ route('record.create') }}">Create</a>
             </div>
         </div>
-    </li>
+    </li> -->
 
     <!-- Divider -->
     <hr class="sidebar-divider">

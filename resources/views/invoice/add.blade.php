@@ -120,6 +120,7 @@
                                     <button type="button" class="btn btn-primary" id="btn_add" style="float:right;margin-top:-43px;">Add</button>
                                 </div>
                             </div>
+                           
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-sm-12">
@@ -166,11 +167,8 @@
                                             </td>
                                         </tr>
                                         </tbody>
+                                        
                                         <tr class="grand-total">
-                                            <td colspan="4"><label style="float:right;">Sub Total: </label></td>
-                                            <td><input class="form-control" placeholder="0.00" type="number" id="sub_totalamount" name="sub_totalamount" readonly/></td>
-                                        </tr>
-                                        <tr>
                                             <td colspan="4"><label style="float:right;">Total: </label></td>
                                             <td><input class="form-control" placeholder="0.00" type="number" id="total_amount" name="total_amount" readonly/></td>
                                         </tr>
@@ -179,9 +177,89 @@
                                 </div>  
                             </div>
 
+                            {{-- Table Patient Sale Add --}}
+                            <div class="form-group" style="margin-top:52px;">
+                            <div>
+                                <button type="button" class="btn btn-primary" id="btn_patient_sale_add" style="float:right;margin-top:-43px;">Add</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                <table id="tbl_patient_sale" class="table table-bordered table-striped table-hover" style="width:100%;margin:0 auto;">
+                                    <thead>
+                                        <tr>
+                                            <th><p>Pharmacy</p></th>
+                                            <th style="width: 20%"><p>Price</p></th>
+                                            <th style="width: 10%"><p>Quantity</p></th>
+                                            <th style="width: 10%"><p>Discount</p></th>
+                                            <th style="width: 115px;"></th>
+                                            <th style="width: 20%"><p>Sub Total</p></th>
+                                            <th style="width:50px"><p>Action</p></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="tr_clone">
+                                    <td>
+                                        <select class="items select" name="select_pharmacy" id="select_pharmacy" style="width:100%;">
+                                            <option value="">Select Pharmacy</option>
+                                            @foreach($pharmacies as $pharmacy)
+                                                <option value="{{$pharmacy->id}}">{{$pharmacy->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" placeholder="0" type="number" name="price" id="price" readonly/>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" placeholder="0" type="number" name="qty" id="qty"/>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" placeholder="0" type="number" id="discount" name="discount"/>
+                                    </td>
+                                    <td>
+                                        <select class="form-control" name="discount_type" id="discount_type">
+                                            <option value="mmk" selected> MMK </option>
+                                            <option value="percent"> % </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" placeholder="0.00" type="number" id="sub_total" name="sub_total" readonly/>
+                                    </td>
+                                        <td style="text-align:center;">
+                                        <span class="btn btn-danger" id="btn_remove">
+                                            <i class="fa fa-remove"></i>
+                                        </span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    
+                                    <tr class="grand-total">
+                                        <td colspan="5"><label style="float:right;">Total: </label></td>
+                                        <td><input class="form-control" placeholder="0.00" type="number" id="patient_sale_total_amount" name="patient_sale_total_amount" readonly/></td>
+                                    </tr>
+                                </table>
+                                </div>
+                            </div>  
+                        </div>
+
+                        </div>
+
+                        <div class="form-group">
+                        <div class="row">
+                            {{-- Grand Total --}}
+                            <div class="col-sm-9">
+                                <label style="margin-top:9px;float:right;">Grand Total : </label>
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" placeholder="0.00" id="grand_total" placeholder="" name="txt_grand_total" readonly>
+                            </div>
                         </div>
                     </div>
+                    </div>
 
+                    
+                    
                     <div class="card-footer">
                         <button type="button" id="btn_save" class="btn btn-success btn-user float-right mb-3">Save</button>
                         <a class="btn btn-primary float-right mr-3 mb-3" href="{{ route('treatment.index') }}">Cancel</a>
@@ -268,11 +346,8 @@
                                         </td>
                                     </tr>
                                     </tbody>
+                                    
                                     <tr class="grand-total">
-                                        <td colspan="5"><label style="float:right;">Sub Total: </label></td>
-                                        <td><input class="form-control" placeholder="0.00" type="number" id="sale_sub_totalamount" name="sale_sub_totalamount" readonly/></td>
-                                    </tr>
-                                    <tr>
                                         <td colspan="5"><label style="float:right;">Total: </label></td>
                                         <td><input class="form-control" placeholder="0.00" type="number" id="sale_total_amount" name="sale_total_amount" readonly/></td>
                                     </tr>
@@ -385,9 +460,23 @@
 
         });
 
+        $("#btn_patient_sale_add").on("click", function() {
+            $(".items").select2("destroy");
+            var $tr = $('#tbl_patient_sale tbody tr').first();
+
+            var $clone = $tr.clone();
+            $clone.find(':text').val('');
+            $clone.find(':input').val('');
+            $('#tbl_patient_sale tbody tr.grand-total').before($clone);
+            $("select.items").select2();
+            var $trNew = $('#tbl_patient_sale tr:last').prev().prev();
+            $trNew.find("select.form-control").val("mmk");
+
+        });
+
         $("#tbl_invoice").on("click", "#btn_remove", function() {
             var $tr = $('#tbl_invoice tbody tr').length;
-            if($tr != 3){
+            if($tr != 2){
                 $(this).closest("tr").remove();
             }
 
@@ -397,11 +486,21 @@
 
         $("#tbl_sale").on("click", "#btn_remove", function() {
             var $tr = $('#tbl_sale tbody tr').length;
-            if($tr != 3){
+            if($tr != 2){
                 $(this).closest("tr").remove();
             }
 
             calculateSale($(this));
+            
+        });
+
+        $("#tbl_patient_sale").on("click", "#btn_remove", function() {
+            var $tr = $('#tbl_patient_sale tbody tr').length;
+            if($tr != 2){
+                $(this).closest("tr").remove();
+            }
+
+            calculatePatientSale($(this));
             
         });
 
@@ -411,6 +510,10 @@
 
         $("#tbl_sale").on("change", "#discount_type", function() {
             calculateSale($(this));
+        });
+
+        $("#tbl_patient_sale").on("change", "#discount_type", function() {
+            calculatePatientSale($(this));
         });
 
         $("#tbl_invoice").on("change", "#select_treatment", function() {
@@ -437,6 +540,18 @@
 
         });
 
+        $("#tbl_patient_sale").on("change", "#select_pharmacy", function() {
+            let id = $(this).val();
+
+            for (var pharmacy of pharmacies) {
+                if(pharmacy['id'] == id) {
+                    $(this).closest('tr').find('#price').val(pharmacy['selling_price']);
+                    calculatePatientSale($(this));
+                }
+            }
+
+        });
+
         $("#tbl_invoice").on("input", "#discount", function() {
             
             calculate($(this));
@@ -449,15 +564,28 @@
 
         });
 
+        $("#tbl_patient_sale").on("input", "#discount", function() {
+            
+            calculatePatientSale($(this));
+
+        });
+
         $("#tbl_sale").on("input", "#qty", function() {
             
             calculateSale($(this));
 
         });
 
+        $("#tbl_patient_sale").on("input", "#qty", function() {
+            
+            calculatePatientSale($(this));
+
+        });
+
         $("#btn_save").on("click", function() {
             
             var tbl_values =[];
+            var tbl_sale_values = [];
             let invoice_no = $("#txt_invoice").val();
             let patient_id = $("#select_patient").val();
             let invoice_date = $("#txt_date").val();
@@ -483,9 +611,21 @@
                 }  
             });
 
+            $('#tbl_patient_sale tr.tr_clone').each(function(){
+                var o={};
+                var inputs = $(this).find('select, input');
+                if(inputs.length != 0){
+                    inputs.each(function(){
+                        o[$(this).attr('name')]=this.value;
+                    });
+
+                    tbl_sale_values.push(o);
+                }  
+            });
+
             var data = {invoice_no:invoice_no, patient_id:patient_id, 
                        invoice_date:invoice_date, type:'treatment',
-                       tbl_values,tbl_values};
+                       tbl_values,tbl_sale_values};
 
             $.ajax({
                 headers: {
@@ -558,6 +698,7 @@
             let price = parseInt(element.closest('tr').find('#price').val());
             let sub_total=0;
             let discount_price = 0;
+            let grand_total = 0;
             if(type == 'percent'){
                 if(isNaN(discount)){
                     sub_total = price;
@@ -571,10 +712,8 @@
                 if(isNaN(discount)){
                     discount = 0;
                 }
-                console.log(discount);
                 discount_price = discount;
                 sub_total = price - discount;
-                console.log(sub_total);
             }
 
             element.closest('tr').find('#sub_total').val(sub_total.toFixed(2));
@@ -591,8 +730,17 @@
 
             });
 
-            $("#sub_totalamount").val(total_amount.toFixed(2));
             $("#total_amount").val(total_amount.toFixed(2));
+            let sale_total = $("#patient_sale_total_amount").val();
+            if(isNaN(sale_total) || sale_total == '')
+                sale_total = 0;
+            
+            grand_total = total_amount + parseInt(sale_total);
+            console.log(sale_total);
+            //alert(grand_total);
+            //$("#sub_totalamount").val(total_amount.toFixed(2));
+            
+            $("#grand_total").val(grand_total.toFixed(2));
     }
 
     function calculateSale(element){
@@ -603,7 +751,7 @@
             let sub_total=0;
             let qty_price = 0;
             let discount_price = 0;
-            console.log('qty', qty);
+ 
             if(type == 'percent'){
 
                 if(isNaN(qty)){
@@ -650,8 +798,75 @@
 
             });
 
-            $("#sale_sub_totalamount").val(total_amount.toFixed(2));
+            //$("#sale_sub_totalamount").val(total_amount.toFixed(2));
             $("#sale_total_amount").val(total_amount.toFixed(2));
+    }
+
+    function calculatePatientSale(element){
+            let discount = parseInt(element.closest('tr').find('#discount').val());
+            let type = element.closest('tr').find('#discount_type').val();
+            let price = parseInt(element.closest('tr').find('#price').val());
+            let qty = parseInt(element.closest('tr').find('#qty').val());
+            let sub_total=0;
+            let qty_price = 0;
+            let discount_price = 0;
+            let grand_total = 0;
+ 
+            if(type == 'percent'){
+
+                if(isNaN(qty)){
+                    qty_price = price;
+                }else{
+                    qty_price = price * qty;
+                    discount_price = qty_price;
+                }
+
+                if(isNaN(discount)){
+                    sub_total = qty_price;
+                }else{
+                    discount_price = (qty_price * discount/100);
+                    sub_total = (qty_price - discount_price.toFixed(2));
+                }
+                
+            }else{
+
+                if(isNaN(qty)){
+                    qty_price = price;
+                }else{
+                    qty_price = price * qty;
+                }
+                if(isNaN(discount)){
+                    discount = 0;
+                }
+
+                discount_price = discount;
+                sub_total = qty_price - discount;
+
+            }
+            console.log(discount);
+            element.closest('tr').find('#sub_total').val(sub_total.toFixed(2));
+
+            let total_amount = 0;
+            $("#tbl_patient_sale tbody tr").each(function(){
+                let sub_total_amount = parseInt($(this).find('#sub_total').val());
+                
+                if(isNaN(sub_total_amount)){
+                    sub_total_amount = 0;
+                    
+                }
+                total_amount += sub_total_amount;
+
+            });
+
+            //$("#sale_sub_totalamount").val(total_amount.toFixed(2));
+            let treatment_total = $("#total_amount").val();
+            if(isNaN(treatment_total) || treatment_total == '')
+                treatment_total = 0;
+
+            console.log(treatment_total);
+            grand_total = total_amount + parseInt(treatment_total);
+            $("#patient_sale_total_amount").val(total_amount.toFixed(2));
+            $("#grand_total").val(grand_total.toFixed(2));
     }
 
     function initializeSelect2(selectElementObj) {

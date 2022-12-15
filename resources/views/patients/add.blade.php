@@ -239,6 +239,28 @@
                         </div>  
                     </div>
 
+                    {{-- BMI --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">BMI</label>
+                            </div>
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                                <input
+                                    type="text" 
+                                    class="datepicker form-control @error('bmi') is-invalid @enderror" 
+                                    id="txt_bmi"
+                                    placeholder="BMI" 
+                                    name="bmi"
+                                    value="{{ old('bmi') }}" readonly>
+                                    <span id="bmi_text"></span>
+                            </div>
+                            <!-- <div class="col-sm-5 mb-5 mt-5 mb-sm-0">
+                                <span id="bmi_text"></span>
+                            </div> -->
+                        </div>  
+                    </div>
+
                     {{-- disease --}}
                     <div class="form-group">
                         <div class="row">
@@ -316,10 +338,44 @@
 
     });
 
+    $("#txt_weight").on('input', function(){
+        convertBMI();
+    });
+
+    $("#txt_feet").on('input', function(){
+        convertBMI();
+    });
+
+    $("#txt_inches").on('input', function(){
+        convertBMI();
+    });
+
     $('.datepicker-open').click(function(event) {
         event.preventDefault();
         $('.datepicker').focus();
     });
+
+    function convertBMI() {
+        var weight = $("#txt_weight").val();
+        var feet = $("#txt_feet").val() * 30.48;
+        var inches = $("#txt_inches").val() * 2.54;
+        var height = inches + feet;
+        var meter = height/100;
+        var kilograms = weight * 0.453592;
+        var BMI = kilograms/(meter**2);
+        $("#txt_bmi").val(BMI.toFixed(1));
+
+        if(BMI < 18.5){
+            $("#bmi_text").text('Within the underweight range');
+        }else if((BMI > 18.5) && (BMI < 24.9)){
+            $("#bmi_text").text('Within the normal or healthy weight range');
+        }else if((BMI > 25) && (BMI < 29.9 )){
+            $("#bmi_text").text('Within the overweight range');
+        }else{
+            $("#bmi_text").text('Within the obese range');
+        }
+        //return BMI;
+    }
 </script>
 <style>
 

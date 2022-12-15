@@ -66,6 +66,7 @@ class HomeController extends Controller
 
         $out_of_stock_query = 'select SUM(total - sale) qty FROM `out_of_stocks` GROUP BY phar_id';
         $out_of_stocks = DB::select($out_of_stock_query);
+        //dd($out_of_stocks);
         $out_of_stock = 0;
         foreach($out_of_stocks as $count){
             if($count->qty == 0){
@@ -76,8 +77,9 @@ class HomeController extends Controller
         $sale_monthly_query = 'select DISTINCT DATE(created_time) date,SUM(price * qty) AS total FROM sales WHERE MONTH(created_time) = MONTH(CURRENT_DATE()) AND YEAR(created_time) = YEAR(CURRENT_DATE()) GROUP BY DATE(created_time) ORDER BY created_time asc';
         $sale_monthly = DB::select($sale_monthly_query);
 
-        $stock_detail_query = 'select phar.name, SUM(total - sale) available_qty, pur.qty, pur.created_time, pur.updated_at FROM pharmacies phar LEFT JOIN out_of_stocks ostock ON phar.id=ostock.phar_id LEFT JOIN purchases pur ON phar.id=pur.phar_id GROUP BY phar.id ORDER BY available_qty asc';
+        $stock_detail_query = 'select phar.name, (total - sale) available_qty, pur.qty, pur.created_time, pur.updated_at FROM pharmacies phar LEFT JOIN out_of_stocks ostock ON phar.id=ostock.phar_id LEFT JOIN purchases pur ON phar.id=pur.phar_id GROUP BY phar.id ORDER BY available_qty asc';
         $stock_details = DB::select($stock_detail_query);
+        //dd($stock_details);
         //dd($patient_monthly);
         return view('inventory-home', [
             'total_purchase' => $total_purchase,

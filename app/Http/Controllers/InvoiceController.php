@@ -69,15 +69,18 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         $tbl_values = $request->tbl_values;
+        $tbl_sale_values = $request->tbl_sale_values;
         $created_time = date("Y-m-d", strtotime($request->invoice_date)); 
         
         DB::beginTransaction();
         try {
-            
+                
                 if($tbl_values){
                     if($request->type == 'treatment'){
+                        
                         foreach($tbl_values as $tbl_value){
                             $treatment_id = $tbl_value['select_treatment'];
+                            if($treatment_id != null){
                             Invoice::create([
                                 'invoice_no'    => $request->invoice_no,
                                 'patient_id'    => $request->patient_id,
@@ -112,7 +115,49 @@ class InvoiceController extends Controller
                                     );
                                 }
                             }
+                          }
                         }
+
+                        foreach($tbl_sale_values as $tbl_value){
+                            $phar_id = $tbl_value['select_pharmacy'];
+                            if($phar_id != null){
+                                Invoice::create([
+                                    'invoice_no'    => $request->invoice_no,
+                                    'patient_id'    => $request->patient_id,
+                                    'created_time'  => $created_time,
+                                    'type'          => 'sale',
+                                    'phar_id'  => $phar_id,
+                                    'qty'  => $tbl_value['qty'],
+                                    'price'  => $tbl_value['price'],
+                                    'discount'   => $tbl_value['discount'],
+                                    'sub_total'     => $tbl_value['sub_total'],
+                                    'discount_type' => $tbl_value['discount_type']
+                                ]);
+    
+                                Sale::create([
+                                    'invoice_no'    => $request->invoice_no,
+                                    'phar_id'  => $phar_id,
+                                    'qty'  => $tbl_value['qty'],
+                                    'price'  => $tbl_value['price'],
+                                    'created_time'  => $created_time,
+                                ]);
+    
+                                $query = 'select SUM(qty) total, phar_id from sales where phar_id='.$phar_id.' GROUP BY phar_id';
+                                $stocks = DB::select($query);
+                                
+                                    foreach($stocks as $stock){
+                                       
+                                        DB::table('out_of_stocks')->where('phar_id', $phar_id)->update(
+                                            [
+                                                'sale' => $stock->total
+                                            ]
+                                        );
+                                        
+                                        
+                                    }
+                            }
+                            
+                    }
                     }else{
                         foreach($tbl_values as $tbl_value){
                             $phar_id = $tbl_value['select_pharmacy'];

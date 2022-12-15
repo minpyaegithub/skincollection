@@ -34,6 +34,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Note</th>
                                 <th>Created Time</th>
                                 <th>Token</th>
                                 <th>Action</th>
@@ -43,6 +44,7 @@
                             @foreach ($photos as $photo)
                                 <tr>
                                     <td>{{ $photo->first_name }} {{ $photo->last_name }}</td>
+                                    <td>{{ $photo->description }}</td>
                                     <td>{{ $photo->created_time }}</td>
                                     <td>{{ $photo->token }}</td>
                                    

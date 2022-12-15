@@ -52,7 +52,7 @@
                             @foreach ($appointment_times as $appointment_time)
                                 @if (in_array($appointment_time->time, $booking_times))
                                 
-                                <div class="col-sm-4 mb-4 mt-4 mb-sm-0 appointment-box" style="background:red"
+                                <div class="col-12 appointment-box" style="background:red"
                                     name="{{$appointment_time->time}}" value="{{$appointment_time->time}}">
                                 <span>{{$appointment_time->custom_time}}</span><br>
                                 @foreach ($appointments as $appointment)
@@ -60,11 +60,11 @@
                                 <label class="appointment-info">
                                     <span>{{$appointment['name']}} - </span>
                                     <span>{{$appointment['phone']}} </span>
-                                    <span>{{substr($appointment['description'], 0, 20)}} </span>
+                                    <span style="background:gray;"> {{$appointment['description']}} </span>
                                     @if($appointment['status'] == 0)
-                                        <span style="color:orange;"> Pending </span>
+                                        <span class="lr-margin" style="color:orange;"> Pending </span>
                                     @else
-                                        <span style="color:green;"> Finish </span>
+                                        <span class="lr-margin" style="color:green;"> Finish </span>
                                     @endif
                                     <span value="{{$appointment['id']}}" class="edit" style="margin: 0px 7px 0px 7px;">
                                         <a href="#"><i class="fa-solid fa-pen-to-square fa-xl"> </i></a>
@@ -72,7 +72,7 @@
                                     <span value="{{$appointment['id']}}" class="delete">
                                         <a href="#"> <i class="fa-solid fa-xmark fa-xl"></i></a>
                                     </span>
-                                </label>
+                                </label><br>
                                 @endif
                                 @endforeach
                                
@@ -81,7 +81,7 @@
                             </div>
 
                             @else
-                            <div class="col-sm-4 mb-4 mt-4 mb-sm-0 appointment-box" name="{{$appointment_time->time}}"
+                            <div class="col-12 appointment-box" name="{{$appointment_time->time}}"
                                 value="{{$appointment_time->time}}">
                                 <span>{{$appointment_time->custom_time}}</span><br>
                             </div>
@@ -572,7 +572,7 @@ function appointment_create_structure(date) {
             console.log(booking_times);
             for (var appointment_time of appointment_times) {
                 if (booking_times.includes(appointment_time['time'])) {    
-                    html +='<div class="col-sm-4 mb-4 mt-4 mb-sm-0 appointment-box" style="background:red" name="' +
+                    html +='<div class="col-12 appointment-box" style="background:red" name="' +
                             appointment_time['time'] + '" value="' + appointment_time['time'] + '">' +
                             '<span>' + appointment_time['custom_time'] + '</span><br>';
                         for(var appointment of appointments){
@@ -581,7 +581,7 @@ function appointment_create_structure(date) {
                             html += '<label class="appointment-info">'+
                             '<span>'+ appointment['name'] + ' - ' + '</span>' +
                                 '<span>' + appointment['phone'] +'</span>' +
-                                    '<span> ' + appointment['description'].substring(0,20) + ' </span>';
+                                    '<span style="background:gray;"> ' + appointment['description'] + ' </span>';
                                     if(appointment['status'] == 0)
                                      html +=   '<span style="color:orange;"> ' + 'Pending' + ' </span>';
                                     else
@@ -595,13 +595,13 @@ function appointment_create_structure(date) {
                                         '<a href="#">'+ 
                                         '<i class="fa-solid fa-xmark fa-xl"></i>'+'</a>'+
                                     ' </span>' +
-                                '</label>';
+                                '</label> </br>';
                             }
                         }
                         html += ' </div>';
                 } else {
 
-                    html += '<div class="col-sm-4 mb-4 mt-4 mb-sm-0 appointment-box" name="' +
+                    html += '<div class="col-12 appointment-box" name="' +
                         appointment_time['time'] + '" value="' + appointment_time['time'] + '">' +
                         '<span>' + appointment_time['custom_time'] + '</span><br>' +
                         '</div>';
@@ -633,13 +633,21 @@ $('.datepicker-open').click(function(event) {
     color: white;
     font-size: 20px;
     text-align: center;
-    height:200px;
+    /* height:200px; */
 }
 .appointment-info {
-    font-size: 9px;
+    /* font-size: 9px; */
     float: left;
     display: list-item;
     margin-left: 2em;
+}
+
+.appointment-info span{
+    font-size:15px;
+}
+.lr-margin{
+    /* margin-left: 100px; */
+    /* margin-right: 100px; */
 }
 </style>
 @endsection
