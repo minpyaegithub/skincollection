@@ -43,8 +43,9 @@ class PatientController extends Controller
 
     public function store(Request $request)
     {
-        $token = rand(000000,999999);
+        //$token = rand(000000,999999);
         $created_time = date("Y-m-d", strtotime($request->dob)); 
+        $token = $this->patientId();
 
         // Validations
         $request->validate([
@@ -107,6 +108,19 @@ class PatientController extends Controller
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', $th->getMessage());
         }
+    }
+
+    function patientId()
+    {
+        $latest = Patient::latest()->first();
+
+        if (! $latest) {
+            return '0001';
+        }
+
+        $string = preg_replace("/[^0-9\.]/", '', $latest->token);
+
+        return sprintf('%04d', $string+1);
     }
 
     public function edit(Patient $patient)

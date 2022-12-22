@@ -169,21 +169,21 @@
                             
                         </div>
 
-                    {{-- address --}}
+                    {{-- Disease --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Address<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Disease<span style="color:red;">*</span></label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <input
                                     type="text" 
-                                    class="datepicker form-control @error('address') is-invalid @enderror" 
-                                    id="txt_address"
-                                    placeholder="address" 
-                                    name="address" 
-                                    value="{{ old('address') ?  old('address') : $patient->address}}">
-                                    @error('address')
+                                    class="datepicker form-control @error('disease') is-invalid @enderror" 
+                                    id="txt_disease"
+                                    placeholder="disease" 
+                                    name="disease" 
+                                    value="{{ old('disease') ?  old('disease') : $patient->disease}}">
+                                    @error('disease')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
                             </div>
@@ -272,24 +272,24 @@
                         </div>  
                     </div>
 
-                    {{-- disease --}}
+                    {{-- Address --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Disease<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Address<span style="color:red;">*</span></label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <textarea
                                     type="text" 
-                                    class="form-control @error('disease') is-invalid @enderror" 
-                                    id="txt_disease"
-                                    placeholder="Disease" 
-                                    name="disease" 
+                                    class="form-control @error('address') is-invalid @enderror" 
+                                    id="txt_address"
+                                    placeholder="Address" 
+                                    name="address" 
                                     rows="4"
                                     value="">
-                                    {{ old('disease') ?  old('disease') : $patient->disease}}
+                                    {{ old('address') ?  old('address') : $patient->address}}
                                     </textarea>
-                                    @error('disease')
+                                    @error('address')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
                             </div>

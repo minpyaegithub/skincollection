@@ -85,6 +85,183 @@
                         </div>  
                     </div>
 
+                    {{-- Arm Circumference --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Arm Circumference</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Contract</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="arm_contract" value="{{ old('arm_contract') ?  old('arm_contract') : $weight->arm_contract}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Upper relax</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="arm_relax"
+                                    value="{{ old('arm_relax') ?  old('arm_relax') : $weight->arm_relax}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Middle</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="arm_middle"
+                                    value="{{ old('arm_middle') ?  old('arm_middle') : $weight->arm_middle}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Lower</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="arm_lower"
+                                    value="{{ old('arm_lower') ?  old('arm_lower') : $weight->arm_lower}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    {{-- Waist Circumference --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Waist Circumference</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Upper</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="waist_upper"
+                                    value="{{ old('waist_upper') ?  old('waist_upper') : $weight->waist_upper}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Middle</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="waist_middle"
+                                    value="{{ old('waist_middle') ?  old('waist_middle') : $weight->waist_middle}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Lower</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="waist_lower"
+                                    value="{{ old('waist_lower') ?  old('waist_lower') : $weight->waist_lower}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    {{-- Thigh Circumference --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Thigh Circumference</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Upper</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="thigh_upper"
+                                    value="{{ old('thigh_upper') ?  old('thigh_upper') : $weight->thigh_upper}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Middle</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="thigh_middle"
+                                    value="{{ old('thigh_middle') ?  old('thigh_middle') : $weight->thigh_middle}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Lower</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="thigh_lower"
+                                    value="{{ old('thigh_lower') ?  old('thigh_lower') : $weight->thigh_lower}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    {{-- Calf Circumference --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Calf Circumference</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Upper</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="calf_upper"
+                                    value="{{ old('calf_upper') ?  old('calf_upper') : $weight->calf_upper}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">cm</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Middle</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="calf_middle"
+                                    value="{{ old('calf_middle') ?  old('calf_middle') : $weight->calf_middle}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">cm</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Lower</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="calf_lower"
+                                    value="{{ old('calf_lower') ?  old('calf_lower') : $weight->calf_lower}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">cm</span>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
 
                 {{-- Expire Date --}}
                     <div class="form-group">

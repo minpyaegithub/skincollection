@@ -47,7 +47,7 @@
                 <h6 class="collapse-header">User Management:</h6>
                 <a class="collapse-item" href="{{ route('users.index') }}">List</a>
                 <a class="collapse-item" href="{{ route('users.create') }}">Add New</a>
-                <a class="collapse-item" href="{{ route('users.import') }}">Import Data</a>
+                <!-- <a class="collapse-item" href="{{ route('users.import') }}">Import Data</a> -->
             </div>
         </div>
     </li>
@@ -64,7 +64,7 @@
                 <h6 class="collapse-header">Patient:</h6>
                 <a class="collapse-item" href="{{ route('patients.index') }}">List</a>
                 <a class="collapse-item" href="{{ route('patients.create') }}">Add New</a>
-                <a class="collapse-item" href="{{ route('users.import') }}">Import Data</a>
+                <!-- <a class="collapse-item" href="{{ route('users.import') }}">Import Data</a> -->
             </div>
         </div>
     </li>
@@ -97,7 +97,7 @@
                 <h6 class="collapse-header">Pharmacy:</h6>
                 <a class="collapse-item" href="{{ route('pharmacy.index') }}">List</a>
                 <a class="collapse-item" href="{{ route('pharmacy.create') }}">Add New</a>
-                <a class="collapse-item" href="{{ route('pharmacy.import') }}">Import Data</a>
+                <!-- <a class="collapse-item" href="{{ route('pharmacy.import') }}">Import Data</a> -->
             </div>
         </div>
     </li>
@@ -115,7 +115,7 @@
                 <h6 class="collapse-header">Purchase:</h6>
                 <a class="collapse-item" href="{{ route('purchase.index') }}">List</a>
                 <a class="collapse-item" href="{{ route('purchase.create') }}">Add New</a>
-                <a class="collapse-item" href="{{ route('purchase.import') }}">Import Data</a>
+                <!-- <a class="collapse-item" href="{{ route('purchase.import') }}">Import Data</a> -->
             </div>
         </div>
     </li>
@@ -145,7 +145,7 @@
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#invoice"
             aria-expanded="true" aria-controls="invoice">
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-file-invoice-dollar"></i>
             <span>Invoice</span>
         </a>
         <div id="invoice" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -161,7 +161,7 @@
      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#expense"
             aria-expanded="true" aria-controls="expense">
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-file-invoice-dollar"></i>
             <span>Expense</span>
         </a>
         <div id="expense" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -177,7 +177,7 @@
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#weight"
             aria-expanded="true" aria-controls="weight">
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-weight-scale"></i>
             <span>Patient Weight</span>
         </a>
         <div id="weight" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -193,7 +193,7 @@
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#photo"
             aria-expanded="true" aria-controls="photo">
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-record-vinyl"></i>
             <span>Patient Record</span>
         </a>
         <div id="photo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -201,6 +201,21 @@
                 <h6 class="collapse-header">Patient Photo:</h6>
                 <a class="collapse-item" href="{{ route('photo.index') }}">List</a>
                 <a class="collapse-item" href="{{ route('photo.create') }}">Create</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Start Report-->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#report"
+            aria-expanded="true" aria-controls="report">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Report</span>
+        </a>
+        <div id="report" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Report:</h6>
+                <a class="collapse-item" href="{{ route('report.index') }}">Profit & Loss</a>
             </div>
         </div>
     </li>

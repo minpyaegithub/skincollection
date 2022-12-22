@@ -42,9 +42,6 @@
                                 <th>Email</th>
                                 <th>Mobile</th>
                                 <th>Gender</th>
-                                <th>DOB</th>
-                                <th>Weight</th>
-                                <th>Height</th>
                                 <th>Token</th>
                                 <th>Created Time</th>
                                 <th>Action</th>
@@ -57,10 +54,6 @@
                                     <td>{{ $patient->email }}</td>
                                     <td>{{ $patient->phone }}</td>
                                     <td>{{ $patient->gender }}</td>
-                                    <td>{{ $patient->dob }}</td>
-                                    <td>{{ $patient->weight }} lbs</td>
-
-                                    <td>{{ $patient->feet }}' {{ $patient->inches }}"</td>
                                     <td>{{ $patient->token }}</td>
                                     <td>{{ $patient->created_at->format('d-m-Y') }}</td>
 
