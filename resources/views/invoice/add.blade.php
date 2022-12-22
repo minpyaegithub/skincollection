@@ -441,7 +441,7 @@
             $clone.find(':input').val('');
             $('#tbl_invoice tbody tr.grand-total').before($clone);
             $("select.items").select2();
-            var $trNew = $('#tbl_invoice tr:last').prev().prev();
+            var $trNew = $('#tbl_invoice tr:last').prev();
             $trNew.find("select.form-control").val("mmk");
 
         });
@@ -455,7 +455,7 @@
             $clone.find(':input').val('');
             $('#tbl_sale tbody tr.grand-total').before($clone);
             $("select.items").select2();
-            var $trNew = $('#tbl_sale tr:last').prev().prev();
+            var $trNew = $('#tbl_sale tr:last').prev();
             $trNew.find("select.form-control").val("mmk");
 
         });
@@ -469,7 +469,7 @@
             $clone.find(':input').val('');
             $('#tbl_patient_sale tbody tr.grand-total').before($clone);
             $("select.items").select2();
-            var $trNew = $('#tbl_patient_sale tr:last').prev().prev();
+            var $trNew = $('#tbl_patient_sale tr:last').prev();
             $trNew.find("select.form-control").val("mmk");
 
         });
@@ -534,6 +534,7 @@
             for (var pharmacy of pharmacies) {
                 if(pharmacy['id'] == id) {
                     $(this).closest('tr').find('#price').val(pharmacy['selling_price']);
+                    $(this).closest('tr').find('#qty').val(1);
                     calculateSale($(this));
                 }
             }
@@ -546,6 +547,7 @@
             for (var pharmacy of pharmacies) {
                 if(pharmacy['id'] == id) {
                     $(this).closest('tr').find('#price').val(pharmacy['selling_price']);
+                    $(this).closest('tr').find('#qty').val(1);
                     calculatePatientSale($(this));
                 }
             }

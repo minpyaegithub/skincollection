@@ -100,6 +100,17 @@
 <script>
     $(document).ready(function(){
         $('div.alert').delay(3000).slideUp(300);
+
+        $('#dataTable').DataTable({
+            "lengthChange": true,
+            "info": true, 
+            "searching": true,
+            "aaSorting": [],
+            // "dom": 'Bfrtip',
+            // "buttons": [
+            //         'copy', 'csv', 'excel', 'pdf', 'print'
+            //     ]
+        });
     });
 </script>
 

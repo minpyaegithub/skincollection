@@ -18,6 +18,8 @@
     <link href="{{asset('plugin/fontawesome/css/solid.css')}}" rel="stylesheet"/>
     <link href="{{asset('plugin/fontawesome/css/all.css')}}" rel="stylesheet"/>
     <link href="{{asset('plugin/fontawesome/css/regular.css')}}" rel="stylesheet"/>
+    <link href="{{asset('plugin/date-range-picker/daterangepicker.css')}}" rel="stylesheet"/>
+    <link href="{{asset('css/custom.css')}}" rel="stylesheet"/>
     <!-- Font Awesome UI KIT-->
     <!-- <script src="{{ asset('js/app.js') }}"></script> -->
     <!-- <script src="https://kit.fontawesome.com/f75ab26951.js" crossorigin="anonymous"></script> -->
@@ -26,6 +28,9 @@
     <script src="{{asset('plugin/sweetalert2/sweetalert2.min.js')}}" defer></script>
     <script src="{{asset('plugin/DataTables/datatables.min.js')}}" defer></script>
     <script src="{{asset('plugin/image-uploader/dist/image-uploader.min.js')}}" defer></script>
+    <script src="{{asset('plugin/date-range-picker/daterangepicker.min.js')}}" defer></script>
+    <script src="{{asset('plugin/date-range-picker/moment.min.js')}}"></script>
+    <script src="{{asset('js/custom.js')}}"></script>
     <!-- <script src="{{asset('plugin/select2/js/select2.min.js')}}" defer></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js" defer></script>
 

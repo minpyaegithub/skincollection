@@ -102,6 +102,7 @@ class InvoiceController extends Controller
                                     'phar_id'  => $treatment_package->phar_id,
                                     'qty'  => $treatment_package->qty,
                                     'price'  => $treatment_package->selling_price,
+                                    'purchase_price' => $treatment_package->net_price,
                                     'created_time'  => $created_time,
                                 ]);
 
@@ -120,6 +121,8 @@ class InvoiceController extends Controller
 
                         foreach($tbl_sale_values as $tbl_value){
                             $phar_id = $tbl_value['select_pharmacy'];
+                            $phar_query = "select * from pharmacies where id="."'$phar_id'";
+                            $phar = DB::select($phar_query);
                             if($phar_id != null){
                                 Invoice::create([
                                     'invoice_no'    => $request->invoice_no,
@@ -139,6 +142,7 @@ class InvoiceController extends Controller
                                     'phar_id'  => $phar_id,
                                     'qty'  => $tbl_value['qty'],
                                     'price'  => $tbl_value['price'],
+                                    'purchase_price' => $phar[0]->net_price,
                                     'created_time'  => $created_time,
                                 ]);
     
@@ -161,6 +165,8 @@ class InvoiceController extends Controller
                     }else{
                         foreach($tbl_values as $tbl_value){
                             $phar_id = $tbl_value['select_pharmacy'];
+                            $phar_query = "select * from pharmacies where id="."'$phar_id'";
+                            $phar = DB::select($phar_query);
                             Invoice::create([
                                 'invoice_no'    => $request->invoice_no,
                                 'created_time'  => $created_time,
@@ -174,10 +180,11 @@ class InvoiceController extends Controller
                             ]);
 
                             Sale::create([
-                                'invoice_no'    => $request->invoice_no,
+                                'invoice_no' => $request->invoice_no,
                                 'phar_id'  => $phar_id,
                                 'qty'  => $tbl_value['qty'],
                                 'price'  => $tbl_value['price'],
+                                'purchase_price' => $phar[0]->net_price,
                                 'created_time'  => $created_time,
                             ]);
 
@@ -209,7 +216,8 @@ class InvoiceController extends Controller
             // Rollback and return with Error
             DB::rollBack();
             return response()->json([
-                'message' => 'fail'
+                'status' => 'fail',
+                'message' => $th->getMessage()
             ]);
         }
     }

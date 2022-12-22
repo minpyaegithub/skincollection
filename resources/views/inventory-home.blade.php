@@ -19,12 +19,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-sm font-weight-bold text-primary text-uppercase mb-1">
-                                Total Purchase</div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Monthly Purchase</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@convert($total_purchase[0]->total)</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fa-solid fa-money-bill-1-wave fa-2x text-gray-400"></i>
+                            <i class="fa-solid fa-money-bill-1-wave fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -37,12 +37,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-sm font-weight-bold text-success text-uppercase mb-1">
-                                Total Sale</div>
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Monthly Sale</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@convert($total_sale[0]->total)</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fa-solid fa-money-bill-1-wave fa-2x text-gray-400"></i>
+                            <i class="fa-solid fa-money-bill-1-wave fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -55,12 +55,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-sm font-weight-bold text-info text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                 Total Medicine</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($total_stock[0]->total)</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fa-solid fa-pills fa-2x text-gray-400"></i>
+                            <i class="fa-solid fa-pills fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -73,12 +73,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-sm font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 Out of Stock Medicine</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($out_of_stock)</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fa-solid fa-pills fa-2x text-gray-400"></i>
+                            <i class="fa-solid fa-pills fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                                 <th>Available Quantity</th>
                                 <th>Added On</th>
                                 <th>Updated On</th>
-                                <th width="10%">Action</th>
+                                <th width="14%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -117,7 +117,7 @@
                                    
                                     <td style="display: flex">
                                         <a href="{{ route('purchase.create') }}"
-                                            class="btn btn-primary m-2">
+                                            class="btn btn-sm btn-primary m-2">
                                             <i class="fa-solid fa-plus"></i> Purchase
                                         </a>
                                     </td>

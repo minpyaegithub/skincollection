@@ -16,6 +16,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\WeightController;
 use App\Http\Controllers\PatientPhotoController;
 use App\Http\Controllers\PatientRecordController;
+use App\Http\Controllers\ReportController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -199,6 +200,12 @@ Route::middleware('auth')->prefix('record')->name('record.')->group(function(){
     Route::get('/edit/{record}', [PatientRecordController::class, 'edit'])->name('edit');
     Route::put('/update/{record}', [PatientRecordController::class, 'update'])->name('update');
     Route::delete('/delete/{record}', [PatientRecordController::class, 'delete'])->name('destroy');
+});
+
+// Report
+Route::middleware('auth')->prefix('report')->name('report.')->group(function(){
+    Route::get('/Profit-Loss', [ReportController::class, 'index'])->name('index');
+    Route::get('/getPfData', [ReportController::class, 'getPfData'])->name('getPfData');
 });
 
 

@@ -56,6 +56,19 @@ class WeightController extends Controller
             $weight = Weight::create([
                 'patient_id'       => $request->patient_id,
                 'weight' => $request->weight,
+                'arm_contract' => $request->arm_contract,
+                'arm_relax' => $request->arm_relax,
+                'arm_middle' => $request->arm_middle,
+                'arm_lower' => $request->arm_lower,
+                'waist_upper' => $request->waist_upper,
+                'waist_middle' => $request->waist_middle,
+                'waist_lower' => $request->waist_lower,
+                'thigh_upper' => $request->thigh_upper,
+                'thigh_middle' => $request->thigh_middle,
+                'thigh_lower' => $request->thigh_lower,
+                'calf_upper' => $request->calf_upper,
+                'calf_middle' => $request->calf_middle,
+                'calf_lower' => $request->calf_lower,
                 'created_time'  => $created_time
             ]);
 
@@ -93,6 +106,19 @@ class WeightController extends Controller
             $weight_updated = Weight::whereId($weight->id)->update([
                 'patient_id'       => $request->patient_id,
                 'weight' => $request->weight,
+                'arm_contract' => $request->arm_contract,
+                'arm_relax' => $request->arm_relax,
+                'arm_middle' => $request->arm_middle,
+                'arm_lower' => $request->arm_lower,
+                'waist_upper' => $request->waist_upper,
+                'waist_middle' => $request->waist_middle,
+                'waist_lower' => $request->waist_lower,
+                'thigh_upper' => $request->thigh_upper,
+                'thigh_middle' => $request->thigh_middle,
+                'thigh_lower' => $request->thigh_lower,
+                'calf_upper' => $request->calf_upper,
+                'calf_middle' => $request->calf_middle,
+                'calf_lower' => $request->calf_lower,
                 'created_time'  => $created_time
             ]);
 

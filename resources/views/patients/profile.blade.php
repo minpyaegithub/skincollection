@@ -102,8 +102,8 @@
                                         <tr>
                                             <th>Invoice No</th>
                                             <th>Total</th>
-                                            <th width="10%">Treatment</th>
-                                            <th>Created Time</th>
+                                            <th>Treatment</th>
+                                            <th width="35%">Created Time</th>
                                             <th width="10%">Action</th>
                                         </tr>
                                     </thead>
@@ -147,17 +147,17 @@
                                     <thead>
                                         <tr>
                                             <th>Note</th>
-                                            <th>Created Time</th>
-                                            <th>Action</th>
+                                            <th width="10%">Created Time</th>
+                                            <th style="width:24%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($records as $record)
                                             <tr>
                                                 <td>{{ $record->description }}</td>
-                                                <td width="17%">{{ $record->created_time }}</td>
+                                                <td>{{ $record->created_time }}</td>
 
-                                                <td width="15%">
+                                                <td style="width:24%">
                                                 <a href="{{ route('photo.edit', ['photo' => $record->id]) }}"
                                                     class="btn btn-primary m-2">
                                                     <i class="fa fa-pen"></i>
@@ -167,8 +167,6 @@
                                                 </button>
                                                 </td>
                                             </tr>
-
-                                            
                                         @endforeach
                                     </tbody>
                                 </table>
