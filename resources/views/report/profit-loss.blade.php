@@ -152,11 +152,11 @@
 
                     let total_cost = purchase_revenues + expense_total;
                     let net_income = total_revenues - total_cost;
-                    let profit_percent = (100 * net_income) / total_cost;
+                    //let profit_percent = (100 * net_income) / total_cost;
                     if(total_cost > total_revenues){
-                        $("#loss").html(numberWithCommas(net_income) + ' ( ' + profit_percent.toFixed(2) + ' %) ');
+                        $("#loss").html(numberWithCommas(net_income));
                     }else{
-                        $("#profit").html(numberWithCommas(net_income) + ' ( ' + profit_percent.toFixed(2) + ' %) ');
+                        $("#profit").html(numberWithCommas(net_income));
                     }
 
                     $(".loader").hide();

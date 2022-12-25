@@ -40,7 +40,9 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Selling Price</th>
-                                <th>Net Price</th>
+                                @hasrole('Admin')
+                                    <th>Purchase Price</th>
+                                @endhasrole
                                 <th>Created Time</th>
                                 <th>Action</th>
                             </tr>
@@ -50,7 +52,9 @@
                                 <tr>
                                     <td>{{ $phar->name }}</td>
                                     <td>{{ $phar->selling_price }}</td>
+                                    @hasrole('Admin')
                                     <td>{{ $phar->net_price }}</td>
+                                    @endhasrole
                                     <td>{{ $phar->created_at->format('d-m-Y') }}</td>
 
                                     <td style="display: flex">
@@ -58,9 +62,11 @@
                                             class="btn btn-primary m-2">
                                             <i class="fa fa-pen"></i>
                                         </a>
+                                        @hasrole('Admin')
                                         <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('pharmacy.destroy', ['pharmacy' => $phar->id]) }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        @endhasrole
                                     </td>
                                 </tr>
 
@@ -82,7 +88,7 @@ $(document).ready(function(){
     $('div.alert').delay(3000).slideUp(300);
     $('#tbl_pharmacy').DataTable({
         "lengthChange": true,
-        "info": false, 
+        "info": true, 
         "searching": true,
     }).on('click', '#delete_icon', function (e) { 
         e.preventDefault();

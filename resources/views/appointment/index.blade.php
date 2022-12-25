@@ -80,6 +80,7 @@ $(document).ready(function(){
         "lengthChange": true,
         "info": false, 
         "searching": true,
+        order: [[2, 'desc']],
     }).on('click', '#delete_icon', function (e) { 
         e.preventDefault();
          $.ajaxSetup({
@@ -108,6 +109,8 @@ $(document).ready(function(){
                   data: {method: '_DELETE', submit: true}
               }).always(function (data) {
                     console.log(data);
+                    $("#alert-delete").show();
+                    $('div.alert').delay(3000).slideUp(300);
               });
                 
               }

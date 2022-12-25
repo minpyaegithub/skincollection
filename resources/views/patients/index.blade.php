@@ -42,7 +42,7 @@
                                 <th>Email</th>
                                 <th>Mobile</th>
                                 <th>Gender</th>
-                                <th>Token</th>
+                                <th>ID</th>
                                 <th>Created Time</th>
                                 <th>Action</th>
                             </tr>
@@ -58,18 +58,21 @@
                                     <td>{{ $patient->created_at->format('d-m-Y') }}</td>
 
                                     <td style="display: flex">
+                                    @hasrole('Admin')
                                         <a href="{{ route('patients.profile', ['patient' => $patient->id]) }}"
                                             class="btn btn-info m-2">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
-
+                                    @endhasrole
                                         <a href="{{ route('patients.edit', ['patient' => $patient->id]) }}"
                                             class="btn btn-primary m-2">
                                             <i class="fa fa-pen"></i>
                                         </a>
+                                    @hasrole('Admin')
                                         <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('patients.destroy', ['patient' => $patient->id]) }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                    @endhasrole
                                     </td>
                                 </tr>
 

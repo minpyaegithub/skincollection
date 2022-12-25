@@ -41,7 +41,9 @@
                                 <th>Name</th>
                                 <th>Price</th>
                                 <th>Created Time</th>
-                                <th>Action</th>
+                                @hasrole('Admin')
+                                    <th>Action</th>
+                                @endhasrole
                             </tr>
                         </thead>
                         <tbody>
@@ -50,7 +52,7 @@
                                     <td>{{ $treat->name }}</td>
                                     <td>{{ $treat->price }}</td>
                                     <td>{{ $treat->created_at->format('d-m-Y') }}</td>
-
+                                    @hasrole('Admin')
                                     <td style="display: flex">
                                         <a href="{{ route('treatment.edit', ['treatment' => $treat->id]) }}"
                                             class="btn btn-primary m-2">
@@ -60,9 +62,8 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
+                                    @endhasrole
                                 </tr>
-
-                                
                             @endforeach
                         </tbody>
                     </table>
@@ -110,6 +111,8 @@ $(document).ready(function(){
                   data: {method: '_DELETE', submit: true}
               }).always(function (data) {
                     console.log(data);
+                    $("#alert-delete").show();
+                    $('div.alert').delay(3000).slideUp(300);
               });
                 
               }

@@ -9,8 +9,8 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Add Patient Weight</h1>
-        <a href="{{route('weight.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-arrow-left fa-sm text-white-50"></i> Back</a>
+        <a href="{{route('weight.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fa-solid fa-list fa-sm text-white-50"></i> List </a>
     </div>
 
     {{-- Alert Messages --}}
@@ -47,7 +47,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Token</label>
+                                <label style="margin-top:9px;">ID</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 
