@@ -107,10 +107,10 @@ Route::middleware('auth')->prefix('pharmacy')->name('pharmacy.')->group(function
 
 // Purchase
 Route::middleware('auth')->prefix('purchase')->name('purchase.')->group(function(){
-    Route::get('/', [PurchaseController::class, 'index'])->name('index');
-    Route::get('/create', [PurchaseController::class, 'create'])->name('create');
+    Route::get('/', [PurchaseController::class, 'index'])->name('index')->middleware('role:Admin');
+    Route::get('/create', [PurchaseController::class, 'create'])->name('create')->middleware('role:Admin');
     Route::post('/store', [PurchaseController::class, 'store'])->name('store');
-    Route::get('/edit/{purchase}', [PurchaseController::class, 'edit'])->name('edit');
+    Route::get('/edit/{purchase}', [PurchaseController::class, 'edit'])->name('edit')->middleware('role:Admin');
     Route::put('/update/{purchase}', [PurchaseController::class, 'update'])->name('update');
     Route::delete('/delete/{purchase}', [PurchaseController::class, 'delete'])->name('destroy');
 
@@ -164,7 +164,7 @@ Route::middleware('auth')->prefix('invoices')->name('invoices.')->group(function
 
 // Expense
 Route::middleware('auth')->prefix('expense')->name('expense.')->group(function(){
-    Route::get('/', [ExpenseController::class, 'index'])->name('index');
+    Route::get('/', [ExpenseController::class, 'index'])->name('index')->middleware('role:Admin');
     Route::get('/create', [ExpenseController::class, 'create'])->name('create');
     Route::post('/store', [ExpenseController::class, 'store'])->name('store');
     Route::get('/edit/{expense}', [ExpenseController::class, 'edit'])->name('edit');
@@ -184,7 +184,7 @@ Route::middleware('auth')->prefix('weight')->name('weight.')->group(function(){
 
 // Patient Photo
 Route::middleware('auth')->prefix('photo')->name('photo.')->group(function(){
-    Route::get('/', [PatientPhotoController::class, 'index'])->name('index');
+    Route::get('/', [PatientPhotoController::class, 'index'])->name('index')->middleware('role:Admin');
     Route::get('/create', [PatientPhotoController::class, 'create'])->name('create');
     Route::post('/store', [PatientPhotoController::class, 'store'])->name('store');
     Route::get('/edit/{photo}', [PatientPhotoController::class, 'edit'])->name('edit');
@@ -204,8 +204,8 @@ Route::middleware('auth')->prefix('record')->name('record.')->group(function(){
 
 // Report
 Route::middleware('auth')->prefix('report')->name('report.')->group(function(){
-    Route::get('/Profit-Loss', [ReportController::class, 'index'])->name('index');
-    Route::get('/getPfData', [ReportController::class, 'getPfData'])->name('getPfData');
+    Route::get('/Profit-Loss', [ReportController::class, 'index'])->name('index')->middleware('role:Admin');
+    Route::get('/getPfData', [ReportController::class, 'getPfData'])->name('getPfData')->middleware('role:Admin');
 });
 
 
