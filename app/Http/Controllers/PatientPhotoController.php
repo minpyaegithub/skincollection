@@ -75,7 +75,7 @@ class PatientPhotoController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('photo.index')->with('success','Patient Photo Created Successfully.');
+            return redirect()->route('photo.create')->with('success','Patient Photo Created Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error
@@ -148,7 +148,7 @@ class PatientPhotoController extends Controller
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('photo.index')->with('success','Patient Photo Updated Successfully.');
+            return redirect()->route('photo.create')->with('success','Patient Photo Updated Successfully.');
 
         } catch (\Throwable $th) {
             // Rollback and return with Error

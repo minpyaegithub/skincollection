@@ -64,9 +64,11 @@
                                             class="btn btn-info m-2" target="_blank">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
+                                        @hasrole('Admin')
                                         <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('invoices.destroy', ['invoice' => $invoice->invoice_no]) }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        @endhasrole
                                     </td>
                                 </tr>
 
@@ -90,6 +92,7 @@ $(document).ready(function(){
         "lengthChange": true,
         "info": true, 
         "searching": true,
+        order: [[4, 'desc']],
     }).on('click', '#delete_icon', function (e) { 
         e.preventDefault();
          $.ajaxSetup({

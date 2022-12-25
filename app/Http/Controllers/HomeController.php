@@ -66,6 +66,9 @@ class HomeController extends Controller
 
         $out_of_stock_query = 'select SUM(total - sale) qty FROM `out_of_stocks` GROUP BY phar_id';
         $out_of_stocks = DB::select($out_of_stock_query);
+
+        $today_income_query = 'select SUM(sub_total) sub_total FROM invoices where DATE(created_time) = CURDATE()';
+        $today_income = DB::select($today_income_query);
         //dd($out_of_stocks);
         $out_of_stock = 0;
         foreach($out_of_stocks as $count){
@@ -88,6 +91,7 @@ class HomeController extends Controller
             'out_of_stock' => $out_of_stock,
             'sale_monthly' => $sale_monthly,
             'stock_details' => $stock_details,
+            'today_income' => $today_income
         ]);
     }
 

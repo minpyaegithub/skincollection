@@ -34,6 +34,7 @@
         Management
     </div>
 
+    @hasrole('Admin')
     <!-- Nav Item - Pages Collapse Menu -->
     <!-- user management -->
     <li class="nav-item">
@@ -52,6 +53,7 @@
         </div>
     </li>
     <!-- end user management -->
+    @endhasrole
     <!-- Start Patient -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#patient"
@@ -102,7 +104,7 @@
         </div>
     </li>
     <!-- end Pharmacy -->
-
+    @hasrole('Admin')
     <!-- Start Purchase -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#purchase"
@@ -120,6 +122,7 @@
         </div>
     </li>
     <!-- end Purchase -->
+    @endhasrole
 
     <!-- Start Treatment -->
     <li class="nav-item">
@@ -167,7 +170,9 @@
         <div id="expense" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Expense:</h6>
-                <a class="collapse-item" href="{{ route('expense.index') }}">List</a>
+                @hasrole('Admin')
+                    <a class="collapse-item" href="{{ route('expense.index') }}">List</a>
+                @endhasrole
                 <a class="collapse-item" href="{{ route('expense.create') }}">Create</a>
             </div>
         </div>
@@ -199,12 +204,15 @@
         <div id="photo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Patient Photo:</h6>
+                @hasrole('Admin')
                 <a class="collapse-item" href="{{ route('photo.index') }}">List</a>
+                @endhasrole
                 <a class="collapse-item" href="{{ route('photo.create') }}">Create</a>
             </div>
         </div>
     </li>
 
+    @hasrole('Admin')
     <!-- Start Report-->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#report"
@@ -219,7 +227,7 @@
             </div>
         </div>
     </li>
-
+    @endhasrole
     <!-- Start Patient Record -->
     <!-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#record"
@@ -239,13 +247,11 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    @hasrole('Admin')
-        <!-- Heading -->
+    <!-- @hasrole('Admin')
         <div class="sidebar-heading">
             Admin Section
         </div>
 
-        <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                 aria-expanded="true" aria-controls="collapsePages">
@@ -261,9 +267,8 @@
             </div>
         </li>
 
-        <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
-    @endhasrole
+    @endhasrole -->
 
     <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">

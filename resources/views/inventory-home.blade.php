@@ -12,7 +12,7 @@
 
     <!-- Content Row -->
     <div class="row">
-
+    @hasrole('Admin')
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-
+        @endhasrole
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
@@ -56,11 +56,11 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total Medicine</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($total_stock[0]->total)</div>
+                                Today Income</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convert($today_income[0]->sub_total)</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fa-solid fa-pills fa-2x text-gray-300"></i>
+                            <i class="fa-solid fa-money-bill-1-wave fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,9 @@
                                 <th>Available Quantity</th>
                                 <th>Added On</th>
                                 <th>Updated On</th>
-                                <th width="14%">Action</th>
+                                @hasrole('Admin')
+                                    <th width="14%">Action</th>
+                                @endhasrole
                             </tr>
                         </thead>
                         <tbody>
@@ -114,13 +116,14 @@
                                     <td>{{ $stock_detail->available_qty }}</td>
                                     <td>{{ $stock_detail->created_time }}</td>
                                     <td>{{ $stock_detail->updated_at }}</td>
-                                   
-                                    <td style="display: flex">
-                                        <a href="{{ route('purchase.create') }}"
-                                            class="btn btn-sm btn-primary m-2">
-                                            <i class="fa-solid fa-plus"></i> Purchase
-                                        </a>
-                                    </td>
+                                    @hasrole('Admin')
+                                        <td style="display: flex">
+                                            <a href="{{ route('purchase.create') }}"
+                                                class="btn btn-sm btn-primary m-2">
+                                                <i class="fa-solid fa-plus"></i> Purchase
+                                            </a>
+                                        </td>
+                                    @endhasrole
                                 </tr>
 
                                 

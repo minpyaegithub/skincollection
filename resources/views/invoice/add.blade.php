@@ -9,8 +9,8 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Create Invoice</h1>
-        <a href="{{route('invoices.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-arrow-left fa-sm text-white-50"></i> Back</a>
+        <a href="{{route('invoices.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fa-solid fa-list fa-sm text-white-50"></i> List </a>
     </div>
 
     {{-- Alert Messages --}}
@@ -61,7 +61,7 @@
                                                 @endforeach
                                         </select>
 
-                                        <span style="display:none;" id="err_name" class="text-danger"></span>
+                                        <span style="display:none;" id="err_patient" class="text-danger"></span>
                                     </div>
                                     <div class="col-sm-1"></div>
                                     {{-- Date --}}
@@ -138,7 +138,7 @@
                                         <tbody>
                                         <tr class="tr_clone">
                                         <td>
-                                            <select class="items select" name="select_treatment" id="select_treatment" style="width:100%;">
+                                            <select class="items select select_treatment" name="select_treatment" id="select_treatment" style="width:100%;">
                                                 <option value="">Select Treatment</option>
                                                 @foreach($treatments as $treatment)
                                                     <option value="{{$treatment->id}}">{{$treatment->name}}</option>
@@ -314,7 +314,7 @@
                                     <tbody>
                                     <tr class="tr_clone">
                                     <td>
-                                        <select class="items select" name="select_pharmacy" id="select_pharmacy" style="width:100%;">
+                                        <select class="items select select_pharmacy" name="select_pharmacy" id="select_pharmacy" style="width:100%;">
                                             <option value="">Select Pharmacy</option>
                                             @foreach($pharmacies as $pharmacy)
                                                 <option value="{{$pharmacy->id}}">{{$pharmacy->name}}</option>
@@ -592,6 +592,30 @@
             let patient_id = $("#select_patient").val();
             let invoice_date = $("#txt_date").val();
 
+            if(patient_id == ''){
+                $("#err_patient").text('Patient field is required');
+                $("#err_patient").show();
+                return false;
+            }
+            var exitSubmit = false;
+            $('.select_treatment').each(function(){
+                var treatment   = $(this).val();
+                var errormessage    = "";
+
+                if (treatment == '')
+                    errormessage = "Please select an treatment";
+
+                if (errormessage != "") {
+                    alert(errormessage);
+                    exitSubmit = true;
+                    return false;
+                }
+            });
+            if(exitSubmit) {
+                return false;
+            }
+
+
             if($("#txt_date").val() == ''){
                 $("#err_date").text('Invoice Date field is required');
                 $("#err_date").show();
@@ -659,6 +683,24 @@
                 return false;
             }else{
                 $("#err_sale_date").hide();
+            }
+
+            var exitSubmit = false;
+            $('.select_pharmacy').each(function(){
+                var treatment   = $(this).val();
+                var errormessage    = "";
+
+                if (treatment == '')
+                    errormessage = "Please select an pharmacy";
+
+                if (errormessage != "") {
+                    alert(errormessage);
+                    exitSubmit = true;
+                    return false;
+                }
+            });
+            if(exitSubmit) {
+                return false;
             }
 
 
@@ -888,7 +930,7 @@
         var html = '';
             html += '<tr>'+
                     '<td>'+
-                        '<select class="select2" name="select_treatment" id="select_treatment" style="width:100%;">'+
+                        '<select class="select2 select_treatment" name="select_treatment" id="select_treatment" style="width:100%;">'+
                             '<option value="">Select Treatment</option>'+
                         '</select>' +
                     '</td>'+
