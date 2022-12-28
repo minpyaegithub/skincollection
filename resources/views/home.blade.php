@@ -21,7 +21,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Total Patient</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($total_patient[0]->count)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertthousand($total_patient[0]->count)</div>
                         </div>
                         <div class="col-auto">
                             <i class="fa-solid fa-user-plus fa-2x text-gray-300"></i>
@@ -39,7 +39,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Today Patient</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($today_patient[0]->count)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertthousand($today_patient[0]->count)</div>
                         </div>
                         <div class="col-auto">
                         <i class="fa-solid fa-user-plus fa-2x text-gray-300"></i>
@@ -57,7 +57,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                 Total Apointment</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($total_appointment[0]->count)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertthousand($total_appointment[0]->count)</div>
                         </div>
                         <div class="col-auto">
                             <i class="fa-regular fa-calendar-check fa-2x text-gray-300"></i>
@@ -75,7 +75,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 Today Apointment</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertnumber($today_appointment[0]->count)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@convertthousand($today_appointment[0]->count)</div>
                         </div>
                         <div class="col-auto">
                             <i class="fa-regular fa-calendar-check fa-2x text-gray-300"></i>
@@ -170,5 +170,18 @@
                 }
     
     });
+
+    function nFormatter(num) {
+     if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+     }
+     if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+     }
+     if (num >= 1000) {
+        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+     }
+     return num;
+}
 </script>
 @endsection

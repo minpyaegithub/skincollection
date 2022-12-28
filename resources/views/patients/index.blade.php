@@ -94,7 +94,7 @@ $(document).ready(function(){
     $('div.alert').delay(3000).slideUp(300);
     $('#tbl_patient').DataTable({
         "lengthChange": true,
-        "info": false, 
+        "info": true, 
         "searching": true,
         "aaSorting": []
     }).on('click', '#delete_icon', function (e) { 

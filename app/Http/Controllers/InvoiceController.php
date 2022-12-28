@@ -279,14 +279,13 @@ class InvoiceController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Delete Patient
+           
             $invoice = Invoice::where('invoice_no', '=' ,$invoice_no)->delete();
-            $sale = Sale::where('invoice_no', '=' ,$invoice_no)->delete();
-
             $phar_query = 'select phar_id from sales where invoice_no="'.$invoice_no.'" GROUP BY phar_id';
             $phars = DB::select($phar_query);
+            $sale = Sale::where('invoice_no', '=' ,$invoice_no)->delete();
             foreach($phars as $phar){
-                $query = 'select SUM(qty) total, phar_id from sales where invoice_no="'.$invoice_no.'" GROUP BY phar_id';
+                $query = 'select SUM(qty) total, phar_id from sales where phar_id='.$phar->phar_id.' GROUP BY phar_id';
                 $stocks = DB::select($query);
 
                 foreach($stocks as $stock){

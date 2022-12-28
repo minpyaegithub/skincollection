@@ -39,7 +39,7 @@ Route::get('/inventory-home', [App\Http\Controllers\HomeController::class, 'Inve
 
 // Profile Routes
 Route::prefix('profile')->name('profile.')->middleware('auth')->group(function(){
-    Route::get('/', [HomeController::class, 'getProfile'])->name('detail');
+    Route::get('/', [HomeController::class, 'getProfile'])->name('detail')->middleware('role:Admin');
     Route::post('/update', [HomeController::class, 'updateProfile'])->name('update');
     Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
 });

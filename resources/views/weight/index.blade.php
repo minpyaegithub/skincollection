@@ -36,7 +36,7 @@
                                 <th>Name</th>
                                 <th>Weight</th>
                                 <th>Created Time</th>
-                                <th>Token</th>
+                                <th>ID</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

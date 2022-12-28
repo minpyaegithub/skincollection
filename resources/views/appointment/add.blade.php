@@ -69,7 +69,7 @@
                                     <div class="col-3">
                                     <span style="background:gray;"> {{$appointment['description']}} </span>
                                     </div>
-                                    <div class="col-5">
+                                    <div class="col-4">
                                     @if($appointment['status'] == 0)
                                         <span class="lr-margin" style="color:orange;"> Pending </span>
                                     @else
@@ -600,7 +600,7 @@ function appointment_create_structure(date) {
                                          '</div>'+
                                          '<div class="col-3">'+
                                         '<span style="background:gray;"> ' + appointment['description'] + ' </span></div>';
-                                    html+= '<div class="col-5">';
+                                    html+= '<div class="col-4">';
                                     if(appointment['status'] == 0)
                                      html +=   '<span style="color:orange;"> ' + 'Pending' + ' </span>';
                                     else
