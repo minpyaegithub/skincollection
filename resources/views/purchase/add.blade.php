@@ -69,7 +69,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Net Price<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Purchase Price<span style="color:red;">*</span></label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 

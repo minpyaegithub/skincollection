@@ -21,13 +21,13 @@
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                     @if(json_decode($patient->photo))
                     @foreach(json_decode($patient->photo) as $photo)
-                        <img class="rounded-circle mt-5" width="150px" height="130px;" alt="{{$photo}}" src="/patient-photo/{{$photo}}">
+                        <img class="user-profile" width="40%" height="97px;" alt="{{$photo}}" src="/patient-photo/{{$photo}}">
                     @endforeach
                     @else
-                    <img class="rounded-circle mt-5" width="150px" height="130px;" src="{{asset('admin/img/undraw_profile.svg')}}">
+                    <img class="user-profile" width="150px" height="130px;" src="{{asset('admin/img/undraw_profile.svg')}}">
                     @endif
                         <span class="font-weight-bold">{{ $patient->first_name }} {{ $patient->last_name }}</span>
-                        <span class="text-black-50">Token: {{ $patient->token }} </span>
+                        <span class="text-black-50">ID: {{ $patient->token }} </span>
                         <span class="text-black-50">Phone: {{ $patient->phone }} </span>
                         <span class="text-black-50">{{ $patient->email }}</span>
                         <a href="{{ route('patients.edit', ['patient' => $patient->id]) }}" target="_blank"><i class="fa-solid fa-pen-to-square"></i></a>
@@ -347,4 +347,15 @@ $(document).ready(function(){
         }
 });
 </script>
+<style>
+    .user-profile {
+        display: inline-block;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+    }
+</style>
 @endsection
