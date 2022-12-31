@@ -45,7 +45,7 @@
                                     @foreach(json_decode($photo->photo) as $img)
                                     
                                             <div class="col-md-4">
-                                                <div class="thumbnail">
+                                                <div class="thumbnail" style="margin-bottom:2px;">
                                                     <a href="/patient-photo/{{$img}}" target="_blank">
                                                     <img src="/patient-photo/{{$img}}" alt="Lights" style="width:100%">
                                                     </a>
