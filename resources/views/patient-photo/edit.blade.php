@@ -157,6 +157,8 @@
         }
         let preloaded = photo;
         $('.input-images').imageUploader({
+            extensions: ['.JPG','.jpg','.jpeg','.png','.gif','.svg'],
+            mimes: ['image/jpeg','image/png','image/gif','image/svg+xml'],
             preloaded: preloaded,
             preloadedInputName: 'preloaded',
         });

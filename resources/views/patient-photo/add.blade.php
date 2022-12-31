@@ -53,7 +53,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Token</label>
+                                <label style="margin-top:9px;">ID</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 
@@ -155,6 +155,8 @@
         $("#txt_token").val(token);
 
         $('.input-images').imageUploader({
+            extensions: ['.JPG','.jpg','.jpeg','.png','.gif','.svg'],
+            mimes: ['image/jpeg','image/png','image/gif','image/svg+xml'],
         });
 
         $("#txt_date").datepicker({

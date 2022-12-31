@@ -127,7 +127,7 @@
                success:function(data) {
                 let revenues = data[0];
                 let expenses = data[1];
-                let sale_revenues = revenues['sale_revenues'];
+                let sale_revenues = parseInt(revenues['sale_revenues']);
                 let total_revenues = parseInt(revenues['total_revenues']);
                 let purchase_revenues = parseInt(revenues['purchase_revenues']);
                 let treatment_revenues = total_revenues - sale_revenues;
