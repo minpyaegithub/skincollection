@@ -284,19 +284,28 @@ class InvoiceController extends Controller
             $phar_query = 'select phar_id from sales where invoice_no="'.$invoice_no.'" GROUP BY phar_id';
             $phars = DB::select($phar_query);
             $sale = Sale::where('invoice_no', '=' ,$invoice_no)->delete();
+            //dd($phars);
             foreach($phars as $phar){
                 $query = 'select SUM(qty) total, phar_id from sales where phar_id='.$phar->phar_id.' GROUP BY phar_id';
                 $stocks = DB::select($query);
-
-                foreach($stocks as $stock){
-                
-                    DB::table('out_of_stocks')->where('phar_id', '=', $stock->phar_id)->update(
+                if(!$stocks){
+                    DB::table('out_of_stocks')->where('phar_id', '=', $phar->phar_id)->update(
                         [
-                            'sale' => $stock->total
+                            'sale' => 0
                         ]
                     );
-                    
+                }else{
+                    foreach($stocks as $stock){
+                
+                        DB::table('out_of_stocks')->where('phar_id', '=', $phar->phar_id)->update(
+                            [
+                                'sale' => $stock->total
+                            ]
+                        );
+                        
+                    }
                 }
+                
             }
             
 
