@@ -36,7 +36,6 @@
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <select class="form-control" name="patient_id" id="select_patient">
-                                <option id="" value="">Select Patient</option>
                                     @foreach ($patients as $patient)
                                         @if( request()->get('id') == $patient->id )
                                             <option id="{{$patient->token}}" selected value="{{$patient->id}}">{{$patient->first_name}} {{$patient->last_name}}</option>
