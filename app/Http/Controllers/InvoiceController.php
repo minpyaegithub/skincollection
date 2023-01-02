@@ -32,7 +32,7 @@ class InvoiceController extends Controller
     public function index()
     {
         //DB::enableQueryLog();
-        $query = "select id,count(*) as count,invoice_no,price,SUM(sub_total) total,type, DATE_FORMAT(created_time, '%d %M %Y') created_time FROM invoices GROUP BY invoice_no";
+        $query = "select id,count(*) as count,invoice_no,price,SUM(sub_total) total,type, DATE_FORMAT(created_time, '%d %M %Y') created_time FROM invoices GROUP BY invoice_no ORDER BY DATE(created_time) desc";
         $invoices = DB::select($query);
         //dd(DB::getQueryLog());
         //return datatables($patients)->toJson();
@@ -95,7 +95,6 @@ class InvoiceController extends Controller
 
                             $query = "select * from treatment_packages LEFT JOIN pharmacies phar ON treatment_packages.phar_id=phar.id where treatment_id="."'$treatment_id'";
                             $treatment_packages = DB::select($query);
-
                             foreach($treatment_packages as $treatment_package){
                                 Sale::create([
                                     'invoice_no'    => $request->invoice_no,

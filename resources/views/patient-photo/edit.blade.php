@@ -69,14 +69,14 @@
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
                                 <label style="margin-top:9px;">Note</label>
                             </div>
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                            <div class="col-sm-6 mb-6 mt-6 mb-sm-0">
                             <textarea
                                     type="text" 
                                     class="form-control @error('description') is-invalid @enderror" 
                                     id="txt_description"
                                     placeholder="note" 
                                     name="description" 
-                                    rows="4"
+                                    rows="6"
                                     value="">
                                     {{ old('description') ?  old('description') : $photo->description}}
                                     </textarea>

@@ -46,7 +46,7 @@ class WeightController extends Controller
         // Validations
         $request->validate([
             'patient_id' => 'required',
-            'weight' => 'required|numeric',
+            //'weight' => 'required|numeric',
             'created_time'     => 'required'
         ]);
 
@@ -95,7 +95,7 @@ class WeightController extends Controller
         // Validations
         $request->validate([
             'patient_id' => 'required',
-            'weight' => 'required|numeric',
+            //'weight' => 'required|numeric',
             'created_time'     => 'required'
         ]);
 

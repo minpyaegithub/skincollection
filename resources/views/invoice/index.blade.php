@@ -92,7 +92,8 @@ $(document).ready(function(){
         "lengthChange": true,
         "info": true, 
         "searching": true,
-        order: [[4, 'desc']],
+        "aaSorting": []
+        //order: [[4, 'desc']],
     }).on('click', '#delete_icon', function (e) { 
         e.preventDefault();
          $.ajaxSetup({

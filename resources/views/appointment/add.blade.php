@@ -52,7 +52,7 @@
                             @foreach ($appointment_times as $appointment_time)
                                 @if (in_array($appointment_time->time, $booking_times))
                                 
-                                <div class="col-12 appointment-box" style="background:red"
+                                <div class="col-12 appointment-box" style="background:#830303"
                                     name="{{$appointment_time->time}}" value="{{$appointment_time->time}}">
                                 <span>{{$appointment_time->custom_time}}</span><br>
                                 @foreach ($appointments as $appointment)
@@ -585,7 +585,7 @@ function appointment_create_structure(date) {
             console.log(booking_times);
             for (var appointment_time of appointment_times) {
                 if (booking_times.includes(appointment_time['time'])) {    
-                    html +='<div class="col-12 appointment-box" style="background:red" name="' +
+                    html +='<div class="col-12 appointment-box" style="background:#830303" name="' +
                             appointment_time['time'] + '" value="' + appointment_time['time'] + '">' +
                             '<span>' + appointment_time['custom_time'] + '</span><br>';
                         for(var appointment of appointments){
@@ -649,7 +649,7 @@ $('.datepicker-open').click(function(event) {
 .appointment-box {
     /* width: 300px; */
     border: 2px solid;
-    background: green;
+    background: #0d5c03;
     padding: 5px;
     /* margin: 2px; */
     color: white;
