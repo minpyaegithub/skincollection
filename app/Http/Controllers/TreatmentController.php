@@ -83,7 +83,6 @@ class TreatmentController extends Controller
                     ]);
                 }
             }
-
             
 
             // Commit And Redirected To Listing

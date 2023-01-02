@@ -132,7 +132,29 @@
                         </div>  
                     </div>
 
-                    {{-- DOB --}}
+                    {{-- Age --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Age</label>
+                            </div>
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                            <input 
+                            type="number" 
+                            class="form-control @error('age') is-invalid @enderror" 
+                            id="txt_age"
+                            placeholder="Age" 
+                            name="age" 
+                            value="{{ old('age') }}">
+
+                            @error('age')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                            </div>
+                        </div>  
+                    </div>
+
+                    <!-- {{-- DOB --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
@@ -158,7 +180,7 @@
                         
                         </div>
                             
-                        </div>
+                        </div> -->
 
                     {{-- Disease --}}
                     <div class="form-group">
@@ -189,7 +211,7 @@
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <input
-                                    type="number" 
+                                    type="text" 
                                     class="datepicker form-control @error('weight') is-invalid @enderror" 
                                     id="txt_weight"
                                     placeholder="eg. 102" 
@@ -214,7 +236,7 @@
                             </div>
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
                                 <input
-                                    type="number" 
+                                    type="text" 
                                     class="datepicker form-control @error('feet') is-invalid @enderror" 
                                     id="txt_feet"
                                     placeholder="feet" 
@@ -226,7 +248,7 @@
                             </div>
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
                             <input
-                                    type="number" 
+                                    type="text" 
                                     class="datepicker form-control @error('inches') is-invalid @enderror" 
                                     id="txt_inches"
                                     placeholder="inches" 
@@ -330,7 +352,7 @@
                 $("#lblError").html('Age is : ' + age + ' Year');
                 //ValidateDOB(dateString);
             }
-        }).datepicker("setDate", 'now');
+        });
 
         $('.input-images').imageUploader({
             extensions: ['.JPG','.jpg','.jpeg','.png','.gif','.svg'],

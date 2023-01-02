@@ -44,7 +44,9 @@ class PatientController extends Controller
     public function store(Request $request)
     {
         //$token = rand(000000,999999);
-        $created_time = date("Y-m-d", strtotime($request->dob)); 
+        // $created_time = null;
+        // if($request->dob)
+        //     $created_time = date("Y-m-d", strtotime($request->dob)); 
         $token = $this->patientId();
 
         // Validations
@@ -54,7 +56,7 @@ class PatientController extends Controller
             //'email'         => 'required|unique:users,email',
             //'phone' => 'required|numeric',
             'gender'    => 'required',
-            'dob'     => 'required',
+            //'dob'     => 'required',
             //'address'    => 'required',
             //'weight'     => 'required',
            // 'feet'     => 'required',
@@ -86,7 +88,7 @@ class PatientController extends Controller
                 'email'         => $request->email,
                 'phone'         => $request->phone,
                 'gender'        => $request->gender,
-                'dob'           => $created_time,
+                'age'           => $request->age,
                 'address'       => $request->address,
                 'weight'        => $request->weight,
                 'feet'          => $request->feet,
@@ -139,7 +141,7 @@ class PatientController extends Controller
         $photo_query = 'select photo.id, photo.patient_id, photo.photo, DATE_FORMAT(photo.created_time, "%d %M %Y") created_time FROM photos photo WHERE photo.patient_id="'.$patient->id.'" GROUP BY photo.created_time ORDER BY photo.created_time desc ';
         $photos = DB::select($photo_query);
 
-        $record_query = 'select id, description, DATE_FORMAT(created_time, "%d %M %Y") created_time FROM photos WHERE patient_id="'.$patient->id.'"  ORDER BY created_time desc ';
+        $record_query = 'select id, description, DATE_FORMAT(created_time, "%d %M %Y") created_time FROM photos WHERE patient_id="'.$patient->id.'"  ORDER BY DATE(created_time) asc ';
         $records = DB::select($record_query);
         //dd($photos);
 
@@ -148,7 +150,9 @@ class PatientController extends Controller
 
     public function update(Request $request, Patient $patient)
     {
-        $created_time = date("Y-m-d", strtotime($request->dob));
+        // $created_time = null;
+        // if($request->dob)
+        //     $created_time = date("Y-m-d", strtotime($request->dob)); 
         // Validations
         $request->validate([
             'first_name'    => 'required',
@@ -156,7 +160,7 @@ class PatientController extends Controller
             //'email'         => 'required|unique:users,email',
             //'phone' => 'required|numeric',
             'gender'    => 'required',
-            'dob'     => 'required',
+            //'dob'     => 'required',
            // 'address'    => 'required',
            // 'weight'     => 'required',
            // 'feet'     => 'required',
@@ -211,7 +215,8 @@ class PatientController extends Controller
                 'email'         => $request->email,
                 'phone'         => $request->phone,
                 'gender'        => $request->gender,
-                'dob'           => $created_time,
+                //'dob'           => $created_time,
+                'age'           => $request->age,
                 'address'       => $request->address,
                 'weight'        => $request->weight,
                 'feet'          => $request->feet,

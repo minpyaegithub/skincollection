@@ -42,6 +42,7 @@
                                 <th>Email</th>
                                 <th>Mobile</th>
                                 <th>Gender</th>
+                                <th>Age</th>
                                 <th>ID</th>
                                 <th>Created Time</th>
                                 <th>Action</th>
@@ -54,6 +55,7 @@
                                     <td>{{ $patient->email }}</td>
                                     <td>{{ $patient->phone }}</td>
                                     <td>{{ $patient->gender }}</td>
+                                    <td>{{ $patient->age }}</td>
                                     <td>{{ $patient->token }}</td>
                                     <td>{{ $patient->created_at->format('d-m-Y') }}</td>
 

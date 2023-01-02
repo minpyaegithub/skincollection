@@ -64,11 +64,11 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Weight<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Weight</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input
-                            type="number" 
+                            type="text" 
                             class="form-control @error('weight') is-invalid @enderror" 
                             id="txt_weight"
                             placeholder="eg - 102" 
@@ -82,172 +82,7 @@
                         </div>  
                     </div>
 
-                    {{-- Arm Circumference --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Arm Circumference</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Contract</span>
-                                    </div>
-                                    <input type="number" class="form-control" value="{{ old('aarm_contract')}}" name="arm_contract">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Upper relax</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="arm_relax">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Middle</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="arm_middle">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Lower</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="arm_lower">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-
-                    {{-- Waist Circumference --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Waist Circumference</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Upper</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="waist_upper">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Middle</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="waist_middle">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Lower</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="waist_lower">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-
-                    {{-- Thigh Circumference --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Thigh Circumference</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Upper</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="thigh_upper">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Middle</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="thigh_middle">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Lower</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="thigh_lower">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">in</span>
-                                    </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-
-                    {{-- Calf Circumference --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Calf Circumference</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Upper</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="calf_upper">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">cm</span>
-                                    </div>
-                            </div>
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Middle</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="calf_middle">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">cm</span>
-                                    </div>
-                            </div>
-                            <div class="input-group col-sm-3 mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Lower</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="calf_lower">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">cm</span>
-                                    </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-
-                    {{-- Expire Date --}}
+                    {{-- Created Date --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
@@ -273,6 +108,171 @@
                         </div>
                             
                         </div>
+
+                    {{-- Arm Circumference --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Arm Circumference</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Contract</span>
+                                    </div>
+                                    <input type="text" class="form-control" value="{{ old('aarm_contract')}}" name="arm_contract">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Upper relax</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="arm_relax">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Middle</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="arm_middle">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Lower</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="arm_lower">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    {{-- Waist Circumference --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Waist Circumference</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Upper</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="waist_upper">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Middle</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="waist_middle">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Lower</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="waist_lower">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    {{-- Thigh Circumference --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Thigh Circumference</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Upper</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="thigh_upper">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Middle</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="thigh_middle">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Lower</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="thigh_lower">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">in</span>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    {{-- Calf Circumference --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Calf Circumference</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Upper</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="calf_upper">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">cm</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Middle</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="calf_middle">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">cm</span>
+                                    </div>
+                            </div>
+                            <div class="input-group col-sm-3 mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Lower</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="calf_lower">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">cm</span>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
 
                 </div>
             </div>

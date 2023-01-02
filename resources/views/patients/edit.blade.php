@@ -77,7 +77,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Email<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Email</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 
@@ -99,7 +99,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Mobile Number<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Mobile Number</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 
@@ -141,7 +141,7 @@
                         </div>  
                     </div>
 
-                    {{-- DOB --}}
+                    <!-- {{-- DOB --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
@@ -154,26 +154,47 @@
                                     id="txt_date"
                                     placeholder="Date of Birth" 
                                     name="dob"
-                                    value="{{ old('dob') ?  old('dob') : date('d-m-Y', strtotime($patient->dob))}}" readonly>
-                                    <span id="lblError" style = "color:Red"></span>
+                                    value="{{ old('dob') ?  old('dob') : date('d-m-Y', strtotime($patient->dob))}}">
                                     @error('dob')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
                             </div>
 
                             <div class="col-sm-1 mb-3 mt-3 mb-sm-0" style="margin-left:-23px;">
-                                <img class="datepicker-open" src="{{asset('jqueryui-1.13/images/calendar.png')}}" width="41px;" alt="">
+                                <img class="datepicker-open" src="{{asset('plugin/jqueryui-1.13/images/calendar.png')}}" width="41px;" alt="">
                             </div>
                         
                         </div>
                             
+                        </div> -->
+
+                        {{-- Age --}}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
+                                <label style="margin-top:9px;">Age</label>
+                            </div>
+                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
+                            <input 
+                            type="number" 
+                            class="form-control @error('age') is-invalid @enderror" 
+                            id="txt_age"
+                            placeholder="Age" 
+                            name="age" 
+                            value="{{ old('age') ?  old('age') : $patient->age}}">
+
+                            @error('age')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
+                            </div>
                         </div>
+                    </div>
 
                     {{-- Disease --}}
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Disease<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Disease</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <input
@@ -194,14 +215,14 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Weight<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Weight</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <input
-                                    type="number" 
+                                    type="text" 
                                     class="datepicker form-control @error('weight') is-invalid @enderror" 
                                     id="txt_weight"
-                                    placeholder="eg. 102" 
+                                    placeholder="eg. 102"
                                     name="weight" 
                                     value="{{ old('weight') ?  old('weight') : $patient->weight}}">
                                     
@@ -219,11 +240,11 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Height<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Height</label>
                             </div>
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
                                 <input
-                                    type="number" 
+                                    type="text" 
                                     class="datepicker form-control @error('feet') is-invalid @enderror" 
                                     id="txt_feet"
                                     placeholder="feet" 
@@ -236,7 +257,7 @@
                             </div>
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
                             <input
-                                    type="number" 
+                                    type="text" 
                                     class="datepicker form-control @error('inches') is-invalid @enderror" 
                                     id="txt_inches"
                                     placeholder="inches" 
@@ -276,7 +297,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Address<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Address</label>
                             </div>
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                                 <textarea
@@ -300,7 +321,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Photo<span style="color:red;">*</span></label>
+                                <label style="margin-top:9px;">Photo</label>
                             </div>
                             <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
                                 <!-- <form action="url" enctype="multipart/form-data"> -->
@@ -332,21 +353,21 @@
         if(photo_arr == null){
             photo_arr = "[]";
         }
-        $("#txt_date").datepicker({
-            changeMonth: true,
-            changeYear: true,
-            // showOn: 'button',
-            //buttonImageOnly: true,
-            //buttonImage: 'images/calendar.gif',
-             dateFormat: 'dd-mm-yy',
-             yearRange: '1900:+0',
-            onSelect: function (value, ui) {
-                var today = new Date();
-                age = today.getFullYear() - ui.selectedYear;
-                $("#lblError").html('Age is : ' + age + ' Year');
-                //ValidateDOB(dateString);
-            }
-        });
+        // $("#txt_date").datepicker({
+        //     changeMonth: true,
+        //     changeYear: true,
+        //     // showOn: 'button',
+        //     //buttonImageOnly: true,
+        //     //buttonImage: 'images/calendar.gif',
+        //      dateFormat: 'dd-mm-yy',
+        //      yearRange: '1900:+0',
+        //     onSelect: function (value, ui) {
+        //         var today = new Date();
+        //         age = today.getFullYear() - ui.selectedYear;
+        //         $("#lblError").html('Age is : ' + age + ' Year');
+        //         //ValidateDOB(dateString);
+        //     }
+        // });
 
         $("#txt_weight").on('input', function(){
             convertBMI();
