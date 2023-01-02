@@ -33,9 +33,9 @@
                     <table class="table table-bordered" id="tbl_photo" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th width="10%">Name</th>
                                 <th>Note</th>
-                                <th>Created Time</th>
+                                <th width="8%">Created Time</th>
                                 <th>ID</th>
                                 <th>Action</th>
                             </tr>
