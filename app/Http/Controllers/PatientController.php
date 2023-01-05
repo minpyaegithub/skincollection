@@ -114,8 +114,7 @@ class PatientController extends Controller
 
     function patientId()
     {
-        $latest = Patient::latest()->first();
-
+        $latest = Patient::all()->last();
         if (! $latest) {
             return '0001';
         }
