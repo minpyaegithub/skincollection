@@ -41,9 +41,14 @@
                             @foreach($photos as $photo)
                             <div class="caption">{{$photo->created_time}}</div><br>
                                 <div class="row">
+                                    <?php
+                                        $imgs = str_replace(str_split('"]["',), '',$photo->photo);
+                                       ///$imgs = '["1671697216_68_Screenshot from 2022-12-20 14-25-45.png"]';
+                                        $imgArray = (explode(',', $imgs));
+                                    ?>
                                     
-                                    @foreach(json_decode($photo->photo) as $img)
-                                    
+                                    @foreach($imgArray as $img)
+                                        @if($img != '')
                                             <div class="col-md-4">
                                                 <div class="thumbnail" style="margin-bottom:2px;">
                                                     <a href="/patient-photo/{{$img}}" target="_blank">
@@ -51,7 +56,7 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                        
+                                        @endif
                                     @endforeach
                                 </div>
                                 <a href="{{ route('photo.edit', ['photo' => $photo->id]) }}" target="_blank" style="float:right;margin-right:6px;">edit</a><br>

@@ -137,8 +137,16 @@ class PatientController extends Controller
         $query = 'select id,count(*) as count,invoice_no,price,SUM(sub_total) total,type, DATE_FORMAT(created_time, "%d %M %Y") created_time FROM invoices WHERE patient_id="'.$patient->id.'" and type="treatment" GROUP BY invoice_no ORDER BY created_time asc ';
         $invoices = DB::select($query);
 
-        $photo_query = 'select photo.id, photo.patient_id, photo.photo, DATE_FORMAT(photo.created_time, "%d %M %Y") created_time FROM photos photo WHERE photo.patient_id="'.$patient->id.'" GROUP BY photo.created_time ORDER BY photo.created_time desc ';
-        $photos = DB::select($photo_query);
+        $photo_query = 'select photo.id, photo.patient_id, GROUP_CONCAT(photo.photo) as photo, DATE_FORMAT(photo.created_time, "%d %M %Y") created_time FROM photos photo WHERE photo.patient_id="'.$patient->id.'" GROUP BY photo.created_time ORDER BY photo.created_time desc ';
+        $photos = DB::select($photo_query); 
+        //dd($photos);
+        // foreach($photos as $photo){
+
+        //     $new_str = str_replace(['],[', ',[]'], ' ', $string);
+
+        //     dd($new_str);
+        // }
+        
 
         $record_query = 'select id, description, DATE_FORMAT(created_time, "%d %M %Y") created_time FROM photos WHERE patient_id="'.$patient->id.'"  ORDER BY DATE(created_time) asc ';
         $records = DB::select($record_query);
