@@ -14,10 +14,19 @@
                         <i class="fas fa-plus"></i> Add New
                     </a>
                 </div>
-                
             </div>
 
         </div>
+
+        <div class="col-sm-3">
+            <select class="select2" name="patient_id" id="select_patient">
+                    <option value="all">All</option>
+                    @foreach ($patients as $patient)
+                        <option value="{{$patient->id}}">{{$patient->first_name}} {{$patient->last_name}}</option>
+                    @endforeach
+            </select>
+           
+        </div> <br>
 
         {{-- Alert Messages --}}
         @include('common.alert')
@@ -49,6 +58,10 @@
                                     <td>{{ $weight->token }}</td>
                                    
                                     <td style="display: flex">
+                                         <a href="{{ route('weight.view', ['weight' => $weight->id]) }}"
+                                            class="btn btn-info m-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
                                         <a href="{{ route('weight.edit', ['weight' => $weight->id]) }}"
                                             class="btn btn-primary m-2">
                                             <i class="fa fa-pen"></i>
@@ -74,6 +87,11 @@
 
 <script>
 $(document).ready(function(){
+    $('#select_patient').select2({
+            //minimumInputLength: 3
+            width: "100%",
+    });
+
     $('div.alert').delay(3000).slideUp(300);
     $('#tbl_weight').DataTable({
         "lengthChange": true,
@@ -114,6 +132,71 @@ $(document).ready(function(){
               }
             })
       });
+
+      $('#select_patient').on('select2:select', function (e) {
+            var data = e.params.data;
+            var patient_id = data.id;
+            console.log(patient_id);
+            var url = '/weight/listByPatient/'+patient_id;
+            $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'GET',
+            url: url,
+            data: {patient_id: patient_id},
+            success: function(data) {
+              //$("#tbl_weight tbody").empty();
+               var table = $('#tbl_weight').DataTable();
+               table.clear();
+               //table.draw();
+               let patients = data[0];
+               var html = '';
+               for (var patient of patients) {
+                    html = '<tr value="'+patient['id']+'">'+
+                        '<td>'+ patient['first_name'] + patient['last_name']  +'</td>'+
+                        '<td>'+patient['weight'] +'</td>'+
+                        '<td>'+patient['created_time'] +'</td>'+
+                        '<td>'+patient['token'] +'</td>'+
+                        '<td style="display: flex">'+
+                            '<a href="/weight/view/'+patient['id']+'" class="btn btn-info m-2">'+
+                                ' <i class="fa-solid fa-eye"></i>'+
+                            '</a>'+
+                            '<a class="btn btn-primary m-2" href="/weight/edit/'+patient['id']+'">' +
+                                '<i class="fa fa-pen"></i>'+
+                            '</a>'+
+                            '<button class="btn btn-danger m-2" value="'+patient['id']+'" id="delete_icon">' +
+                                '<i class="fas fa-trash"></i>'+
+                            '</button>' +
+                        '</td>' +
+                        '</tr>';
+                        
+                        var newRow = $(html);
+                        table.row.add(newRow).draw();
+                }
+
+                //table.clear();
+                // var newRow = $(html);
+                // table.row.add(newRow).draw();
+                //table.draw();
+                //$("#tbl_weight tbody").append(html);
+                
+                //$("#tbl_weight").fnDestroy();
+                //$("#tbl_weight").DataTable();
+               
+                //table.clear();
+                //table.draw();
+                //var table = $('#tbl_weight').DataTable();
+                
+                // $("#tbl_weight").dataTable();
+                
+                // var rowsPerPage = $('#tbl_weight tbody').length;
+                // console.log(rowsPerPage);
+                // $('#totalRows').text(rowsPerPage);
+                // $('#numRows').text(rowsPerPage);
+            }
+        });
+    });
             
 });
 

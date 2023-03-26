@@ -31,7 +31,22 @@ class WeightController extends Controller
         //$purchase = Purchase::all();
         $query = 'SELECT w.id, patient.token, patient.first_name, patient.last_name, w.weight, DATE_FORMAT(w.created_time,"%d-%m-%Y") AS created_time FROM weights w LEFT JOIN patients patient on w.patient_id = patient.id ORDER BY w.created_time DESC';
         $weights = DB::select($query);
-        return view('weight.index', ['weights' => $weights]);
+        $patients = Patient::all();
+        return view('weight.index', ['weights' => $weights, 'patients' => $patients]);
+    }
+
+    public function listByPatient($patient_id)
+    {
+        $query = '';
+        if($patient_id == 'all'){
+            $query = 'SELECT w.id, patient.token, patient.first_name, patient.last_name, w.weight, DATE_FORMAT(w.created_time,"%d-%m-%Y") AS created_time FROM weights w LEFT JOIN patients patient on w.patient_id = patient.id  ORDER BY w.created_time DESC';
+        }else{
+            $query = 'SELECT w.id, patient.token, patient.first_name, patient.last_name, w.weight, DATE_FORMAT(w.created_time,"%d-%m-%Y") AS created_time FROM weights w LEFT JOIN patients patient on w.patient_id = patient.id Where w.patient_id = "'.$patient_id.'"  ORDER BY w.created_time DESC';
+        }
+        //dd($query);
+        
+        $weights = DB::select($query);
+        return response()->json([$weights]);
     }
     
     public function create()
@@ -87,6 +102,13 @@ class WeightController extends Controller
     {
         $patients = Patient::all();
         return view('weight.edit')->with(['weight'  => $weight, 'patients' => $patients ]);
+    }
+
+    public function view($weight){
+        $query = 'SELECT w.*, patient.token, patient.first_name, patient.last_name, w.weight, DATE_FORMAT(w.created_time,"%d-%m-%Y") AS created_at FROM weights w LEFT JOIN patients patient  on w.patient_id = patient.id Where w.id="'.$weight.'" ORDER BY w.created_time DESC';
+        $weights = DB::select($query);
+        $patients = Patient::all();
+        return view('weight.view', ['weight' => $weights, 'patients' => $patients]);
     }
 
     public function update(Request $request, Weight $weight)

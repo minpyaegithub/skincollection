@@ -177,7 +177,9 @@ Route::middleware('auth')->prefix('weight')->name('weight.')->group(function(){
     Route::get('/', [WeightController::class, 'index'])->name('index');
     Route::get('/create', [WeightController::class, 'create'])->name('create');
     Route::post('/store', [WeightController::class, 'store'])->name('store');
+    Route::get('/view/{weight}', [WeightController::class, 'view'])->name('view');
     Route::get('/edit/{weight}', [WeightController::class, 'edit'])->name('edit');
+    Route::get('/listByPatient/{patient_id}', [WeightController::class, 'listByPatient'])->name('listByPatient');
     Route::put('/update/{weight}', [WeightController::class, 'update'])->name('update');
     Route::delete('/delete/{weight}', [WeightController::class, 'delete'])->name('destroy');
 });
