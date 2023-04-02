@@ -89,6 +89,9 @@
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#patient-record">Record</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#patient-weight">Weight</a>
+                        </li>
                     </ul><br>
 
                     <!-- <div class="tab-content">
@@ -175,6 +178,54 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end patient record -->
+                     <!-- start patient record -->
+                     <div id="patient-weight" class="tab-pane fade">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="table-responsive">
+                            <a href="{{ route('weight.create') }}" target="_blank" style="float:right;margin-bottom:7px;" class="btn btn-sm btn-primary">
+                                <i class="fas fa-plus"></i> Add New
+                            </a>
+                                <!-- <h4 style="text-align:center;">Record</h4> -->
+                                <table class="table table-bordered" id="tbl_weight" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Weight</th>
+                                <th>Created Time</th>
+                                <th>ID</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($weights as $weight)
+                                <tr>
+                                    <td>{{ $weight->first_name }} {{ $weight->last_name }}</td>
+                                    <td>{{ $weight->weight }}</td>
+                                    <td>{{ $weight->created_time }}</td>
+                                    <td>{{ $weight->token }}</td>
+                                   
+                                    <td style="display: flex">
+                                         <a target="_blank" href="{{ route('weight.view', ['weight' => $weight->id]) }}"
+                                            class="btn btn-info m-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('weight.edit', ['weight' => $weight->id]) }}"
+                                            class="btn btn-primary m-2">
+                                            <i class="fa fa-pen"></i>
+                                        </a>
+                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('weight.destroy', ['weight' => $weight->id]) }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
 
                             </div>
                         </div>
