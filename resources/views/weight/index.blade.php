@@ -58,7 +58,7 @@
                                     <td>{{ $weight->token }}</td>
                                    
                                     <td style="display: flex">
-                                         <a href="{{ route('weight.view', ['weight' => $weight->id]) }}"
+                                         <a target="_blank" href="{{ route('weight.view', ['weight' => $weight->id]) }}"
                                             class="btn btn-info m-2">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>

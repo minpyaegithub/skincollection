@@ -139,6 +139,9 @@ class PatientController extends Controller
 
         $photo_query = 'select photo.id, photo.patient_id, GROUP_CONCAT(photo.photo) as photo, DATE_FORMAT(photo.created_time, "%d %M %Y") created_time FROM photos photo WHERE photo.patient_id="'.$patient->id.'" GROUP BY photo.created_time ORDER BY photo.created_time desc ';
         $photos = DB::select($photo_query); 
+
+        $query = 'SELECT w.id, patient.token, patient.first_name, patient.last_name, w.weight, DATE_FORMAT(w.created_time,"%d-%m-%Y") AS created_time FROM weights w LEFT JOIN patients patient on w.patient_id = patient.id where w.patient_id="'.$patient->id.'" ORDER BY w.created_time DESC';
+        $weights = DB::select($query);
         //dd($photos);
         // foreach($photos as $photo){
 
@@ -152,7 +155,7 @@ class PatientController extends Controller
         $records = DB::select($record_query);
         //dd($photos);
 
-        return view('patients.profile')->with(['patient'  => $patient, 'patient_weight'=> $patient_weight, 'invoices'=>$invoices, 'photos'=>$photos, 'records'=>$records ]);
+        return view('patients.profile')->with(['patient'  => $patient, 'patient_weight'=> $patient_weight, 'invoices'=>$invoices, 'photos'=>$photos, 'records'=>$records, 'weights'=>$weights ]);
     }
 
     public function update(Request $request, Patient $patient)
