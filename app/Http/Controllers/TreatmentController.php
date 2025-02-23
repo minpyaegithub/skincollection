@@ -53,7 +53,6 @@ class TreatmentController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all());
         $name = $request->name;
         $price = $request->price;
         $tbl_values = $request->tbl_values;
@@ -129,25 +128,26 @@ class TreatmentController extends Controller
                 'name' => $name,
                 'price' => $price,
             ]);
+            TreatmentPackage::where('treatment_id', $treatment->id)->delete();
             if($tbl_values){
                 foreach($tbl_values as $tbl_value){
                     $phar_id = $tbl_value['phar_id'];
                     $qty = $tbl_value['qty'];
 
-                    $treatment_phar = TreatmentPackage::where('treatment_id', '=', $treatment->id)->where('phar_id', '=', $phar_id)->first();
-                    if($treatment_phar === null){
+                    //$treatment_phar = TreatmentPackage::where('treatment_id', '=', $treatment->id)->where('phar_id', '=', $phar_id)->first();
+                    //if($treatment_phar === null){
                         TreatmentPackage::create([
                             'treatment_id' => $treatment->id,
                             'phar_id'      => $phar_id,
                             'qty'          => $qty
             
                         ]);
-                    } else {
-                        TreatmentPackage::where('phar_id', $phar_id)->update([
-                            'phar_id'  => $phar_id,
-                            'qty'      => $qty
-                        ]);
-                    }
+                    // } else {
+                    //     TreatmentPackage::where('phar_id', $phar_id)->update([
+                    //         'phar_id'  => $phar_id,
+                    //         'qty'      => $qty
+                    //     ]);
+                    // }
 
                     
                 }
