@@ -1,2 +1,8 @@
-*
-!.gitignore
+.env
+.env.backup
+.env.production
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+/node_modules
