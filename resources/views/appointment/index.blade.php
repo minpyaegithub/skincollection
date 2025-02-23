@@ -37,7 +37,9 @@
                                 <th>Appointment Date</th>
                                 <th>Time</th>
                                 <th>Description</th>
-                                <th>Action</th>
+                                @hasanyrole('Admin|Doctor')
+                                    <th>Action</th>
+                                @endhasanyrole
                             </tr>
                         </thead>
                         <tbody>
@@ -49,6 +51,7 @@
                                     <th>{{ $appointment->time }}</th>
                                     <th>{{ $appointment->description }}</th>
 
+                                    @hasanyrole('Admin|Doctor')
                                     <td style="display: flex">
                                         <a href="{{ route('appointments.edit', ['appointment' => $appointment->id]) }}"
                                             class="btn btn-primary m-2">
@@ -58,6 +61,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
+                                    @endhasanyrole
                                 </tr>
 
                                 

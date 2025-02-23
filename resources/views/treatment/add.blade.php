@@ -207,7 +207,7 @@
                         '<input class="form-control" placeholder="0" type="text" value="'+txt+'" name="phar_name" disabled/>'+
                     '</td>'+
                     '<td>'+
-                        '<input class="form-control" placeholder="0" type="number" name="qty"/>'+
+                        '<input class="form-control" placeholder="0" type="number" value="0" name="qty"/>'+
                     '</td>'+
                     '<td>'+
                     '<button id="btn_remove" type="button" class="btn btn-danger m-2"><i aria-hidden="true" class="fas fa-trash"></i></button>'+
