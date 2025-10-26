@@ -9,9 +9,23 @@ class Expense extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
-
-    protected $dates = [
-        'created_time'
+    protected $fillable = [
+        'clinic_id',
+        'title',
+        'description',
+        'amount',
+        'expense_date',
+        'category',
+        'receipt_path',
     ];
+
+    protected $casts = [
+        'expense_date' => 'date',
+        'amount' => 'decimal:2',
+    ];
+
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class);
+    }
 }

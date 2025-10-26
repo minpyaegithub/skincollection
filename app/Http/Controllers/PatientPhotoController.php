@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
@@ -55,12 +56,11 @@ class PatientPhotoController extends Controller
             $names = [];
             if($request->images)
             {  
+                $patient = Patient::find($request->patient_id);
                 foreach($request->images as $image)
                 {
-                    ///dd($image);
-                    //$destinationPath = 'content_images/';
-                    $filename = time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
-                    $image->move(public_path('patient-photo'), $filename);
+                    $filename = 'patient-photos/' . ($patient->clinic->prefix ?? 'default') . '/' . time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
+                    Storage::disk('s3')->put($filename, file_get_contents($image));
                     array_push($names, $filename);          
 
                 }
@@ -115,11 +115,11 @@ class PatientPhotoController extends Controller
 
             if($request->images)
             {  
+                $patient = Patient::find($request->patient_id);
                 foreach($request->images as $image)
                 {
-                    $filename = time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
-                    $image->move(public_path('patient-photo'), $filename);
-                    //$image->storeAs('images', $filename);
+                    $filename = 'patient-photos/' . ($patient->clinic->prefix ?? 'default') . '/' . time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
+                    Storage::disk('s3')->put($filename, file_get_contents($image));
                     array_push($names, $filename);          
 
                 }
@@ -130,9 +130,7 @@ class PatientPhotoController extends Controller
             if($old_img_arr){
                 foreach($old_img_arr as $img){
                     if (!in_array($img, $image_all)){
-                        if(file_exists(public_path('patient-photo/'.$img))){
-                            unlink(public_path('patient-photo/'.$img));
-                        }
+                        Storage::disk('s3')->delete($img);
                     }
                     
                 }
@@ -166,10 +164,7 @@ class PatientPhotoController extends Controller
             $old_img_arr = json_decode($old_img[0]['photo']);
             if($old_img_arr){
                 foreach($old_img_arr as $img){
-                    if(file_exists(public_path('patient-photo/'.$img))){
-                        unlink(public_path('patient-photo/'.$img));
-                    }
-                    
+                    Storage::disk('s3')->delete($img);
                 }
             }
 

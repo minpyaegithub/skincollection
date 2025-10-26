@@ -14,4 +14,9 @@ class Appointment extends Model
     protected $dates = [
         'date'
     ];
+
+    public function timeSlots()
+    {
+        return $this->belongsToMany(AppointmentTime::class, 'appointment_appointment_time');
+    }
 }

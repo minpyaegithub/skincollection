@@ -45,7 +45,9 @@ class PermissionSeeder extends Seeder
         $role->syncPermissions($permission_saved);
         
         // Admin Role Sync Permission
-        $user = User::where('role_id', 1)->first();
-        $user->assignRole($role->id);
+        $user = User::where('email', 'admin@admin.com')->first();
+        if ($user) {
+            $user->assignRole($role->id);
+        }
     }
 }

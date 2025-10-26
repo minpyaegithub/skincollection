@@ -72,7 +72,7 @@ class UserController extends Controller
             'last_name'     => 'required',
             'email'         => 'required|unique:users,email',
             // 'mobile_number' => 'required|numeric|digits:10',
-            'role_id'       =>  'required|exists:roles,id',
+            'role'          =>  'required|exists:roles,name',
             'status'       =>  'required|numeric|in:0,1',
             'password'     => 'required'
         ]);
@@ -86,16 +86,12 @@ class UserController extends Controller
                 'last_name'     => $request->last_name,
                 'email'         => $request->email,
                 'mobile_number' => $request->mobile_number,
-                'role_id'       => $request->role_id,
                 'status'        => $request->status,
                 'password'      => Hash::make($request->password)
             ]);
 
-            // Delete Any Existing Role
-            DB::table('model_has_roles')->where('model_id',$user->id)->delete();
-            
             // Assign Role To User
-            $user->assignRole($user->role_id);
+            $user->syncRoles($request->role);
 
             // Commit And Redirected To Listing
             DB::commit();
@@ -176,7 +172,7 @@ class UserController extends Controller
             'last_name'     => 'required',
             'email'         => 'required|unique:users,email,'.$user->id.',id',
             //'mobile_number' => 'required|numeric|digits:10',
-            'role_id'       =>  'required|exists:roles,id',
+            'role'          =>  'required|exists:roles,name',
             'status'       =>  'required|numeric|in:0,1',
         ]);
 
@@ -189,15 +185,11 @@ class UserController extends Controller
                 'last_name'     => $request->last_name,
                 'email'         => $request->email,
                 'mobile_number' => $request->mobile_number,
-                'role_id'       => $request->role_id,
                 'status'        => $request->status,
             ]);
 
-            // Delete Any Existing Role
-            DB::table('model_has_roles')->where('model_id',$user->id)->delete();
-            
             // Assign Role To User
-            $user->assignRole($user->role_id);
+            $user->syncRoles($request->role);
 
             // Commit And Redirected To Listing
             DB::commit();

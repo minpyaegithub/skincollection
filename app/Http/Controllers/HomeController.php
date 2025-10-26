@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\User;
 use App\Models\Patient;
 use Illuminate\Http\Request;
@@ -9,6 +10,9 @@ use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use App\Models\Purchase;
+use App\Models\Sale;
+use App\Models\Pharmacy;
 
 class HomeController extends Controller
 {
@@ -29,69 +33,66 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $total_patient_query = 'select count(*) count from patients';
-        $total_patient = DB::select($total_patient_query);
+        $total_patient = Patient::count();
+        $today_patient = Patient::whereDate('created_at', today())->count();
+        $total_appointment = Appointment::count();
+        $today_appointment = Appointment::whereDate('date', today())->count();
 
-        $today_patient_query = 'select count(*) count FROM patients where DATE(created_at) = CURDATE()';
-        $today_patient = DB::select($today_patient_query);
+        $patient_monthly = Patient::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
+            ->whereYear('created_at', today()->year)
+            ->whereMonth('created_at', today()->month)
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
 
-        $total_appointment_query = 'select count(*) count from appointments';
-        $total_appointment = DB::select($total_appointment_query);
-
-        $today_appointment_query = 'select count(*) count FROM appointments where DATE(date) = CURDATE()';
-        $today_appointment = DB::select($today_appointment_query);
-
-        $patient_monthly_query = 'select DISTINCT DATE(created_at) date,count(*) count, created_at FROM patients WHERE MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) GROUP BY DATE(created_at) ORDER BY created_at asc';
-        $patient_monthly = DB::select($patient_monthly_query);
-        //dd($patient_monthly);
         return view('home', [
-            'total_patient' => $total_patient,
-            'today_patient' => $today_patient,
-            'total_appointment' => $total_appointment,
-            'today_appointment' => $today_appointment,
+            'total_patient' => [(object)['count' => $total_patient]],
+            'today_patient' => [(object)['count' => $today_patient]],
+            'total_appointment' => [(object)['count' => $total_appointment]],
+            'today_appointment' => [(object)['count' => $today_appointment]],
             'patient_monthly' => $patient_monthly,
         ]);
     }
 
     public function Inventoryindex()
     {
-        $total_purchase_query = 'select SUM(net_price * qty) AS total FROM purchases WHERE MONTH(created_time) = MONTH(CURRENT_DATE()) AND YEAR(created_time) = YEAR(CURRENT_DATE()) ORDER BY created_time asc';
-        $total_purchase = DB::select($total_purchase_query);
+        $total_purchase = Purchase::whereYear('created_at', today()->year)
+            ->whereMonth('created_at', today()->month)
+            ->sum(DB::raw('net_price * qty'));
 
-        $total_sale_query = 'select SUM(price * qty) AS total FROM sales WHERE MONTH(created_time) = MONTH(CURRENT_DATE()) AND YEAR(created_time) = YEAR(CURRENT_DATE()) ORDER BY created_time asc';
-        $total_sale = DB::select($total_sale_query);
+        $total_sale = Sale::whereYear('created_at', today()->year)
+            ->whereMonth('created_at', today()->month)
+            ->sum(DB::raw('price * qty'));
 
-        $total_stock_query = 'select count(*) total from pharmacies';
-        $total_stock = DB::select($total_stock_query);
+        $total_stock = Pharmacy::count();
 
-        $out_of_stock_query = 'select SUM(total - sale) qty FROM `out_of_stocks` GROUP BY phar_id';
-        $out_of_stocks = DB::select($out_of_stock_query);
+        $out_of_stock = DB::table('out_of_stocks')->whereRaw('total - sale <= 0')->count();
 
-        $today_income_query = 'select SUM(sub_total) sub_total FROM invoices where DATE(created_time) = CURDATE()';
-        $today_income = DB::select($today_income_query);
-        //dd($out_of_stocks);
-        $out_of_stock = 0;
-        foreach($out_of_stocks as $count){
-            if($count->qty == 0){
-                $out_of_stock++;
-            }
-        }
+        $today_income = DB::table('invoices')->whereDate('created_at', today())->sum('subtotal');
 
-        $sale_monthly_query = 'select DISTINCT DATE(created_time) date,SUM(price * qty) AS total FROM sales WHERE MONTH(created_time) = MONTH(CURRENT_DATE()) AND YEAR(created_time) = YEAR(CURRENT_DATE()) GROUP BY DATE(created_time) ORDER BY created_time asc';
-        $sale_monthly = DB::select($sale_monthly_query);
+        $sale_monthly = Sale::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(price * qty) as total'))
+            ->whereYear('created_at', today()->year)
+            ->whereMonth('created_at', today()->month)
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
 
-        $stock_detail_query = 'select phar.name, (total - sale) available_qty, pur.qty, pur.created_time, pur.updated_at FROM pharmacies phar LEFT JOIN out_of_stocks ostock ON phar.id=ostock.phar_id LEFT JOIN purchases pur ON phar.id=pur.phar_id GROUP BY phar.id ORDER BY available_qty asc';
-        $stock_details = DB::select($stock_detail_query);
-        //dd($stock_details);
-        //dd($patient_monthly);
+        $stock_details = DB::table('pharmacies as phar')
+            ->select('phar.name', DB::raw('(total - sale) as available_qty'), 'pur.qty', 'pur.created_at', 'pur.updated_at')
+            ->leftJoin('out_of_stocks as ostock', 'phar.id', '=', 'ostock.phar_id')
+            ->leftJoin('purchases as pur', 'phar.id', '=', 'pur.phar_id')
+            ->groupBy('phar.id')
+            ->orderBy('available_qty', 'asc')
+            ->get();
+
         return view('inventory-home', [
-            'total_purchase' => $total_purchase,
-            'total_sale' => $total_sale,
-            'total_stock' => $total_stock,
+            'total_purchase' => [(object)['total' => $total_purchase ?? 0]],
+            'total_sale' => [(object)['total' => $total_sale]],
+            'total_stock' => [(object)['total' => $total_stock]],
             'out_of_stock' => $out_of_stock,
             'sale_monthly' => $sale_monthly,
             'stock_details' => $stock_details,
-            'today_income' => $today_income
+            'today_income' => [(object)['sub_total' => $today_income]]
         ]);
     }
 

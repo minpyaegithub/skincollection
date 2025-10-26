@@ -10,4 +10,9 @@ class AppointmentTime extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function appointments()
+    {
+        return $this->belongsToMany(Appointment::class, 'appointment_appointment_time');
+    }
 }

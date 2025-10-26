@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Clinic;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -16,14 +17,21 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
+        // Get the first clinic to assign to the admin
+        $clinic = Clinic::first();
+
         // Create Admin User
         $user = User::create([
+            'clinic_id'     => $clinic->id ?? null,
             'first_name'    => 'Super',
             'last_name'     => 'Admin',
             'email'         =>  'admin@admin.com',
             'mobile_number' =>  '9028187696',
             'password'      =>  Hash::make('Admin@123#'),
-            'role_id'       => 1
+            'status'        => 1,
         ]);
+
+        // Assign admin role
+        $user->assignRole('admin');
     }
 }

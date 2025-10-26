@@ -35,13 +35,12 @@ class AppointmentController extends Controller
     
     public function create()
     {
-        $appointments = Appointment::whereDate('date', Carbon::today())->get()->toArray();
+        $appointments = Appointment::with('timeSlots')->whereDate('date', Carbon::today())->get();
         $times = [];
         foreach($appointments as $appointment){
-            foreach(explode(',', $appointment['time']) as $time){
-                array_push($times, $time);
+            foreach($appointment->timeSlots as $timeSlot){
+                array_push($times, $timeSlot->time);
             }
-           
         }
         $filter_time = array_filter($times, 'strlen');
         $unique_time = array_unique($filter_time);
@@ -52,15 +51,13 @@ class AppointmentController extends Controller
     public function list(Request $request)
     {
         $date = date("Y-m-d", strtotime($request->date)); 
-        $appointments = Appointment::whereDate('date', $date)->get()->toArray();
+        $appointments = Appointment::with('timeSlots')->whereDate('date', $date)->get();
         $times = [];
         foreach($appointments as $appointment){
-            foreach(explode(',', $appointment['time']) as $time){
-                array_push($times, $time);
+            foreach($appointment->timeSlots as $timeSlot){
+                array_push($times, $timeSlot->time);
             }
-           
         }
-        
         
         $unique_time = array_unique($times);
         //$filter_time = array_filter($times, 'strlen');
@@ -90,23 +87,19 @@ class AppointmentController extends Controller
         $date = date("Y-m-d", strtotime($request->date));
         DB::beginTransaction();
         try {
-            //$appointment = Appointment::where(['name' => $request->name, 'phone' => $request->phone])->first();
-            //if($appointment === null ){
-                Appointment::create([
-                    'name'          => $request->name,
-                    'phone'         => $request->phone,
-                    'description'   => $request->description,
-                    'status'        => $request->status,
-                    'time'          => implode(',', $request->time),
-                    'date'          => $date
-                ]);
-            //}else{
-               // return response()->json([
-                    //'message' => 'duplicate'
-               // ]);
-                //$appointment->update(['time' => $appointment->time . $request->time . ',']);
-           // }
-            
+            $appointment = Appointment::create([
+                'name'          => $request->name,
+                'phone'         => $request->phone,
+                'description'   => $request->description,
+                'status'        => $request->status,
+                'time'          => implode(',', $request->time), // Keep for backward compatibility
+                'date'          => $date
+            ]);
+
+            // Sync the many-to-many relationship
+            if ($request->has('time') && is_array($request->time)) {
+                $appointment->timeSlots()->sync($request->time);
+            }
 
             // Commit And Redirected To Listing
             DB::commit();
@@ -149,6 +142,11 @@ class AppointmentController extends Controller
                 'time'          => implode(',', $request->time)
             ]);
 
+            // Sync the many-to-many relationship
+            if ($request->has('time') && is_array($request->time)) {
+                $appointment->timeSlots()->sync($request->time);
+            }
+
             // Commit And Redirected To Listing
             DB::commit();
             return redirect()->route('appointments.create')->with('success','Appointment Updated Successfully.');
@@ -168,13 +166,19 @@ class AppointmentController extends Controller
         try {
 
             // Store Data
-            $appointment_updated = Appointment::whereId($request->id)->update([
+            $appointment = Appointment::findOrFail($request->id);
+            $appointment_updated = $appointment->update([
                 'name'          => $request->name,
                 'phone'         => $request->phone,
                 'description'   => $request->description,
                 'status'        => $request->status,
                 'time'          => implode(',', $request->time)
             ]);
+
+            // Sync the many-to-many relationship
+            if ($request->has('time') && is_array($request->time)) {
+                $appointment->timeSlots()->sync($request->time);
+            }
 
             // Commit And Redirected To Listing
             DB::commit();

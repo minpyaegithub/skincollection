@@ -3,6 +3,7 @@
 
 {{-- Include Head --}}
 @include('common.head')
+@livewireStyles
 
 <body id="page-top">
 
@@ -55,6 +56,7 @@
     <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
 
     @yield('scripts')
+    @livewireScripts
 </body>
 
 </html>

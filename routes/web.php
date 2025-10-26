@@ -17,6 +17,10 @@ use App\Http\Controllers\WeightController;
 use App\Http\Controllers\PatientPhotoController;
 use App\Http\Controllers\PatientRecordController;
 use App\Http\Controllers\ReportController;
+use App\Http\Livewire\Dashboard;
+use App\Http\Livewire\PatientManagement;
+use App\Http\Livewire\UserManagement;
+use App\Http\Livewire\ClinicManagement;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,8 +38,26 @@ Route::get('/', function () {
 
 Auth::routes(['register' => true]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', Dashboard::class)->name('home');
+
+// Test route for appointments calendar
+Route::get('/test-appointments', function() {
+    return view('test-appointments');
+});
+
+// Test route for clinic management
+Route::get('/test-clinic', function() {
+    return view('test-clinic');
+});
 Route::get('/inventory-home', [App\Http\Controllers\HomeController::class, 'Inventoryindex'])->name('inventory-home');
+
+// Livewire Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+    Route::get('/patients', PatientManagement::class)->name('patients.index')->middleware('permission:view-patients');
+    Route::get('/user-management', UserManagement::class)->name('user-management.index')->middleware('permission:view-users');
+    Route::get('/clinics', ClinicManagement::class)->name('clinics.index')->middleware('permission:view-clinics');
+});
 
 // Profile Routes
 Route::prefix('profile')->name('profile.')->middleware('auth')->group(function(){
@@ -51,20 +73,20 @@ Route::resource('roles', App\Http\Controllers\RolesController::class);
 Route::resource('permissions', App\Http\Controllers\PermissionsController::class);
 
 // Users 
-Route::middleware('auth')->prefix('users')->name('users.')->group(function(){
+Route::middleware(['auth', 'permission:view-users'])->prefix('users')->name('users.')->group(function(){
     Route::get('/', [UserController::class, 'index'])->name('index');
-    Route::get('/create', [UserController::class, 'create'])->name('create');
-    Route::post('/store', [UserController::class, 'store'])->name('store');
-    Route::get('/edit/{user}', [UserController::class, 'edit'])->name('edit');
-    Route::put('/update/{user}', [UserController::class, 'update'])->name('update');
-    Route::delete('/delete/{user}', [UserController::class, 'delete'])->name('destroy');
-    Route::get('/update/status/{user_id}/{status}', [UserController::class, 'updateStatus'])->name('status');
+    Route::get('/create', [UserController::class, 'create'])->name('create')->middleware('permission:create-users');
+    Route::post('/store', [UserController::class, 'store'])->name('store')->middleware('permission:create-users');
+    Route::get('/edit/{user}', [UserController::class, 'edit'])->name('edit')->middleware('permission:edit-users');
+    Route::put('/update/{user}', [UserController::class, 'update'])->name('update')->middleware('permission:edit-users');
+    Route::delete('/delete/{user}', [UserController::class, 'delete'])->name('destroy')->middleware('permission:delete-users');
+    Route::get('/update/status/{user_id}/{status}', [UserController::class, 'updateStatus'])->name('status')->middleware('permission:edit-users');
 
     
-    Route::get('/import-users', [UserController::class, 'importUsers'])->name('import');
-    Route::post('/upload-users', [UserController::class, 'uploadUsers'])->name('upload');
+    Route::get('/import-users', [UserController::class, 'importUsers'])->name('import')->middleware('permission:create-users');
+    Route::post('/upload-users', [UserController::class, 'uploadUsers'])->name('upload')->middleware('permission:create-users');
 
-    Route::get('export/', [UserController::class, 'export'])->name('export');
+    Route::get('export/', [UserController::class, 'export'])->name('export')->middleware('permission:view-users');
 
 });
 

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'role_id',
         'status',
         'password',
+        'clinic_id',
     ];
 
     /**
@@ -57,5 +58,35 @@ class User extends Authenticatable
         return "{$this->first_name} {$this->last_name}";
     }
 
+    /**
+     * Get the clinic that the user belongs to.
+     */
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class);
+    }
 
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin()
+    {
+        return $this->hasRole('admin');
+    }
+
+    /**
+     * Check if user is doctor
+     */
+    public function isDoctor()
+    {
+        return $this->hasRole('doctor');
+    }
+
+    /**
+     * Check if user is operator
+     */
+    public function isOperator()
+    {
+        return $this->hasRole('operator');
+    }
 }
