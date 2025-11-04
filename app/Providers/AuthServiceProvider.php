@@ -25,6 +25,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // Implicitly grant "Super Admin" role all permissions
+        // This works in conjunction with Spatie's permissions package.
+        Gate::before(function ($user, $ability) {
+            // Use 'Admin' (uppercase) to match the role created in the seeder.
+            return $user->hasRole('admin') ? true : null;
+        });
     }
 }

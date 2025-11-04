@@ -111,7 +111,7 @@ class ClinicManagement extends Component
             session()->flash('message', 'Clinic created successfully!');
         }
 
-        $this->resetForm();
+        $this->closeModal();
         $this->loadClinics();
     }
 

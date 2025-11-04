@@ -12,12 +12,6 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- Search -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <input type="text" wire:model="search" class="form-control" placeholder="Search clinics...">
-                            </div>
-                        </div>
 
                         <!-- Flash Messages -->
                         @if (session()->has('message'))
@@ -40,7 +34,7 @@
 
                         <!-- Clinics Table -->
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
+                            <table class="table table-bordered table-striped" id="dataTable">
                                 <thead>
                                     <tr>
                                         <th>ID</th>

@@ -90,17 +90,39 @@
                         @enderror
                     </div>
 
+                    {{-- Clinic --}}
+                    <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
+                        <label>Clinic <span style="color:red;">*</span></label>
+                        <select name="clinic_id" id="clinic_id" class="form-control @error('clinic_id') is-invalid @enderror">
+                           <option value="">Select Clinic</option>
+                           @foreach($clinics as $clinic)
+                               <option value="{{ $clinic->id }}" {{ old('clinic_id') == $clinic->id ? 'selected' : '' }}>
+                                   {{ $clinic->name }}
+                               </option>
+                           @endforeach
+                       </select>
+                       @error('clinic_id')
+                           <span class="invalid-feedback" role="alert">
+                               <strong>{{ $message }}</strong>
+                           </span>
+                       @enderror
+                   </div>
+
                     {{-- Role --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
                          <label>Role <span style="color:red;">*</span></label>
-                        <select class="form-control form-control-user @error('role_id') is-invalid @enderror" name="role_id">
-                            <option selected disabled>Select Role</option>
-                            @foreach ($roles as $role)
-                                <option value="{{$role->id}}">{{$role->name}}</option>
+                            <select name="role" id="role" class="form-control @error('role') is-invalid @enderror">
+                            <option value="">Select Role</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->name }}">
+                                    {{ $role->name }}
+                                </option>
                             @endforeach
                         </select>
-                        @error('role_id')
-                            <span class="text-danger">{{$message}}</span>
+                        @error('role')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
                         @enderror
                     </div>
 

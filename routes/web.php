@@ -21,6 +21,7 @@ use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\PatientManagement;
 use App\Http\Livewire\UserManagement;
 use App\Http\Livewire\ClinicManagement;
+use App\Http\Controllers\ClinicController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,8 +39,6 @@ Route::get('/', function () {
 
 Auth::routes(['register' => true]);
 
-Route::get('/home', Dashboard::class)->name('home');
-
 // Test route for appointments calendar
 Route::get('/test-appointments', function() {
     return view('test-appointments');
@@ -49,11 +48,12 @@ Route::get('/test-appointments', function() {
 Route::get('/test-clinic', function() {
     return view('test-clinic');
 });
-Route::get('/inventory-home', [App\Http\Controllers\HomeController::class, 'Inventoryindex'])->name('inventory-home');
+Route::get('/inventory-home', [HomeController::class, 'Inventoryindex'])->name('inventory-home');
 
 // Livewire Routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    //Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/patients', PatientManagement::class)->name('patients.index')->middleware('permission:view-patients');
     Route::get('/user-management', UserManagement::class)->name('user-management.index')->middleware('permission:view-users');
     Route::get('/clinics', ClinicManagement::class)->name('clinics.index')->middleware('permission:view-clinics');
@@ -61,7 +61,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Profile Routes
 Route::prefix('profile')->name('profile.')->middleware('auth')->group(function(){
-    Route::get('/', [HomeController::class, 'getProfile'])->name('detail')->middleware('role:Admin');
+    Route::get('/', [HomeController::class, 'getProfile'])->name('detail')->middleware('role:admin');
     Route::post('/update', [HomeController::class, 'updateProfile'])->name('update');
     Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
 });
@@ -88,6 +88,11 @@ Route::middleware(['auth', 'permission:view-users'])->prefix('users')->name('use
 
     Route::get('export/', [UserController::class, 'export'])->name('export')->middleware('permission:view-users');
 
+});
+
+//clinics
+Route::middleware('auth')->prefix('clinics')->name('clinics.')->group(function(){
+    Route::get('/', [ClinicController::class, 'index'])->name('index');
 });
 
 // Patient
@@ -129,10 +134,10 @@ Route::middleware('auth')->prefix('pharmacy')->name('pharmacy.')->group(function
 
 // Purchase
 Route::middleware('auth')->prefix('purchase')->name('purchase.')->group(function(){
-    Route::get('/', [PurchaseController::class, 'index'])->name('index')->middleware('role:Admin');
-    Route::get('/create', [PurchaseController::class, 'create'])->name('create')->middleware('role:Admin');
+    Route::get('/', [PurchaseController::class, 'index'])->name('index')->middleware('role:admin');
+    Route::get('/create', [PurchaseController::class, 'create'])->name('create')->middleware('role:admin');
     Route::post('/store', [PurchaseController::class, 'store'])->name('store');
-    Route::get('/edit/{purchase}', [PurchaseController::class, 'edit'])->name('edit')->middleware('role:Admin');
+    Route::get('/edit/{purchase}', [PurchaseController::class, 'edit'])->name('edit')->middleware('role:admin');
     Route::put('/update/{purchase}', [PurchaseController::class, 'update'])->name('update');
     Route::delete('/delete/{purchase}', [PurchaseController::class, 'delete'])->name('destroy');
 
@@ -208,7 +213,7 @@ Route::middleware('auth')->prefix('weight')->name('weight.')->group(function(){
 
 // Patient Photo
 Route::middleware('auth')->prefix('photo')->name('photo.')->group(function(){
-    Route::get('/', [PatientPhotoController::class, 'index'])->name('index')->middleware('role:Admin');
+    Route::get('/', [PatientPhotoController::class, 'index'])->name('index')->middleware('role:admin');
     Route::get('/create', [PatientPhotoController::class, 'create'])->name('create');
     Route::post('/store', [PatientPhotoController::class, 'store'])->name('store');
     Route::get('/edit/{photo}', [PatientPhotoController::class, 'edit'])->name('edit');

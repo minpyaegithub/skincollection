@@ -28,10 +28,9 @@ class AdminSeeder extends Seeder
             'email'         =>  'admin@admin.com',
             'mobile_number' =>  '9028187696',
             'password'      =>  Hash::make('Admin@123#'),
-            'status'        => 1,
         ]);
 
-        // Assign admin role
+        // Assign the 'Admin' role to the newly created user.
         $user->assignRole('admin');
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Clinic;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
@@ -54,8 +55,9 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
+        $clinics = Clinic::all();
        
-        return view('users.add', ['roles' => $roles]);
+        return view('users.add', ['roles' => $roles, 'clinics' => $clinics]);
     }
 
     /**
@@ -73,6 +75,7 @@ class UserController extends Controller
             'email'         => 'required|unique:users,email',
             // 'mobile_number' => 'required|numeric|digits:10',
             'role'          =>  'required|exists:roles,name',
+            'clinic_id'     => 'required|exists:clinics,id',
             'status'       =>  'required|numeric|in:0,1',
             'password'     => 'required'
         ]);
@@ -82,6 +85,7 @@ class UserController extends Controller
 
             // Store Data
             $user = User::create([
+                'clinic_id'     => $request->clinic_id,
                 'first_name'    => $request->first_name,
                 'last_name'     => $request->last_name,
                 'email'         => $request->email,
@@ -152,9 +156,11 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::all();
+        $clinics = Clinic::all();
         return view('users.edit')->with([
             'roles' => $roles,
-            'user'  => $user
+            'user'  => $user,
+            'clinics' => $clinics
         ]);
     }
 
@@ -173,6 +179,7 @@ class UserController extends Controller
             'email'         => 'required|unique:users,email,'.$user->id.',id',
             //'mobile_number' => 'required|numeric|digits:10',
             'role'          =>  'required|exists:roles,name',
+            'clinic_id'     => 'required|exists:clinics,id',
             'status'       =>  'required|numeric|in:0,1',
         ]);
 
@@ -180,13 +187,13 @@ class UserController extends Controller
         try {
 
             // Store Data
-            $user_updated = User::whereId($user->id)->update([
-                'first_name'    => $request->first_name,
-                'last_name'     => $request->last_name,
-                'email'         => $request->email,
-                'mobile_number' => $request->mobile_number,
-                'status'        => $request->status,
-            ]);
+            $user->clinic_id = $request->clinic_id;
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->email = $request->email;
+            $user->mobile_number = $request->mobile_number;
+            $user->status = $request->status;
+            $user->save();
 
             // Assign Role To User
             $user->syncRoles($request->role);

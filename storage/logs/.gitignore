@@ -6,3 +6,4 @@
 /storage/pail
 /vendor
 /node_modules
+/storage/logs/laravel.log
