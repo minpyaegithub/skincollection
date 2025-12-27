@@ -22,6 +22,8 @@ use App\Http\Livewire\PatientManagement;
 use App\Http\Livewire\UserManagement;
 use App\Http\Livewire\ClinicManagement;
 use App\Http\Controllers\ClinicController;
+use App\Http\Controllers\ClinicSelectionController;
+use App\Http\Controllers\TreatmentPackageController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,15 +50,20 @@ Route::get('/test-appointments', function() {
 Route::get('/test-clinic', function() {
     return view('test-clinic');
 });
-Route::get('/inventory-home', [HomeController::class, 'Inventoryindex'])->name('inventory-home');
+Route::get('/inventory-home', [HomeController::class, 'Inventoryindex'])
+    ->name('inventory-home')
+    ->middleware(['auth', 'clinic.context']);
 
 // Livewire Routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'clinic.context'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     //Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/patients', PatientManagement::class)->name('patients.index')->middleware('permission:view-patients');
     Route::get('/user-management', UserManagement::class)->name('user-management.index')->middleware('permission:view-users');
-    Route::get('/clinics', ClinicManagement::class)->name('clinics.index')->middleware('permission:view-clinics');
+    Route::get('/clinics', ClinicManagement::class)
+        ->name('clinics.index')
+        ->middleware(['permission:view-clinics', 'role:admin']);
+    Route::post('/clinic-context/select', [ClinicSelectionController::class, 'update'])->name('clinic-context.update');
 });
 
 // Profile Routes
@@ -91,12 +98,12 @@ Route::middleware(['auth', 'permission:view-users'])->prefix('users')->name('use
 });
 
 //clinics
-Route::middleware('auth')->prefix('clinics')->name('clinics.')->group(function(){
+Route::middleware(['auth', 'role:admin'])->prefix('clinics')->name('clinics.')->group(function(){
     Route::get('/', [ClinicController::class, 'index'])->name('index');
 });
 
 // Patient
-Route::middleware('auth')->prefix('patients')->name('patients.')->group(function(){
+Route::middleware(['auth', 'clinic.context'])->prefix('patients')->name('patients.')->group(function(){
     Route::get('/', [PatientController::class, 'index'])->name('index');
     Route::get('/create', [PatientController::class, 'create'])->name('create');
     Route::post('/store', [PatientController::class, 'store'])->name('store');
@@ -116,91 +123,49 @@ Route::middleware('auth')->prefix('patients')->name('patients.')->group(function
 
 
 // Pharmacy
-Route::middleware('auth')->prefix('pharmacy')->name('pharmacy.')->group(function(){
+Route::middleware(['auth', 'clinic.context'])->prefix('pharmacy')->name('pharmacy.')->group(function(){
     Route::get('/', [PharmacyController::class, 'index'])->name('index');
-    Route::get('/create', [PharmacyController::class, 'create'])->name('create');
-    Route::post('/store', [PharmacyController::class, 'store'])->name('store');
-    Route::get('/edit/{pharmacy}', [PharmacyController::class, 'edit'])->name('edit');
-    Route::put('/update/{pharmacy}', [PharmacyController::class, 'update'])->name('update');
-    Route::delete('/delete/{pharmacy}', [PharmacyController::class, 'delete'])->name('destroy');
-
-    
-    Route::get('/import-pharmacy', [PharmacyController::class, 'importPharmacy'])->name('import');
-    Route::post('/upload-pharmacy', [PharmacyController::class, 'uploadPharmacy'])->name('upload');
-
-    Route::get('export/', [PharmacyController::class, 'export'])->name('export');
-
 });
 
 // Purchase
-Route::middleware('auth')->prefix('purchase')->name('purchase.')->group(function(){
-    Route::get('/', [PurchaseController::class, 'index'])->name('index')->middleware('role:admin');
-    Route::get('/create', [PurchaseController::class, 'create'])->name('create')->middleware('role:admin');
-    Route::post('/store', [PurchaseController::class, 'store'])->name('store');
-    Route::get('/edit/{purchase}', [PurchaseController::class, 'edit'])->name('edit')->middleware('role:admin');
-    Route::put('/update/{purchase}', [PurchaseController::class, 'update'])->name('update');
-    Route::delete('/delete/{purchase}', [PurchaseController::class, 'delete'])->name('destroy');
-
-    
-    Route::get('/import-purchase', [PurchaseController::class, 'importPurchase'])->name('import');
-    Route::post('/upload-purchase', [PurchaseController::class, 'uploadPurchase'])->name('upload');
-
+Route::middleware(['auth', 'clinic.context', 'role:admin'])->prefix('purchase')->name('purchase.')->group(function(){
+    Route::get('/', [PurchaseController::class, 'index'])->name('index');
     Route::get('export/', [PurchaseController::class, 'export'])->name('export');
-
 });
 
 // Appointment
-Route::middleware('auth')->prefix('appointments')->name('appointments.')->group(function(){
+Route::middleware(['auth', 'clinic.context'])->prefix('appointments')->name('appointments.')->group(function(){
     Route::get('/', [AppointmentController::class, 'index'])->name('index');
-    Route::get('/list', [AppointmentController::class, 'list'])->name('list');
-    Route::get('/view', [AppointmentController::class, 'view'])->name('view');
-    Route::get('/create', [AppointmentController::class, 'create'])->name('create');
-    Route::post('/store', [AppointmentController::class, 'store'])->name('store');
-    Route::get('/editAppointment/', [AppointmentController::class, 'editAppointment'])->name('editAppointment');
-    Route::post('/updateAppointment/', [AppointmentController::class, 'updateAppointment'])->name('updateAppointment');
-    Route::get('/edit/{appointment}', [AppointmentController::class, 'edit'])->name('edit');
-    Route::put('/update/{appointment}', [AppointmentController::class, 'update'])->name('update');
-    Route::delete('/delete/{appointment}', [AppointmentController::class, 'delete'])->name('destroy');
 });
 
 // Treatment
-Route::middleware('auth')->prefix('treatment')->name('treatment.')->group(function(){
+Route::middleware(['auth', 'clinic.context'])->prefix('treatment')->name('treatment.')->group(function(){
     Route::get('/', [TreatmentController::class, 'index'])->name('index');
-    Route::get('/create', [TreatmentController::class, 'create'])->name('create');
-    Route::post('/store', [TreatmentController::class, 'store'])->name('store');
-    Route::get('/edit/{treatment}', [TreatmentController::class, 'edit'])->name('edit');
-    Route::put('/update/{treatment}', [TreatmentController::class, 'update'])->name('update');
-    Route::delete('/delete/{treatment}', [TreatmentController::class, 'delete'])->name('destroy');
+    Route::get('/export', [TreatmentController::class, 'export'])->name('export');
+});
 
-    Route::get('export/', [TreatmentController::class, 'export'])->name('export');
-
-    Route::get('/saveIndex', [TreatmentController::class, 'saveIndex'])->name('saveIndex');
-    Route::get('/updateIndex', [TreatmentController::class, 'updateIndex'])->name('updateIndex');
-
+// Treatment Packages (global, admin-only)
+Route::middleware(['auth', 'clinic.context', 'role:admin'])->prefix('treatment-packages')->name('treatment-packages.')->group(function () {
+    Route::get('/', [TreatmentPackageController::class, 'index'])->name('index');
+    Route::get('/create', [TreatmentPackageController::class, 'create'])->name('create');
+    Route::post('/', [TreatmentPackageController::class, 'store'])->name('store');
+    Route::get('/{treatment_package}/edit', [TreatmentPackageController::class, 'edit'])->name('edit');
+    Route::put('/{treatment_package}', [TreatmentPackageController::class, 'update'])->name('update');
+    Route::delete('/{treatment_package}', [TreatmentPackageController::class, 'destroy'])->name('destroy');
 });
 
 //invoice
-Route::middleware('auth')->prefix('invoices')->name('invoices.')->group(function(){
+Route::middleware(['auth', 'clinic.context'])->prefix('invoices')->name('invoices.')->group(function () {
     Route::get('/', [InvoiceController::class, 'index'])->name('index');
-    Route::get('/create', [InvoiceController::class, 'create'])->name('create');
-    Route::post('/store', [InvoiceController::class, 'store'])->name('store');
-    Route::get('/edit/{invoice}', [InvoiceController::class, 'edit'])->name('edit');
-    Route::put('/update/{invoice}', [InvoiceController::class, 'update'])->name('update');
-    Route::delete('/delete/{invoice}', [InvoiceController::class, 'delete'])->name('destroy');
 });
 
 // Expense
-Route::middleware('auth')->prefix('expense')->name('expense.')->group(function(){
-    Route::get('/', [ExpenseController::class, 'index'])->name('index')->middleware('role:Admin');
-    Route::get('/create', [ExpenseController::class, 'create'])->name('create');
-    Route::post('/store', [ExpenseController::class, 'store'])->name('store');
-    Route::get('/edit/{expense}', [ExpenseController::class, 'edit'])->name('edit');
-    Route::put('/update/{expense}', [ExpenseController::class, 'update'])->name('update');
-    Route::delete('/delete/{expense}', [ExpenseController::class, 'delete'])->name('destroy');
+Route::middleware(['auth', 'clinic.context'])->prefix('expense')->name('expense.')->group(function(){
+    Route::get('/', [ExpenseController::class, 'index'])->name('index');
 });
 
 // weight
-Route::middleware('auth')->prefix('weight')->name('weight.')->group(function(){
+Route::middleware(['auth', 'clinic.context'])->prefix('weight')->name('weight.')->group(function(){
     Route::get('/', [WeightController::class, 'index'])->name('index');
     Route::get('/create', [WeightController::class, 'create'])->name('create');
     Route::post('/store', [WeightController::class, 'store'])->name('store');
@@ -212,27 +177,29 @@ Route::middleware('auth')->prefix('weight')->name('weight.')->group(function(){
 });
 
 // Patient Photo
-Route::middleware('auth')->prefix('photo')->name('photo.')->group(function(){
+Route::middleware(['auth', 'clinic.context'])->prefix('photo')->name('photo.')->group(function(){
     Route::get('/', [PatientPhotoController::class, 'index'])->name('index')->middleware('role:admin');
     Route::get('/create', [PatientPhotoController::class, 'create'])->name('create');
     Route::post('/store', [PatientPhotoController::class, 'store'])->name('store');
+    Route::get('/view/{photo}', [PatientPhotoController::class, 'view'])->name('view');
     Route::get('/edit/{photo}', [PatientPhotoController::class, 'edit'])->name('edit');
     Route::put('/update/{photo}', [PatientPhotoController::class, 'update'])->name('update');
     Route::delete('/delete/{photo}', [PatientPhotoController::class, 'delete'])->name('destroy');
 });
 
 // Patient Record
-Route::middleware('auth')->prefix('record')->name('record.')->group(function(){
+Route::middleware(['auth', 'clinic.context'])->prefix('record')->name('record.')->group(function(){
     Route::get('/', [PatientRecordController::class, 'index'])->name('index');
     Route::get('/create', [PatientRecordController::class, 'create'])->name('create');
     Route::post('/store', [PatientRecordController::class, 'store'])->name('store');
+    Route::get('/view/{record}', [PatientRecordController::class, 'view'])->name('view');
     Route::get('/edit/{record}', [PatientRecordController::class, 'edit'])->name('edit');
     Route::put('/update/{record}', [PatientRecordController::class, 'update'])->name('update');
     Route::delete('/delete/{record}', [PatientRecordController::class, 'delete'])->name('destroy');
 });
 
 // Report
-Route::middleware('auth')->prefix('report')->name('report.')->group(function(){
+Route::middleware(['auth', 'clinic.context'])->prefix('report')->name('report.')->group(function(){
     Route::get('/Profit-Loss', [ReportController::class, 'index'])->name('index')->middleware('role:Admin');
     Route::get('/getPfData', [ReportController::class, 'getPfData'])->name('getPfData')->middleware('role:Admin');
 });

@@ -4,6 +4,10 @@
 
 @section('content')
 
+@php
+    use App\Services\S3Service;
+@endphp
+
 <div class="container-fluid">
 
     <!-- Page Heading -->
@@ -100,7 +104,7 @@
                                     id="txt_date"
                                     placeholder="d-m-y" 
                                     name="created_time" 
-                                    value="{{ old('created_time') ?  old('created_time') : $photo->created_time->format('d-m-Y') }}" >
+                                    value="{{ old('created_time') ?  old('created_time') : optional($photo->created_at)->format('d-m-Y') }}" >
                                     @error('created_time')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -121,7 +125,7 @@
                         </div>
                         <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
                             <!-- <form action="url" enctype="multipart/form-data"> -->
-                                <div class="input-images" value="{{$patient->photo}}"></div>
+                                <div class="input-images"></div>
                             <!-- </form> -->
                         </div>
                     </div>  
@@ -144,18 +148,20 @@
 
 <script>
     $(function () {
-        var photo_arr = {!! json_encode($photo->photo) !!};
-        if(photo_arr == null){
-            photo_arr = "[]";
-        }
-        var img_arr = JSON.parse(photo_arr);
-        console.log("photo_arr: ", photo_arr, " img_arr: ", img_arr);
-        var photo = [];
-        for (var i = 0; i < img_arr.length; i++) {
-           var obj = {id: img_arr[i], src: '/patient-photo/'+img_arr[i]};
-           photo.push(obj);
-        }
-        let preloaded = photo;
+        // One Photo row can store multiple S3 keys in metadata.photos
+        // For private buckets we must use signed URLs.
+        var preloaded = [];
+        @php
+            $keys = (array) data_get($photo, 'metadata.photos', []);
+            if (empty($keys) && !empty($photo->file_path)) {
+                $keys = [$photo->file_path];
+            }
+        @endphp
+        preloaded = @json(collect($keys)
+            ->filter(fn ($k) => is_string($k) && trim($k) !== '')
+            ->map(fn ($k) => ['id' => $k, 'src' => S3Service::url($k)])
+            ->values());
+
         $('.input-images').imageUploader({
             extensions: ['.JPG','.jpg','.jpeg','.png','.gif','.svg'],
             mimes: ['image/jpeg','image/png','image/gif','image/svg+xml'],

@@ -23,6 +23,10 @@ class ClinicController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         return view('clinics.index');
     }
 }

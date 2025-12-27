@@ -13,12 +13,18 @@ This document outlines the comprehensive refactoring of the Skin Collection Lara
   - `PatientManagement` - Patient CRUD operations
   - `UserManagement` - User management with role assignment
   - `ClinicManagement` - Multi-clinic management
+  - `ExpensesManager` - Multi-clinic expenses CRUD via Livewire
+  - `PharmaciesManager` - Pharmacy catalogue with inventory sync
+  - `PurchasesManager` - Purchase tracking per clinic
+  - `InvoicesManager` - Sales and treatment invoicing with clinic context
+  - `TreatmentsManager` - Treatment catalogue with per-clinic scoping
 
 ### 2. Multi-Clinic System
 - **Clinic Model**: Enhanced with address, phone, email, status fields
 - **Clinic Counters**: Separate counters for each clinic (patient, appointment, invoice, treatment)
 - **Clinic Relationships**: All major models now belong to a clinic
 - **Counter Management**: Automatic counter initialization for new clinics
+- **Legacy Cleanup**: Deprecated treatment package table removed (2025_11_11_010000)
 
 ### 3. Role-Based Permissions
 - **Roles**: Admin, Doctor, Operator
@@ -49,26 +55,38 @@ This document outlines the comprehensive refactoring of the Skin Collection Lara
 app/
 ├── Http/
 │   ├── Livewire/
+│   │   ├── AppointmentsCalendar.php
 │   │   ├── Dashboard.php
+│   │   ├── ExpensesManager.php
+│   │   ├── InvoicesManager.php
 │   │   ├── PatientManagement.php
-│   │   ├── UserManagement.php
-│   │   └── ClinicManagement.php
+│   │   ├── PharmaciesManager.php
+│   │   ├── PurchasesManager.php
+│   │   ├── TreatmentsManager.php
+│   │   └── UserManagement.php
 │   └── Middleware/
 │       ├── CheckRole.php
 │       └── CheckPermission.php
 ├── Models/
-│   ├── ClinicCounter.php (new)
 │   ├── Clinic.php (enhanced)
-│   ├── User.php (enhanced)
-│   └── Patient.php (enhanced)
+│   ├── ClinicCounter.php (new)
+│   ├── InvoiceItem.php (new)
+│   ├── Patient.php (enhanced)
+│   ├── Treatment.php (enhanced)
+│   └── User.php (enhanced)
 └── Services/
-    └── S3Service.php (new)
+    └── ClinicContext.php (new)
 
 resources/views/livewire/
+├── appointments-calendar.blade.php
 ├── dashboard.blade.php
+├── expenses-manager.blade.php
+├── invoices-manager.blade.php
 ├── patient-management.blade.php
-├── user-management.blade.php
-└── clinic-management.blade.php
+├── pharmacies-manager.blade.php
+├── purchases-manager.blade.php
+├── treatments-manager.blade.php
+└── user-management.blade.php
 ```
 
 ## Key Features
@@ -81,8 +99,8 @@ resources/views/livewire/
 
 ### 2. Role-Based Access Control
 - **Admin**: Full system access, can create users and assign roles
-- **Doctor**: Patient management, appointments, treatments
-- **Operator**: Patient management, appointments, pharmacy, purchases
+- **Doctor**: Patient management, appointments, treatments, invoices
+- **Operator**: Patient management, appointments, pharmacy, purchases, invoices
 
 ### 3. S3 Storage
 - Patient photos stored on S3
@@ -134,15 +152,30 @@ php artisan migrate:fresh --seed
 - Search and filter patients
 - S3 photo storage
 
-### 3. User Management
-- Create users with role assignment
-- Clinic-specific user management
-- Role-based permissions
+### 3. Treatments Manager
+- Clinic-scoped treatment catalogue
+- Status toggling and pricing controls
+- Real-time filtering and search
 
-### 4. Clinic Management
-- Create and manage clinics
-- Automatic counter initialization
-- Clinic-specific settings
+### 4. Expenses Manager
+- Clinic-specific expenses with role-aware access
+- Modal-based CRUD flow
+- Automatic flash messaging and pagination
+
+### 5. Pharmacies Manager
+- Inventory-aware pharmacy catalogue
+- Clinic selection for admins vs. fixed clinics for staff
+- Delete protections and success feedback
+
+### 6. Purchases Manager
+- Track purchases per clinic
+- Inventory synchronization hooks
+- Admin-only deletion safeguards
+
+### 7. Invoices Manager
+- Combined treatment/product invoicing
+- Inventory sync and clinic counters
+- Patient-aware validation
 
 ## Permissions
 
@@ -156,7 +189,22 @@ php artisan migrate:fresh --seed
 - View/create/edit patients
 - Upload patient photos
 - Manage appointments
-- Create treatments
+- Manage treatments
+- Create invoices
+
+### Operator Permissions
+- View/create/edit patients
+- Upload patient photos
+- Manage appointments
+- Manage pharmacy
+- Manage purchases
+- Create invoices
+
+### Doctor Permissions
+- View/create/edit patients
+- Upload patient photos
+- Manage appointments
+- Manage treatments
 - Create invoices
 
 ### Operator Permissions

@@ -3,6 +3,10 @@
 @section('title', 'Profile')
 
 @section('content')
+
+@php
+    use App\Services\S3Service;
+@endphp
     <div class="container-fluid">
 
         <!-- Page Heading -->
@@ -21,7 +25,7 @@
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                     @if(json_decode($patient->photo))
                     @foreach(json_decode($patient->photo) as $photo)
-                        <img class="user-profile" width="40%" height="97px;" alt="{{$photo}}" src="/patient-photo/{{$photo}}">
+                        <img class="user-profile" width="40%" height="97px;" alt="{{$photo}}" src="{{ S3Service::url($photo) }}">
                     @endforeach
                     @else
                     <img class="user-profile" width="150px" height="130px;" src="{{asset('admin/img/undraw_profile.svg')}}">
@@ -51,8 +55,8 @@
                                         @if($img != '')
                                             <div class="col-md-4">
                                                 <div class="thumbnail" style="margin-bottom:2px;">
-                                                    <a href="/patient-photo/{{$img}}" target="_blank">
-                                                    <img src="/patient-photo/{{$img}}" alt="Lights" style="width:100%">
+                                                    <a href="{{ S3Service::url($img) }}" target="_blank">
+                                                    <img src="{{ S3Service::url($img) }}" alt="Lights" style="width:100%">
                                                     </a>
                                                 </div>
                                             </div>
@@ -108,30 +112,27 @@
                                 <table class="table table-bordered" id="tbl_invoice" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Invoice No</th>
+                                            <th>Invoice #</th>
+                                            <th>Date</th>
+                                            <th>Treatments</th>
+                                            <th>Products</th>
                                             <th>Total</th>
-                                            <th>Treatment</th>
-                                            <th width="35%">Created Time</th>
-                                            <th width="10%">Action</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($invoices as $invoice)
+                                            @php
+                                                $treatmentCount = $invoice->items->where('item_type', \App\Models\InvoiceItem::TYPE_TREATMENT)->count();
+                                                $saleCount = $invoice->items->where('item_type', \App\Models\InvoiceItem::TYPE_SALE)->count();
+                                            @endphp
                                             <tr>
-                                                <td>{{ $invoice->invoice_no }}</td>
-                                                <td>{{ $invoice->total }}</td>
-                                                <td>{{ $invoice->count }}</td>
-                                                <td>{{ $invoice->created_time }}</td>
-
-                                                <td style="display: flex">
-                                                    <a href="{{ route('generateInvoice', ['invoice' => $invoice->invoice_no, 'type'=>$invoice->type]) }}"
-                                                        class="btn btn-info m-2" target="_blank">
-                                                        <i class="fa-solid fa-eye"></i>
-                                                    </a>
-                                                    <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('invoices.destroy', ['invoice' => $invoice->invoice_no]) }}">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </td>
+                                                <td>{{ $invoice->invoice_number }}</td>
+                                                <td>{{ optional($invoice->invoice_date)->format('d M Y') ?? '—' }}</td>
+                                                <td>{{ $treatmentCount }}</td>
+                                                <td>{{ $saleCount }}</td>
+                                                <td>{{ number_format($invoice->total_amount, 2) }}</td>
+                                                <td>{{ ucfirst($invoice->status) }}</td>
                                             </tr>
 
                                             

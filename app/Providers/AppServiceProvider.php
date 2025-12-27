@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Services\ClinicContext;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 
@@ -15,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(ClinicContext::class, fn () => new ClinicContext());
     }
 
     /**

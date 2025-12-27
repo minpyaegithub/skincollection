@@ -46,8 +46,8 @@
         <div id="taTpDropDown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">User Management:</h6>
-                <a class="collapse-item" href="{{ route('user-management.index') }}">Livewire List</a>
-                <a class="collapse-item" href="{{ route('users.index') }}">Traditional List</a>
+                <!-- <a class="collapse-item" href="{{ route('user-management.index') }}">Livewire List</a> -->
+                <a class="collapse-item" href="{{ route('users.index') }}">List</a>
                 @can('create-users')
                 <a class="collapse-item" href="{{ route('users.create') }}">Add New</a>
                 @endcan
@@ -58,7 +58,7 @@
     <!-- end user management -->
     @endcan
 
-    @can('view-clinics')
+    @hasanyrole('Admin|admin')
     <!-- Clinic Management -->
     <li class="nav-item">
         <a class="nav-link" href="{{ route('clinics.index') }}">
@@ -66,7 +66,7 @@
             <span>Clinic Management</span>
         </a>
     </li>
-    @endcan
+    @endhasanyrole
     @can('view-patients')
     <!-- Start Patient -->
     <li class="nav-item">
@@ -99,7 +99,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Appointment:</h6>
                 <a class="collapse-item" href="{{ route('appointments.index') }}">List</a>
-                <a class="collapse-item" href="{{ route('appointments.create') }}">Create Appointment</a>
+                <a class="collapse-item" href="{{ route('appointments.index') }}">Create Appointment</a>
             </div>
         </div>
     </li>
@@ -115,8 +115,6 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Pharmacy:</h6>
                 <a class="collapse-item" href="{{ route('pharmacy.index') }}">List</a>
-                <a class="collapse-item" href="{{ route('pharmacy.create') }}">Add New</a>
-                <!-- <a class="collapse-item" href="{{ route('pharmacy.import') }}">Import Data</a> -->
             </div>
         </div>
     </li>
@@ -132,9 +130,7 @@
         <div id="purchase" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Purchase:</h6>
-                <a class="collapse-item" href="{{ route('purchase.index') }}">List</a>
-                <a class="collapse-item" href="{{ route('purchase.create') }}">Add New</a>
-                <!-- <a class="collapse-item" href="{{ route('purchase.import') }}">Import Data</a> -->
+                <a class="collapse-item" href="{{ route('purchase.index') }}">Manage Purchases</a>
             </div>
         </div>
     </li>
@@ -151,8 +147,10 @@
         <div id="treatment" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Treatment:</h6>
-                <a class="collapse-item" href="{{ route('treatment.index') }}">Category List</a>
-                <a class="collapse-item" href="{{ route('treatment.create') }}">Add Category</a>
+                <a class="collapse-item" href="{{ route('treatment.index') }}">Manage Treatments</a>
+                @hasanyrole('Admin|admin')
+                    <a class="collapse-item" href="{{ route('treatment-packages.index') }}">Treatment Packages</a>
+                @endhasanyrole
             </div>
 
         </div>
@@ -171,8 +169,7 @@
         <div id="invoice" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Invoice:</h6>
-                <a class="collapse-item" href="{{ route('invoices.index') }}">List</a>
-                <a class="collapse-item" href="{{ route('invoices.create') }}">Create</a>
+                <a class="collapse-item" href="{{ route('invoices.index') }}">Manage Invoices</a>
             </div>
         </div>
     </li>
@@ -187,10 +184,7 @@
         <div id="expense" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Expense:</h6>
-                @hasrole('Admin')
-                    <a class="collapse-item" href="{{ route('expense.index') }}">List</a>
-                @endhasrole
-                <a class="collapse-item" href="{{ route('expense.create') }}">Create</a>
+                <a class="collapse-item" href="{{ route('expense.index') }}">Manage Expenses</a>
             </div>
         </div>
     </li>
@@ -221,7 +215,7 @@
         <div id="photo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Patient Photo:</h6>
-                @hasrole('Admin')
+                @hasrole('admin')
                 <a class="collapse-item" href="{{ route('photo.index') }}">List</a>
                 @endhasrole
                 <a class="collapse-item" href="{{ route('photo.create') }}">Create</a>

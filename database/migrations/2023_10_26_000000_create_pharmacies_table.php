@@ -15,7 +15,10 @@ return new class extends Migration
     {
         Schema::create('pharmacies', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('clinic_id')->nullable()->constrained('clinics')->onDelete('cascade');
             $table->string('name');
+            $table->decimal('selling_price', 12, 2)->default(0);
+            $table->decimal('net_price', 12, 2)->default(0);
             $table->timestamps();
         });
     }

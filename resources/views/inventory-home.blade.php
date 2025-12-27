@@ -10,6 +10,12 @@
         <h1 class="h3 mb-0 text-gray-800"><i class="fa-solid fa-gauge-high"></i> Inventory Dashboard </h1>
     </div>
 
+    @if(isset($viewingAllClinics) && $viewingAllClinics)
+        <div class="alert alert-info">Displaying inventory metrics across all clinics.</div>
+    @elseif(isset($activeClinic) && $activeClinic)
+        <div class="alert alert-secondary">Displaying inventory metrics for {{ $activeClinic->name }}.</div>
+    @endif
+
     <!-- Content Row -->
     <div class="row">
     @hasrole('Admin')
@@ -118,7 +124,7 @@
                                     <td>{{ $stock_detail->updated_at }}</td>
                                     @hasrole('Admin')
                                         <td style="display: flex">
-                                            <a href="{{ route('purchase.create') }}"
+                                            <a href="{{ route('purchase.index') }}"
                                                 class="btn btn-sm btn-primary m-2">
                                                 <i class="fa-solid fa-plus"></i> Purchase
                                             </a>

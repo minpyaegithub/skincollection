@@ -27,4 +27,9 @@ class Treatment extends Model
     {
         return $this->belongsTo(Clinic::class);
     }
+
+    public function scopeForClinic($query, int $clinicId)
+    {
+        return $query->where('clinic_id', $clinicId);
+    }
 }

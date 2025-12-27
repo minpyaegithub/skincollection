@@ -1,81 +1,17 @@
 @extends('layouts.app')
 
+@extends('layouts.app')
+
 @section('title', 'Edit Purchase')
 
 @section('content')
-
 <div class="container-fluid">
-
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Edit Purchase</h1>
-        <a href="{{route('purchase.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-        <i class="fa-solid fa-list fa-sm text-white-50"></i> List </a>
+    <div class="alert alert-info">
+        Purchase management now lives in the Livewire interface.
+        <a href="{{ route('purchase.index') }}" class="alert-link">Return to Purchases</a>.
     </div>
-
-    {{-- Alert Messages --}}
-    @include('common.alert')
-   
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Edit Purchase</h6>
-        </div>
-        <form method="POST" action="{{route('purchase.update', ['purchase' => $purchase->id])}}">
-            @csrf
-            @method('PUT')
-            <div class="card-body">
-                <div class="form-group">
-
-                {{-- Pharmacy --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Select Medicine</label>
-                            </div>
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                                <select class="form-control" name="phar_id" id="select_pharmacy">
-                                    @foreach ($pharmacy as $phar)
-                                        @if($phar->id == $purchase->phar_id)
-                                            <option value="{{$phar->id}}" selected>{{$phar->name}}</option>
-                                        @else
-                                            <option value="{{$phar->id}}">{{$phar->name}}</option>
-                                        @endif
-                                    @endforeach
-                                </select> 
-                            </div>
-                        </div>
-                    </div>
-
-
-                    {{-- Selling Price --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Selling Price<span style="color:red;">*</span></label>
-                            </div>
-                            <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
-                            <input 
-                            type="number" 
-                            class="form-control @error('selling_price') is-invalid @enderror" 
-                            id="txt_selling_price"
-                            placeholder="Selling Price" 
-                            name="selling_price" 
-                            value="{{ old('selling_price') ?  old('selling_price') : $purchase->selling_price}}">
-
-                            @error('selling_price')
-                                <span class="text-danger">{{$message}}</span>
-                            @enderror
-                            </div>
-                        </div>  
-                    </div>
-
-                    {{-- Net Price --}}
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
-                                <label style="margin-top:9px;">Purchase Price<span style="color:red;">*</span></label>
-                            </div>
+</div>
+@endsection
                             <div class="col-sm-3 mb-3 mt-3 mb-sm-0">
                             <input 
                             type="number" 

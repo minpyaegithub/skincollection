@@ -1,17 +1,40 @@
 <div>
     {{-- Page header, date picker, and "Add Appointment" button --}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="card-title">Appointments for {{ \Carbon\Carbon::parse($date)->format('F d, Y') }}</h3>
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
         <div>
-            <input type="date" wire:model="date" class="form-control d-inline-block" style="width: 200px;">
-            <button wire:click="openModal()" class="btn btn-primary ml-2">Add Appointment</button>
+            <h3 class="card-title mb-1">Appointments for {{ \Carbon\Carbon::parse($date)->format('F d, Y') }}</h3>
+            @php($clinicCollection = collect($clinicOptions))
+            @php($selectedClinic = $clinicCollection->firstWhere('id', (int) $clinicId))
+            @php($defaultClinic = $clinicCollection->first())
+            @if($isAdmin)
+                <span class="badge badge-secondary">
+                    {{ $viewingAllClinics ? 'All Clinics' : data_get($selectedClinic, 'name', 'Select Clinic') }}
+                </span>
+            @else
+                <span class="badge badge-secondary">{{ data_get($defaultClinic, 'name', 'Clinic') }}</span>
+            @endif
+        </div>
+        <div class="d-flex flex-wrap align-items-center">
+            <input type="date" wire:model="date" wire:change="changeDate($event.target.value)" class="form-control mr-2" style="width: 200px;">
+            <button wire:click="openModal()" class="btn btn-primary">Add Appointment</button>
         </div>
     </div>
+
+    @if($isAdmin && $viewingAllClinics)
+        <div class="alert alert-info">
+            Select a clinic to create or edit appointments. Viewing all clinics disables form actions.
+        </div>
+    @endif
 
     {{-- Display success messages --}}
     @if (session()->has('success'))
         <div class="alert alert-success">
             {{ session('success') }}
+        </div>
+    @endif
+    @if (session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
         </div>
     @endif
 
@@ -26,12 +49,15 @@
                     <div class="card-body">
                         @forelse($this->getAppointmentsForTime($timeSlot) as $appointment)
                             <div class="appointment-item mb-2 p-2 border rounded {{ $appointment->status ? 'bg-light' : '' }}">
+                                @if($isAdmin && $viewingAllClinics)
+                                    <span class="badge badge-info mb-1">{{ optional($appointment->clinic)->name }}</span>
+                                @endif
                                 <p class="mb-0"><strong>{{ $appointment->name }}</strong></p>
                                 <p class="mb-1">{{ $appointment->phone }}</p>
                                 <small>{{ $appointment->description }}</small>
                                 <div class="mt-2">
-                                    <button wire:click="edit({{ $appointment->id }})" class="btn btn-sm btn-info">Edit</button>
-                                    <button wire:click="delete({{ $appointment->id }})" onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">Delete</button>
+                                    <button wire:click="edit({{ $appointment->id }})" class="btn btn-sm btn-info" @if($isAdmin && $viewingAllClinics) disabled @endif>Edit</button>
+                                    <button wire:click="delete({{ $appointment->id }})" onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger" @if($isAdmin && $viewingAllClinics) disabled @endif>Delete</button>
                                 </div>
                             </div>
                         @empty
@@ -46,7 +72,7 @@
     {{-- Create/Edit Modal --}}
     @if($isModalOpen)
     <div class="modal fade show" style="display: block;" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg" style="max-height: calc(100vh - 3.5rem);">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ $appointmentId ? 'Edit Appointment' : 'Create Appointment' }}</h5>
@@ -54,7 +80,7 @@
                         <span>&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow-y:auto; max-height: calc(100vh - 12rem);">
                     <form wire:submit.prevent="saveAppointment">
                         <div class="form-group">
                             <label for="name">Name</label>
@@ -66,6 +92,18 @@
                             <input type="text" id="phone" class="form-control" wire:model.defer="phone">
                             @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
+                        @if($isAdmin)
+                        <div class="form-group">
+                            <label for="clinic-select">Clinic</label>
+                            <select id="clinic-select" class="form-control" wire:model="formClinicId" @if($viewingAllClinics) required @endif>
+                                <option value="">Select clinic</option>
+                                @foreach($clinicOptions as $clinicOption)
+                                    <option value="{{ $clinicOption['id'] }}">{{ $clinicOption['name'] }}</option>
+                                @endforeach
+                            </select>
+                            @error('formClinicId') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        @endif
                         <div class="form-group">
                             <label for="description">Description</label>
                             <textarea id="description" class="form-control" wire:model.defer="description"></textarea>

@@ -9,6 +9,7 @@
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Patients</h1>
             <div class="row">
+               
                 <div class="col-md-6">
                     <a href="{{ route('patients.create') }}" class="btn btn-sm btn-primary">
                         <i class="fas fa-plus"></i> Add New
@@ -39,6 +40,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Clinic</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
                                 <th>Gender</th>
@@ -52,6 +54,7 @@
                             @foreach ($patients as $patient)
                                 <tr>
                                     <td>{{ $patient->first_name }} {{ $patient->last_name }}</td>
+                                    <td>{{ optional($patient->clinic)->name ?? '-' }}</td>
                                     <td>{{ $patient->email }}</td>
                                     <td>{{ $patient->phone }}</td>
                                     <td>{{ $patient->gender }}</td>

@@ -1,11 +1,11 @@
 <div>
     <div class="container-fluid">
-        @if($clinic)
+        @if($clinic || $viewingAllClinics)
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Dashboard - {{ $clinic->name }}</h3>
+                            <h3 class="card-title">Dashboard - {{ $viewingAllClinics ? 'All Clinics' : $clinic->name }}</h3>
                         </div>
                         <div class="card-body">
                             <!-- Stats Cards -->
@@ -49,7 +49,7 @@
                                         <div class="icon">
                                             <i class="fas fa-calendar"></i>
                                         </div>
-                                        <a href="{{ route('appointments.create') }}" class="small-box-footer">
+                                        <a href="{{ route('appointments.index') }}" class="small-box-footer">
                                             More info <i class="fas fa-arrow-circle-right"></i>
                                         </a>
                                     </div>
@@ -79,13 +79,6 @@
                                             <h3 class="card-title">Recent Patients</h3>
                                         </div>
                                         <div class="card-body">
-                                            @php
-                                                $recentPatients = \App\Models\Patient::where('clinic_id', $clinic->id)
-                                                    ->orderBy('created_at', 'desc')
-                                                    ->limit(5)
-                                                    ->get();
-                                            @endphp
-                                            
                                             @forelse($recentPatients as $patient)
                                                 <div class="d-flex align-items-center mb-3">
                                                     <div class="mr-3">
@@ -115,9 +108,9 @@
                 <div class="card-body text-center">
                     <h4 class="card-title">Welcome, {{ Auth::user()->first_name }}!</h4>
                     <p class="card-text">You are not currently assigned to a clinic. Please navigate using the sidebar or contact an administrator.</p>
-                    @can('view-clinics')
+                    @hasanyrole('Admin|admin')
                         <a href="{{ route('clinics.index') }}" class="btn btn-primary">Manage Clinics</a>
-                    @endcan
+                    @endhasanyrole
                 </div>
             </div>
         @endif

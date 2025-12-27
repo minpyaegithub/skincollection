@@ -19,4 +19,14 @@ class Appointment extends Model
     {
         return $this->belongsToMany(AppointmentTime::class, 'appointment_appointment_time');
     }
+
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class);
+    }
+
+    public function scopeForClinic($query, int $clinicId)
+    {
+        return $query->where('clinic_id', $clinicId);
+    }
 }

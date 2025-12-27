@@ -57,6 +57,31 @@
 
     @yield('scripts')
     @livewireScripts
+    <script>
+
+        function logClinicContextRefreshed(eventName, event) {
+            var selectEl = document.getElementById('clinic_switcher');
+            var detail = (event && event.detail) ? event.detail : {};
+
+            console.log('[clinic] context refreshed', {
+                eventName: eventName,
+                selectedValue: selectEl ? selectEl.value : null,
+                clinicId: (detail && typeof detail.clinicId !== 'undefined') ? detail.clinicId : null,
+                viewingAllClinics: (detail && typeof detail.viewingAllClinics !== 'undefined') ? detail.viewingAllClinics : null,
+                rawEvent: event,
+            });
+
+            setTimeout(function () {
+                window.location.reload();
+            }, 250);
+        }
+
+        // Browser events (from Livewire)
+        window.addEventListener('clinic-context-refreshed', function (event) {
+            logClinicContextRefreshed('clinic-context-refreshed', event);
+        });
+
+    </script>
 </body>
 
 </html>

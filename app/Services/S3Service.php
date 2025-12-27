@@ -64,7 +64,14 @@ class S3Service
      */
     public static function url(string $path): string
     {
-        return Storage::disk('s3')->url($path);
+        $disk = config('filesystems.patient_photos_disk', 's3');
+
+        if (config('filesystems.patient_photos_visibility', 'private') === 'public') {
+            return Storage::disk($disk)->url($path);
+        }
+
+        // Private buckets: return a short-lived signed URL.
+        return Storage::disk($disk)->temporaryUrl($path, now()->addMinutes(15));
     }
 
     /**

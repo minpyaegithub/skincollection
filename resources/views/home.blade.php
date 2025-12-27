@@ -10,6 +10,12 @@
         <h1 class="h3 mb-0 text-gray-800"><i class="fa-solid fa-gauge-high"></i> Dashboard </h1>
     </div>
 
+    @if(isset($viewingAllClinics) && $viewingAllClinics)
+        <div class="alert alert-info">Displaying metrics across all clinics.</div>
+    @elseif(isset($activeClinic) && $activeClinic)
+        <div class="alert alert-secondary">Displaying metrics for {{ $activeClinic->name }}.</div>
+    @endif
+
     <!-- Content Row -->
     <div class="row">
 

@@ -37,7 +37,7 @@
                                 <th>Note</th>
                                 <th width="8%">Created Time</th>
                                 <th width="5%">Token</th>
-                                <th width="10%">Action</th>
+                                <th width="18%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,12 +48,16 @@
                                     <td>{{ $record->created_time }}</td>
                                     <td>{{ $record->token }}</td>
                                    
-                                    <td>
+                                    <td style="white-space: nowrap; display: flex; flex-wrap: wrap; gap: 6px;">
+                                        <a href="{{ route('record.view', ['record' => $record->id]) }}"
+                                            class="btn btn-info btn-sm">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
                                         <a href="{{ route('record.edit', ['record' => $record->id]) }}"
-                                            class="btn btn-primary m-2">
+                                            class="btn btn-primary btn-sm">
                                             <i class="fa fa-pen"></i>
                                         </a>
-                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('record.destroy', ['record' => $record->id]) }}">
+                                        <button class="btn btn-danger btn-sm" id="delete_icon" data-remote="{{ route('record.destroy', ['record' => $record->id]) }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>

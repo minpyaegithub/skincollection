@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('out_of_stocks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('clinic_id')->constrained('clinics')->onDelete('cascade');
             $table->foreignId('phar_id')->constrained('pharmacies')->onDelete('cascade');
             $table->integer('total')->default(0);
             $table->integer('sale')->default(0);

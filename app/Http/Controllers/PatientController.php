@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Patient;
 use App\Exports\PatientsExport;
+use App\Services\ClinicContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -29,11 +30,36 @@ class PatientController extends Controller
 
     public function index()
     {
-        //DB::enableQueryLog();
-        $patients = Patient::orderBy('created_at','desc')->get();
-        //dd(DB::getQueryLog());
-        //return datatables($patients)->toJson();
-        return view('patients.index', ['patients' => $patients]);
+        $user = auth()->user();
+
+        $query = Patient::with('clinic')->orderBy('created_at', 'desc');
+
+        // Default behaviour:
+        // - Admin/Doctor: show all patients (no filter applied by default).
+        // - Other roles: only show patients from the user's clinic.
+        $canSeeAllPatients = $user && ($user->isAdmin() || $user->isDoctor());
+
+        if (!$canSeeAllPatients) {
+            $query->where('clinic_id', $user?->clinic_id);
+        } else {
+            // Only Admin can optionally filter by clinic via query string.
+            // If not provided, show all.
+            if ($user->isAdmin()) {
+                $clinicId = request()->get('clinic_id');
+                if ($clinicId && $clinicId !== 'all') {
+                    $query->where('clinic_id', (int) $clinicId);
+                }
+            }
+        }
+
+        $patients = $query->get();
+
+        return view('patients.index', [
+            'patients' => $patients,
+            // Middleware shares availableClinics/viewingAllClinics, but we also pass this to keep the view robust.
+            'availableClinics' => $user ? app(ClinicContext::class)->availableClinics($user) : collect(),
+            'selectedClinicId' => request()->get('clinic_id', 'all'),
+        ]);
     }
     
     public function create()
@@ -56,8 +82,6 @@ class PatientController extends Controller
             return redirect()->back()->with('error', 'No clinic found. Please contact administrator.');
         }
 
-        $token = $this->patientId($clinic);
-
         // Validations
         $request->validate([
             'first_name'    => 'required',
@@ -74,7 +98,7 @@ class PatientController extends Controller
             //'disease'   => 'required'
         ]);
 
-         DB::beginTransaction();
+    DB::beginTransaction();
         try {
 
             $names = [];
@@ -91,22 +115,51 @@ class PatientController extends Controller
                 }
             }
 
-            $patient = Patient::create([
-                'first_name'    => $request->first_name,
-                'last_name'     => $request->last_name,
-                'email'         => $request->email,
-                'phone'         => $request->phone,
-                'gender'        => $request->gender,
-                'age'           => $request->age,
-                'address'       => $request->address,
-                'weight'        => $request->weight,
-                'feet'          => $request->feet,
-                'inches'        => $request->inches,
-                'BMI'           => $request->bmi,
-                'disease'       => $request->disease,
-                'photo'         => json_encode($names),
-                'token'         => $token
-            ]);
+            // Generate token inside the transaction to avoid race conditions.
+            // If another request generated the same token first, retry a few times.
+            $attempts = 0;
+            $maxAttempts = 5;
+            $patient = null;
+
+            while ($attempts < $maxAttempts && $patient === null) {
+                $attempts++;
+                $token = $this->patientId($clinic);
+
+                try {
+                    $patient = Patient::create([
+                        'first_name'    => $request->first_name,
+                        'last_name'     => $request->last_name,
+                        'email'         => $request->email,
+                        'phone'         => $request->phone,
+                        'gender'        => $request->gender,
+                        'age'           => $request->age,
+                        'address'       => $request->address,
+                        'weight'        => $request->weight,
+                        'feet'          => $request->feet,
+                        'inches'        => $request->inches,
+                        'BMI'           => $request->bmi,
+                        'disease'       => $request->disease,
+                        'photo'         => json_encode($names),
+                        'token'         => $token,
+                        // Ensure the clinic is persisted so patientId() can correctly increment per-clinic.
+                        'clinic_id'     => $clinic->id,
+                    ]);
+                } catch (\Illuminate\Database\QueryException $e) {
+                    // MySQL duplicate key error (SQLSTATE 23000 / error code 1062)
+                    $errorCode = (int) ($e->errorInfo[1] ?? 0);
+                    if ($errorCode === 1062) {
+                        // Collision - retry.
+                        $patient = null;
+                        continue;
+                    }
+
+                    throw $e;
+                }
+            }
+
+            if ($patient === null) {
+                throw new \RuntimeException('Could not generate a unique patient token. Please try again.');
+            }
 
             
 
@@ -136,7 +189,30 @@ class PatientController extends Controller
 
     public function edit(Patient $patient)
     {
-        return view('patients.edit')->with(['patient'  => $patient ]);
+        $photoKeys = [];
+        try {
+            $photoKeys = $patient->photo ? json_decode($patient->photo, true) : [];
+        } catch (\Throwable $e) {
+            $photoKeys = [];
+        }
+
+        if (!is_array($photoKeys)) {
+            $photoKeys = [];
+        }
+
+        // Preload signed URLs for private S3 buckets so the edit form can display images.
+        $preloadedPhotos = collect($photoKeys)
+            ->filter(fn ($key) => is_string($key) && trim($key) !== '')
+            ->map(fn ($key) => [
+                'id' => $key,
+                'src' => \App\Services\S3Service::url($key),
+            ])
+            ->values();
+
+        return view('patients.edit')->with([
+            'patient' => $patient,
+            'preloadedPhotos' => $preloadedPhotos,
+        ]);
     }
 
     public function profile(Patient $patient)
@@ -153,10 +229,9 @@ class PatientController extends Controller
             ->get();
 
         $invoices = $patient->invoices()
-            ->select('invoice_no', 'type', DB::raw('SUM(sub_total) as total'), DB::raw('DATE_FORMAT(created_time, "%d %M %Y") as created_time'))
-            ->where('type', 'treatment')
-            ->groupBy('invoice_no', 'type', 'created_time')
-            ->orderBy('created_time', 'asc')
+            ->with(['clinic', 'items.treatment', 'items.pharmacy'])
+            ->orderByDesc('invoice_date')
+            ->orderByDesc('created_at')
             ->get();
 
         $photos = $patient->photos()->orderBy('created_time', 'desc')->get()->groupBy(function($item) {
@@ -202,7 +277,8 @@ class PatientController extends Controller
             
 
             if($request->preloaded){
-                $preloaded = $request->preloaded;
+                // imageUploader sends preloaded values as array; keep only non-empty strings.
+                $preloaded = array_values(array_filter((array) $request->preloaded));
             }
 
             if($request->images)
@@ -212,7 +288,8 @@ class PatientController extends Controller
                     $filename = time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
                     $path = 'patient-photos/' . $patient->clinic->prefix . '/' . $filename;
                     Storage::disk('s3')->put($path, file_get_contents($image));
-                    array_push($names, $filename);          
+                    // Persist the full S3 key so rendering/deletion is consistent.
+                    $names[] = $path;
 
                 }
             }
@@ -221,10 +298,10 @@ class PatientController extends Controller
 
             if($old_img_arr){
                 foreach($old_img_arr as $img){
+                    if (!$img) continue;
                     if (!in_array($img, $image_all)){
                         Storage::disk('s3')->delete($img);
                     }
-                    
                 }
             }
             

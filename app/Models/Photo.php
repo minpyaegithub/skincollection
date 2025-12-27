@@ -11,7 +11,7 @@ class Photo extends Model
 
     protected $guarded = [];
 
-    protected $dates = [
-        'created_time'
+    protected $casts = [
+        'metadata' => 'array',
     ];
 }

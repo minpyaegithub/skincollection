@@ -353,6 +353,9 @@
         if(photo_arr == null){
             photo_arr = "[]";
         }
+
+        // Preloaded photos with signed URLs (private S3)
+        var preloadedFromServer = @json($preloadedPhotos ?? []);
         // $("#txt_date").datepicker({
         //     changeMonth: true,
         //     changeYear: true,
@@ -404,20 +407,25 @@
         }
 
         
-        var img_arr = JSON.parse(photo_arr);
-        console.log("photo_arr: ", photo_arr, " img_arr: ", img_arr);
-        var photo = [];
-        for (var i = 0; i < img_arr.length; i++) {
-           var obj = {id: img_arr[i], src: '/patient-photo/'+img_arr[i]};
-           photo.push(obj);
+        var img_arr = [];
+        try {
+            img_arr = photo_arr ? JSON.parse(photo_arr) : [];
+        } catch (e) {
+            img_arr = [];
         }
-        let preloaded = photo;
+
+        console.log("photo_arr: ", photo_arr, " img_arr: ", img_arr);
+
+        // Use server-prepared signed URLs (robust for private S3).
+        // Fall back to empty if nothing was passed.
+        let preloaded = Array.isArray(preloadedFromServer) ? preloadedFromServer : [];
         $('.input-images').imageUploader({
             extensions: ['.JPG','.jpg','.jpeg','.png','.gif','.svg'],
             mimes: ['image/jpeg','image/png','image/gif','image/svg+xml'],
             preloaded: preloaded,
             preloadedInputName: 'preloaded',
-            maxFiles: 1,
+            // Allow multiple patient photos
+            maxFiles: 20,
         });
        // console.log(JSON.parse(photo));
     });

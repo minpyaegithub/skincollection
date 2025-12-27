@@ -21,7 +21,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Add New Record</h6>
         </div>
-        <form method="POST" action="{{route('record.store')}}">
+    <form method="POST" action="{{route('record.store')}}" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
                 <div class="form-group">
@@ -116,6 +116,18 @@
                         </div>
 
                 </div>
+
+                {{-- Photos --}}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
+                            <label style="margin-top:9px;">Photos</label>
+                        </div>
+                        <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
+                            <div class="input-images"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="card-footer">
@@ -150,6 +162,12 @@
             onSelect: function (value, ui) {
             }
         }).datepicker("setDate", 'now');
+
+        $('.input-images').imageUploader({
+            extensions: ['.JPG','.jpg','.jpeg','.png','.gif','.svg'],
+            mimes: ['image/jpeg','image/png','image/gif','image/svg+xml'],
+            maxFiles: 20,
+        });
 
     });
 

@@ -33,6 +33,12 @@ class ClinicManagement extends Component
 
     public function mount()
     {
+        $user = Auth::user();
+
+        if (!$user || !$user->isAdmin()) {
+            abort(403);
+        }
+
         $this->loadClinics();
     }
 

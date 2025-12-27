@@ -7,11 +7,21 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 
 class TreatmentExport implements FromCollection
 {
+    public function __construct(private readonly ?int $clinicId = null)
+    {
+    }
+
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return Treatment::all();
+        $query = Treatment::query();
+
+        if ($this->clinicId) {
+            $query->forClinic($this->clinicId);
+        }
+
+        return $query->orderBy('name')->get();
     }
 }

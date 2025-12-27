@@ -97,7 +97,7 @@ class OpenAiSolution implements Solution
 
     protected function getModel(): string
     {
-        return 'gpt-3.5-turbo';
+        return 'gpt-5.1-codex-preview';
     }
 
     protected function getApplicationFrame(Throwable $throwable): ?Frame

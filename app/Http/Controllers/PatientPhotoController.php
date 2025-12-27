@@ -7,6 +7,10 @@ use App\Models\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use App\Services\S3Service;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
@@ -30,7 +34,7 @@ class PatientPhotoController extends Controller
     public function index()
     {
         //$purchase = Purchase::all();
-        $query = 'SELECT photos.id, photos.description, patient.token, patient.first_name, patient.last_name, DATE_FORMAT(photos.created_time,"%d-%m-%Y") AS created_time FROM photos photos LEFT JOIN patients patient on photos.patient_id = patient.id ORDER BY DATE(photos.created_time) ASC';
+        $query = 'SELECT photos.id, photos.description, patient.token, patient.first_name, patient.last_name, DATE_FORMAT(photos.created_at,"%d-%m-%Y") AS created_time FROM photos photos LEFT JOIN patients patient on photos.patient_id = patient.id ORDER BY DATE(photos.created_at) ASC';
         $photos = DB::select($query);
         return view('patient-photo.index', ['photos' => $photos]);
     }
@@ -43,34 +47,77 @@ class PatientPhotoController extends Controller
 
     public function store(Request $request)
     {
-        $created_time = date("Y-m-d", strtotime($request->created_time)); 
         // Validations
         $request->validate([
             'patient_id' => 'required',
-            'created_time'     => 'required'
+            // If the form still sends created_time, we accept it but do not persist it (schema uses timestamps)
+            'created_time' => 'nullable',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
         ]);
 
          DB::beginTransaction();
         try {
 
-            $names = [];
-            if($request->images)
-            {  
-                $patient = Patient::find($request->patient_id);
-                foreach($request->images as $image)
-                {
-                    $filename = 'patient-photos/' . ($patient->clinic->prefix ?? 'default') . '/' . time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
-                    Storage::disk('s3')->put($filename, file_get_contents($image));
-                    array_push($names, $filename);          
+            $disk = config('filesystems.patient_photos_disk', 's3');
+            $visibility = config('filesystems.patient_photos_visibility', 'private');
 
+            $patient = Patient::findOrFail($request->patient_id);
+            $prefix = $patient?->clinic?->prefix ?? 'default';
+            $createdAt = $request->created_time ? Carbon::parse($request->created_time) : now();
+
+            $photoKeys = [];
+            $lastFileMeta = [
+                'filename' => null,
+                'original_name' => null,
+                'file_type' => null,
+                'file_size' => null,
+            ];
+
+            if ($request->hasFile('images')) {
+                foreach ((array) $request->file('images') as $image) {
+                    if (!$image) {
+                        continue;
+                    }
+
+                    $safeOriginal = Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME));
+                    $ext = strtolower($image->getClientOriginalExtension() ?: 'jpg');
+                    $name = now()->format('YmdHis') . '_' . Str::random(8) . '_' . ($safeOriginal ?: 'photo') . '.' . $ext;
+                    $path = 'patient-photos/' . $prefix;
+
+                    $storedPath = Storage::disk($disk)->putFileAs(
+                        $path,
+                        $image,
+                        $name,
+                        ['visibility' => $visibility]
+                    );
+
+                    if ($storedPath) {
+                        $photoKeys[] = $storedPath;
+                        $lastFileMeta = [
+                            'filename' => $name,
+                            'original_name' => $image->getClientOriginalName(),
+                            'file_type' => $image->getClientMimeType() ?: $ext,
+                            'file_size' => $image->getSize() ?: 0,
+                        ];
+                    }
                 }
             }
 
-            $photo = Photo::create([
-                'patient_id'    => $request->patient_id,
-                'description'   => $request->description,
-                'photo'         => json_encode($names),
-                'created_time'  => $created_time
+            // One DB row per "photo record"; store many images in metadata.photos
+            Photo::create([
+                'clinic_id' => $patient?->clinic_id,
+                'patient_id' => $patient->id,
+                // Keep these columns filled for backward compatibility (use last uploaded file as representative)
+                'filename' => $lastFileMeta['filename'] ?? 'photos',
+                'original_name' => $lastFileMeta['original_name'] ?? 'photos',
+                'file_path' => $photoKeys[0] ?? ($lastFileMeta['filename'] ?? 'photos'),
+                'file_type' => $lastFileMeta['file_type'] ?? 'image/*',
+                'file_size' => (int) ($lastFileMeta['file_size'] ?? 0),
+                'description' => $request->description,
+                'metadata' => [
+                    'photos' => $photoKeys,
+                ],
+                'created_at' => $createdAt,
             ]);
 
             // Commit And Redirected To Listing
@@ -90,59 +137,115 @@ class PatientPhotoController extends Controller
         return view('patient-photo.edit')->with(['photo'  => $photo, 'patients' => $patients ]);
     }
 
+    public function view(Photo $photo)
+    {
+        $patient = Patient::findOrFail($photo->patient_id);
+
+        $keys = (array) data_get($photo->metadata, 'photos', []);
+        if (empty($keys) && !empty($photo->file_path)) {
+            $keys = [$photo->file_path];
+        }
+
+        // Signed URLs (private bucket friendly)
+        $photos = collect($keys)
+            ->filter(fn ($k) => is_string($k) && trim($k) !== '')
+            ->map(fn ($k) => [
+                'key' => $k,
+                'url' => S3Service::url($k),
+            ])
+            ->values();
+
+        return view('patient-photo.view', compact('photo', 'patient', 'photos'));
+    }
+
     public function update(Request $request, Photo $photo)
     {
-        $created_time = date("Y-m-d", strtotime($request->created_time)); 
         // Validations
         $request->validate([
             'patient_id' => 'required',
-            'created_time'     => 'required'
+            'created_time' => 'nullable',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
         ]);
 
         DB::beginTransaction();
         try {
 
-            $names = [];
-            $preloaded = [];
+            $disk = config('filesystems.patient_photos_disk', 's3');
+            $visibility = config('filesystems.patient_photos_visibility', 'private');
 
-            $old_img = Photo::whereId($photo->id)->get()->toArray();
-            $old_img_arr = json_decode($old_img[0]['photo']);
-            
+            // Photo module: ONE DB row per photo record, multiple images stored in metadata.photos
 
-            if($request->preloaded){
-                $preloaded = $request->preloaded;
-            }
+            $patient = Patient::findOrFail($request->patient_id);
+            $prefix = $patient?->clinic?->prefix ?? 'default';
+            $createdAt = $request->created_time ? Carbon::parse($request->created_time) : now();
 
-            if($request->images)
-            {  
-                $patient = Patient::find($request->patient_id);
-                foreach($request->images as $image)
-                {
-                    $filename = 'patient-photos/' . ($patient->clinic->prefix ?? 'default') . '/' . time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
-                    Storage::disk('s3')->put($filename, file_get_contents($image));
-                    array_push($names, $filename);          
+            $keptKeys = array_values(array_filter(Arr::wrap($request->preloaded)));
+            $keptKeys = array_values(array_filter($keptKeys, fn ($v) => is_string($v) && trim($v) !== ''));
 
-                }
-            }
-            
-            $image_all = array_merge($names, $preloaded);
+            $existingKeys = (array) data_get($photo->metadata, 'photos', []);
 
-            if($old_img_arr){
-                foreach($old_img_arr as $img){
-                    if (!in_array($img, $image_all)){
-                        Storage::disk('s3')->delete($img);
+            $newKeys = [];
+            $lastFileMeta = [
+                'filename' => $photo->filename,
+                'original_name' => $photo->original_name,
+                'file_type' => $photo->file_type,
+                'file_size' => $photo->file_size,
+            ];
+
+            if ($request->hasFile('images')) {
+                foreach ((array) $request->file('images') as $image) {
+                    if (!$image) {
+                        continue;
                     }
-                    
+
+                    $safeOriginal = Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME));
+                    $ext = strtolower($image->getClientOriginalExtension() ?: 'jpg');
+                    $name = now()->format('YmdHis') . '_' . Str::random(8) . '_' . ($safeOriginal ?: 'photo') . '.' . $ext;
+                    $path = 'patient-photos/' . $prefix;
+
+                    $storedPath = Storage::disk($disk)->putFileAs(
+                        $path,
+                        $image,
+                        $name,
+                        ['visibility' => $visibility]
+                    );
+
+                    if ($storedPath) {
+                        $newKeys[] = $storedPath;
+                        $lastFileMeta = [
+                            'filename' => $name,
+                            'original_name' => $image->getClientOriginalName(),
+                            'file_type' => $image->getClientMimeType() ?: $ext,
+                            'file_size' => $image->getSize() ?: 0,
+                        ];
+                    }
                 }
             }
 
-            // Store Data
-            $photo_updated = Photo::whereId($photo->id)->update([
-                'patient_id'    => $request->patient_id,
-                'description'   => $request->description,
-                'created_time'  => $created_time,
-                'photo'         => json_encode($image_all)
-            ]);
+            $finalKeys = array_values(array_unique(array_merge($keptKeys, $newKeys)));
+
+            // delete removed keys from S3
+            $removed = array_diff($existingKeys, $finalKeys);
+            foreach ($removed as $key) {
+                if (is_string($key) && trim($key) !== '') {
+                    Storage::disk($disk)->delete($key);
+                }
+            }
+
+            $photo->patient_id = $patient->id;
+            $photo->clinic_id = $patient?->clinic_id;
+            $photo->description = $request->description;
+            $photo->metadata = array_merge((array) ($photo->metadata ?? []), ['photos' => $finalKeys]);
+            $photo->created_at = $createdAt;
+
+            // keep compatibility columns in sync
+            $photo->filename = $lastFileMeta['filename'] ?? $photo->filename;
+            $photo->original_name = $lastFileMeta['original_name'] ?? $photo->original_name;
+            $photo->file_type = $lastFileMeta['file_type'] ?? $photo->file_type;
+            $photo->file_size = (int) ($lastFileMeta['file_size'] ?? $photo->file_size);
+            $photo->file_path = $finalKeys[0] ?? $photo->file_path;
+
+            $photo->save();
 
             // Commit And Redirected To Listing
             DB::commit();
@@ -159,13 +262,17 @@ class PatientPhotoController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Delete Patient
-            $old_img = Photo::whereId($photo->id)->get()->toArray();
-            $old_img_arr = json_decode($old_img[0]['photo']);
-            if($old_img_arr){
-                foreach($old_img_arr as $img){
-                    Storage::disk('s3')->delete($img);
+            $disk = config('filesystems.patient_photos_disk', 's3');
+            $keys = (array) data_get($photo->metadata, 'photos', []);
+            foreach ($keys as $k) {
+                if (is_string($k) && trim($k) !== '') {
+                    Storage::disk($disk)->delete($k);
                 }
+            }
+
+            // fallback to single file_path if older rows exist
+            if ($photo->file_path) {
+                Storage::disk($disk)->delete($photo->file_path);
             }
 
             $photo = Photo::whereId($photo->id)->delete();

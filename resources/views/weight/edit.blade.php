@@ -98,7 +98,7 @@
                                     id="txt_date"
                                     placeholder="d-m-y" 
                                     name="created_time" 
-                                    value="{{ old('created_time') ?  old('created_time') : $weight->created_time->format('d-m-Y') }}" >
+                                    value="{{ old('created_time') ?  old('created_time') : optional($weight->weight_date)->format('d-m-Y') }}" >
                                     @error('created_time')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror

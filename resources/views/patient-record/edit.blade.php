@@ -21,7 +21,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Edit Record</h6>
         </div>
-        <form method="POST" action="{{route('record.update', ['record' => $record->id])}}">
+    <form method="POST" action="{{route('record.update', ['record' => $record->id])}}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="card-body">
@@ -101,7 +101,7 @@
                                     id="txt_date"
                                     placeholder="d-m-y" 
                                     name="created_time" 
-                                    value="{{ old('created_time') ?  old('created_time') : $record->created_time->format('d-m-Y') }}" >
+                                    value="{{ old('created_time') ?  old('created_time') : optional($record->record_date)->format('d-m-Y') }}" >
                                     @error('created_time')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -115,6 +115,18 @@
                             
                         </div>
 
+                </div>
+
+                {{-- Photos --}}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2 mb-3 mt-3 mb-sm-0">
+                            <label style="margin-top:9px;">Photos</label>
+                        </div>
+                        <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
+                            <div class="input-images"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -146,6 +158,15 @@
             yearRange: ':+20',
             onSelect: function (value, ui) {
             }
+        });
+
+        var preloadedFromServer = @json($preloadedPhotos ?? []);
+        $('.input-images').imageUploader({
+            extensions: ['.JPG','.jpg','.jpeg','.png','.gif','.svg'],
+            mimes: ['image/jpeg','image/png','image/gif','image/svg+xml'],
+            preloaded: Array.isArray(preloadedFromServer) ? preloadedFromServer : [],
+            preloadedInputName: 'preloaded',
+            maxFiles: 20,
         });
 
     });

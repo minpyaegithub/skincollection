@@ -17,6 +17,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Patient Photo Storage
+    |--------------------------------------------------------------------------
+    |
+    | Controls where patient photos are stored. Defaults to the s3 disk.
+    | Visibility is typically "private"; use "public" only if your bucket
+    | is intended for public access.
+    |
+    */
+
+    'patient_photos_disk' => env('PATIENT_PHOTOS_DISK', 's3'),
+    'patient_photos_visibility' => env('PATIENT_PHOTOS_VISIBILITY', 'private'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |

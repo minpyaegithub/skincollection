@@ -37,7 +37,7 @@
                                 <th>Note</th>
                                 <th width="8%">Created Time</th>
                                 <th>ID</th>
-                                <th>Action</th>
+                                <th width="18%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,12 +48,16 @@
                                     <td>{{ $photo->created_time }}</td>
                                     <td>{{ $photo->token }}</td>
                                    
-                                    <td style="display: flex">
+                                    <td style="white-space: nowrap; display: flex; flex-wrap: wrap; gap: 6px;">
+                                        <a href="{{ route('photo.view', ['photo' => $photo->id]) }}"
+                                            class="btn btn-info btn-sm">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
                                         <a href="{{ route('photo.edit', ['photo' => $photo->id]) }}"
-                                            class="btn btn-primary m-2">
+                                            class="btn btn-primary btn-sm">
                                             <i class="fa fa-pen"></i>
                                         </a>
-                                        <button class="btn btn-danger m-2" id="delete_icon" data-remote="{{ route('photo.destroy', ['photo' => $photo->id]) }}">
+                                        <button class="btn btn-danger btn-sm" id="delete_icon" data-remote="{{ route('photo.destroy', ['photo' => $photo->id]) }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>

@@ -9,9 +9,18 @@ class Record extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'clinic_id',
+        'patient_id',
+        'title',
+        'description',
+        'record_date',
+        'record_type',
+        'metadata',
+    ];
 
-    protected $dates = [
-        'created_time'
+    protected $casts = [
+        'record_date' => 'date',
+        'metadata' => 'array',
     ];
 }

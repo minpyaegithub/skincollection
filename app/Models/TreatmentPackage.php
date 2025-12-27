@@ -10,4 +10,10 @@ class TreatmentPackage extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'price' => 'decimal:2',
+        'sessions' => 'integer',
+        'is_active' => 'boolean',
+    ];
 }

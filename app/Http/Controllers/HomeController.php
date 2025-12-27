@@ -10,8 +10,10 @@ use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use App\Services\ClinicContext;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use App\Models\Purchase;
-use App\Models\Sale;
 use App\Models\Pharmacy;
 
 class HomeController extends Controller
@@ -21,9 +23,9 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(private ClinicContext $clinicContext)
     {
-        $this->middleware('auth');
+        $this->middleware(['auth']);
     }
 
     /**
@@ -33,12 +35,26 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $total_patient = Patient::count();
-        $today_patient = Patient::whereDate('created_at', today())->count();
-        $total_appointment = Appointment::count();
-        $today_appointment = Appointment::whereDate('date', today())->count();
+        $user = auth()->user();
+
+        $this->clinicContext->initialize($user);
+        $clinicId = $this->clinicContext->currentClinicId($user);
+
+        $patientQuery = Patient::query();
+        $appointmentQuery = Appointment::query();
+
+        if ($clinicId) {
+            $patientQuery->where('clinic_id', $clinicId);
+            $appointmentQuery->where('clinic_id', $clinicId);
+        }
+
+    $total_patient = (clone $patientQuery)->count();
+    $today_patient = (clone $patientQuery)->whereDate('created_at', today())->count();
+    $total_appointment = (clone $appointmentQuery)->count();
+    $today_appointment = (clone $appointmentQuery)->whereDate('date', today())->count();
 
         $patient_monthly = Patient::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
+            ->when($clinicId, fn ($query) => $query->where('clinic_id', $clinicId))
             ->whereYear('created_at', today()->year)
             ->whereMonth('created_at', today()->month)
             ->groupBy('date')
@@ -51,26 +67,48 @@ class HomeController extends Controller
             'total_appointment' => [(object)['count' => $total_appointment]],
             'today_appointment' => [(object)['count' => $today_appointment]],
             'patient_monthly' => $patient_monthly,
+            'activeClinic' => $clinicId ? $this->clinicContext->currentClinic($user) : null,
+            'viewingAllClinics' => $this->clinicContext->isAllClinicsSelection($user),
         ]);
     }
 
     public function Inventoryindex()
     {
-        $total_purchase = Purchase::whereYear('created_at', today()->year)
+        $user = auth()->user();
+
+        $this->clinicContext->initialize($user);
+        $clinicId = $this->clinicContext->currentClinicId($user);
+
+        $total_purchase = Purchase::query()
+            ->when($clinicId, fn ($query) => $query->where('clinic_id', $clinicId))
+            ->whereYear('created_at', today()->year)
             ->whereMonth('created_at', today()->month)
             ->sum(DB::raw('net_price * qty'));
 
-        $total_sale = Sale::whereYear('created_at', today()->year)
+        $total_sale = InvoiceItem::query()
+            ->when($clinicId, fn ($query) => $query->where('clinic_id', $clinicId))
+            ->where('item_type', InvoiceItem::TYPE_SALE)
+            ->whereYear('created_at', today()->year)
             ->whereMonth('created_at', today()->month)
-            ->sum(DB::raw('price * qty'));
+            ->sum('subtotal');
 
-        $total_stock = Pharmacy::count();
+        $total_stock = Pharmacy::query()
+            ->when($clinicId, fn ($query) => $query->where('clinic_id', $clinicId))
+            ->count();
 
-        $out_of_stock = DB::table('out_of_stocks')->whereRaw('total - sale <= 0')->count();
+        $out_of_stock = DB::table('out_of_stocks')
+            ->when($clinicId, fn ($query) => $query->where('clinic_id', $clinicId))
+            ->whereRaw('total - sale <= 0')
+            ->count();
 
-        $today_income = DB::table('invoices')->whereDate('created_at', today())->sum('subtotal');
+        $today_income = Invoice::query()
+            ->when($clinicId, fn ($query) => $query->where('clinic_id', $clinicId))
+            ->whereDate('invoice_date', today())
+            ->sum('total_amount');
 
-        $sale_monthly = Sale::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(price * qty) as total'))
+        $sale_monthly = InvoiceItem::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(subtotal) as total'))
+            ->when($clinicId, fn ($query) => $query->where('clinic_id', $clinicId))
+            ->where('item_type', InvoiceItem::TYPE_SALE)
             ->whereYear('created_at', today()->year)
             ->whereMonth('created_at', today()->month)
             ->groupBy('date')
@@ -79,6 +117,7 @@ class HomeController extends Controller
 
         $stock_details = DB::table('pharmacies as phar')
             ->select('phar.name', DB::raw('(total - sale) as available_qty'), 'pur.qty', 'pur.created_at', 'pur.updated_at')
+            ->when($clinicId, fn ($query) => $query->where('phar.clinic_id', $clinicId))
             ->leftJoin('out_of_stocks as ostock', 'phar.id', '=', 'ostock.phar_id')
             ->leftJoin('purchases as pur', 'phar.id', '=', 'pur.phar_id')
             ->groupBy('phar.id')
@@ -92,7 +131,9 @@ class HomeController extends Controller
             'out_of_stock' => $out_of_stock,
             'sale_monthly' => $sale_monthly,
             'stock_details' => $stock_details,
-            'today_income' => [(object)['sub_total' => $today_income]]
+            'today_income' => [(object)['sub_total' => $today_income]],
+            'activeClinic' => $clinicId ? $this->clinicContext->currentClinic($user) : null,
+            'viewingAllClinics' => $this->clinicContext->isAllClinicsSelection($user),
         ]);
     }
 
