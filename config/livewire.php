@@ -143,28 +143,4 @@ return [
     */
 
     'pagination_theme' => 'tailwind',
-
-    /*
-    |---------------------------------------------------------------------------
-    | Asset URL
-    |---------------------------------------------------------------------------
-    |
-    | Configure the URL where Livewire's JavaScript assets are served from.
-    | By default, Livewire serves assets from a route. Setting this to null
-    | will use the default behavior. Set to a path to serve from public dir.
-    |
-    */
-
-    'asset_url' => env('LIVEWIRE_ASSET_URL', '/vendor/livewire'),
-
-    /*
-    |---------------------------------------------------------------------------
-    | App URL
-    |---------------------------------------------------------------------------
-    |
-    | This URL is used during asset publishing and route registration.
-    |
-    */
-
-    'app_url' => env('APP_URL', null),
 ];
