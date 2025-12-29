@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Services\ClinicContext;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrap();
+
+        // Register Livewire components manually
+        Livewire::component('clinic-switcher', \App\Http\Livewire\ClinicSwitcher::class);
+        Livewire::component('appointments-calendar', \App\Http\Livewire\AppointmentsCalendar::class);
+        Livewire::component('clinic-management', \App\Http\Livewire\ClinicManagement::class);
 
         Blade::directive('convert', function ($money) {
             return "<?php echo number_format($money, 2); ?>";
