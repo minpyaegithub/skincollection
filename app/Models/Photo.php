@@ -12,6 +12,8 @@ class Photo extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'metadata' => 'array',
+        'metadata'     => 'array',
+        'photo'        => 'array',   // legacy: JSON array of filenames from old DB
+        'created_time' => 'date',
     ];
 }
