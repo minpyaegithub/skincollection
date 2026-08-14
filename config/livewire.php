@@ -42,6 +42,19 @@ return [
 
     /*
     |---------------------------------------------------------------------------
+    | Middleware Group
+    |---------------------------------------------------------------------------
+    | The middleware group to attach to the Livewire AJAX message route.
+    | Must include 'web' so that the session (cookie) is loaded and saved
+    | on every Livewire request — without this, Session::put() calls in
+    | component methods like switchClinic() are lost when the page reloads.
+    |
+    */
+
+    'middleware_group' => 'web',
+
+    /*
+    |---------------------------------------------------------------------------
     | Temporary File Uploads
     |---------------------------------------------------------------------------
     |

@@ -15,13 +15,11 @@ class Weight extends Model
         'weight',
         'weight_date',
         'notes',
-        'metadata',
     ];
 
     protected $casts = [
         'weight' => 'decimal:2',
         'weight_date' => 'date',
-        'metadata' => 'array',
     ];
 
     public function clinic()

@@ -12,8 +12,18 @@ class Photo extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'photo'        => 'array',   // legacy JSON array of filenames
         'metadata'     => 'array',
-        'photo'        => 'array',   // legacy: JSON array of filenames from old DB
         'created_time' => 'date',
     ];
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
+
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class);
+    }
 }

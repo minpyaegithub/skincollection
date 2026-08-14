@@ -51,12 +51,6 @@ class ClinicSwitcher extends Component
             'viewingAllClinics' => $this->viewingAllClinics,
         ];
 
-        // Livewire v3: global event
-        $this->emit('clinicContextChanged', $payload);
-
-        // Livewire v3 note: emitTo() no longer exists.
-        // We rely on the browser-event + full page reload to refresh all clinic-scoped UI.
-
         $clinicName = $this->viewingAllClinics
             ? 'All Clinics'
             : optional($clinicContext->currentClinic($user))->name;
@@ -67,13 +61,14 @@ class ClinicSwitcher extends Component
 
         session()->flash('success', "Clinic switched to {$clinicName}.");
 
-    // Trigger a full page reload (layout listens for this browser event).
-        $this->emit('clinic-context-refreshed', $payload);
+        // Force the session to be written to disk NOW, before the redirect response
+        // is serialised. Without this, the Livewire AJAX response may be sent back
+        // to the browser before PHP's session handler has persisted the new clinic
+        // value, so the reloaded page still reads the old value.
+        session()->save();
 
-        // Don't do an immediate server-side redirect here.
-        // The layout listens for `clinic-context-refreshed` and will reload the page.
-        // (A short delay is applied client-side so console logs are visible.)
-        return;
+        // Redirect directly — most reliable way to refresh all clinic-scoped UI.
+        return redirect(request()->header('Referer') ?: url()->current());
     }
 
     public function loadContext(?ClinicContext $clinicContext = null): void

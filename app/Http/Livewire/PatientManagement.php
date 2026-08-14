@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Patient;
 use App\Models\Clinic;
+use App\Services\ClinicContext;
 use App\Services\S3Service;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -16,6 +17,8 @@ class PatientManagement extends Component
 
     public $patients;
     public $clinic;
+    public $clinicId;       // current clinic id (null = all clinics)
+    public $viewingAllClinics = false;
     public $search = '';
     public $showModal = false;
     public $editingPatient = null;
@@ -52,13 +55,29 @@ class PatientManagement extends Component
 
     public function mount()
     {
-        $this->clinic = Auth::user()->clinic;
+        $this->resolveClinicContext();
         $this->loadPatients();
+    }
+
+    protected function resolveClinicContext(): void
+    {
+        $user = Auth::user();
+        $clinicContext = app(ClinicContext::class);
+        $clinicContext->initialize($user);
+
+        $this->viewingAllClinics = $clinicContext->isAllClinicsSelection($user);
+        $this->clinicId = $this->viewingAllClinics ? null : $clinicContext->currentClinicId($user);
+        $this->clinic = $this->viewingAllClinics ? null : $clinicContext->currentClinic($user);
     }
 
     public function loadPatients()
     {
-        $query = Patient::where('clinic_id', $this->clinic->id);
+        $query = Patient::query();
+
+        if ($this->clinicId) {
+            $query->where('clinic_id', $this->clinicId);
+        }
+        // if viewingAllClinics, no clinic filter applied
         
         if ($this->search) {
             $query->where(function($q) {
@@ -120,7 +139,7 @@ class PatientManagement extends Component
             'feet' => $this->feet,
             'inches' => $this->inches,
             'disease' => $this->disease,
-            'clinic_id' => $this->clinic->id,
+            'clinic_id' => $this->clinicId ?? Auth::user()->clinic_id,
             'token' => Str::random(32),
         ];
 
@@ -132,7 +151,7 @@ class PatientManagement extends Component
 
         // Handle photo uploads
         if ($this->photos) {
-            $uploadedPhotos = S3Service::uploadPatientPhotos($this->photos, $this->clinic->id);
+            $uploadedPhotos = S3Service::uploadPatientPhotos($this->photos, $this->clinicId ?? Auth::user()->clinic_id);
             $data['photo'] = json_encode($uploadedPhotos);
         }
 

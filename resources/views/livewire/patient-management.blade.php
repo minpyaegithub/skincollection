@@ -177,8 +177,8 @@
 
                             <div class="form-group">
                                 <label>Photos</label>
-                                <input type="file" wire:model="photos" multiple accept="image/*" class="form-control">
-                                <small class="text-muted">You can select multiple images</small>
+                                <input type="file" wire:model="photos" accept="image/*" class="form-control">
+                                <small class="text-muted">You can select image</small>
                             </div>
 
                             @if($uploadedPhotos)

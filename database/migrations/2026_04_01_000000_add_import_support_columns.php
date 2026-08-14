@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -28,15 +29,14 @@ return new class extends Migration
             });
         }
 
-        // Make new photos columns nullable so old rows (without filename/file_path) can coexist
-        Schema::table('photos', function (Blueprint $table) {
-            // Only alter if the columns are NOT nullable yet
-            $table->string('filename')->nullable()->change();
-            $table->string('original_name')->nullable()->change();
-            $table->string('file_path')->nullable()->change();
-            $table->string('file_type')->nullable()->change();
-            $table->integer('file_size')->nullable()->change();
-        });
+        // Make new photos columns nullable using raw ALTER TABLE (avoids doctrine/dbal requirement)
+        DB::statement('ALTER TABLE photos
+            MODIFY COLUMN filename varchar(255) NULL,
+            MODIFY COLUMN original_name varchar(255) NULL,
+            MODIFY COLUMN file_path varchar(255) NULL,
+            MODIFY COLUMN file_type varchar(255) NULL,
+            MODIFY COLUMN file_size int(11) NULL
+        ');
     }
 
     public function down(): void

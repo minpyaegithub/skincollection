@@ -325,7 +325,7 @@
                             </div>
                             <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
                                 <!-- <form action="url" enctype="multipart/form-data"> -->
-                                    <div class="input-images" value="{{$patient->photo}}"></div>
+                                    <div class="input-images" value="{{ is_array($patient->photo) ? json_encode($patient->photo) : $patient->photo }}"></div>
                                 <!-- </form> -->
                             </div>
                         </div>  
@@ -424,8 +424,7 @@
             mimes: ['image/jpeg','image/png','image/gif','image/svg+xml'],
             preloaded: preloaded,
             preloadedInputName: 'preloaded',
-            // Allow multiple patient photos
-            maxFiles: 20,
+            maxFiles: 1,
         });
        // console.log(JSON.parse(photo));
     });

@@ -267,26 +267,6 @@ class ImportOldDatabase extends Command
     //  Appointments  (add clinic_id)
     // ------------------------------------------------------------------
 
-    private function importAppointmentTimes(): void
-    {
-        $this->info('→ Appointment times...');
-
-        if (DB::table('appointment_times')->count() > 0) {
-            $this->line('  Appointment times already seeded — skipping.');
-            return;
-        }
-
-        $rows = $this->old('appointment_times')->get()->map(fn($t) => [
-            'id'          => $t->id,
-            'time'        => $t->time,
-            'custom_time' => $t->custom_time,
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ])->toArray();
-
-        $this->insert('appointment_times', $rows);
-    }
-
     private function importAppointments(): void
     {
         $this->info('→ Appointments...');

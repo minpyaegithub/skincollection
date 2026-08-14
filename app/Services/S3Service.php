@@ -8,8 +8,13 @@ use Illuminate\Support\Str;
 
 class S3Service
 {
+    public static function disk(): \Illuminate\Contracts\Filesystem\Filesystem
+    {
+        return Storage::disk(config('filesystems.patient_photos_disk', 'public'));
+    }
+
     /**
-     * Upload a file to S3
+     * Upload a file to the configured storage disk
      *
      * @param UploadedFile $file
      * @param string $folder
@@ -19,9 +24,9 @@ class S3Service
     {
         $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
         $path = $folder . '/' . $filename;
-        
-        Storage::disk('s3')->put($path, file_get_contents($file));
-        
+
+        static::disk()->put($path, file_get_contents($file));
+
         return $path;
     }
 
@@ -35,38 +40,38 @@ class S3Service
     public static function uploadMultiple(array $files, string $folder = 'uploads'): array
     {
         $uploadedFiles = [];
-        
+
         foreach ($files as $file) {
             if ($file instanceof UploadedFile) {
                 $uploadedFiles[] = self::upload($file, $folder);
             }
         }
-        
+
         return $uploadedFiles;
     }
 
     /**
-     * Delete a file from S3
+     * Delete a file from the configured storage disk
      *
      * @param string $path
      * @return bool
      */
     public static function delete(string $path): bool
     {
-        return Storage::disk('s3')->delete($path);
+        return static::disk()->delete($path);
     }
 
     /**
-     * Get the URL for a file on S3
+     * Get the URL for a file on the configured storage disk
      *
      * @param string $path
      * @return string
      */
     public static function url(string $path): string
     {
-        $disk = config('filesystems.patient_photos_disk', 's3');
+        $disk = config('filesystems.patient_photos_disk', 'public');
 
-        if (config('filesystems.patient_photos_visibility', 'private') === 'public') {
+        if (config('filesystems.patient_photos_visibility', 'public') === 'public') {
             return Storage::disk($disk)->url($path);
         }
 

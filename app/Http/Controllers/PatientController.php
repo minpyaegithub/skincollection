@@ -31,34 +31,40 @@ class PatientController extends Controller
     public function index()
     {
         $user = auth()->user();
+        $clinicContext = app(ClinicContext::class);
+        $clinicContext->initialize($user);
 
         $query = Patient::with('clinic')->orderBy('created_at', 'desc');
 
-        // Default behaviour:
-        // - Admin/Doctor: show all patients (no filter applied by default).
-        // - Other roles: only show patients from the user's clinic.
         $canSeeAllPatients = $user && ($user->isAdmin() || $user->isDoctor());
 
         if (!$canSeeAllPatients) {
             $query->where('clinic_id', $user?->clinic_id);
-        } else {
-            // Only Admin can optionally filter by clinic via query string.
-            // If not provided, show all.
-            if ($user->isAdmin()) {
-                $clinicId = request()->get('clinic_id');
-                if ($clinicId && $clinicId !== 'all') {
-                    $query->where('clinic_id', (int) $clinicId);
-                }
+        } elseif ($user->isAdmin()) {
+            // Honour session-based clinic context set by the switcher.
+            // Also allow URL override for backwards compatibility.
+            $clinicId = request()->get('clinic_id');
+            if (!$clinicId) {
+                // Read from session
+                $clinicId = $clinicContext->isAllClinicsSelection($user)
+                    ? 'all'
+                    : $clinicContext->currentClinicId($user);
+            }
+            if ($clinicId && $clinicId !== 'all') {
+                $query->where('clinic_id', (int) $clinicId);
             }
         }
+
+        $selectedClinicId = $clinicContext->isAllClinicsSelection($user)
+            ? 'all'
+            : ($clinicContext->currentClinicId($user) ?? 'all');
 
         $patients = $query->get();
 
         return view('patients.index', [
-            'patients' => $patients,
-            // Middleware shares availableClinics/viewingAllClinics, but we also pass this to keep the view robust.
-            'availableClinics' => $user ? app(ClinicContext::class)->availableClinics($user) : collect(),
-            'selectedClinicId' => request()->get('clinic_id', 'all'),
+            'patients'         => $patients,
+            'availableClinics' => $clinicContext->availableClinics($user),
+            'selectedClinicId' => request()->get('clinic_id', $selectedClinicId),
         ]);
     }
     
@@ -191,7 +197,13 @@ class PatientController extends Controller
     {
         $photoKeys = [];
         try {
-            $photoKeys = $patient->photo ? json_decode($patient->photo, true) : [];
+            // 'photo' cast returns array already; json_decode only needed for legacy raw strings
+            $raw = $patient->photo;
+            if (is_array($raw)) {
+                $photoKeys = $raw;
+            } elseif (is_string($raw) && $raw !== '') {
+                $photoKeys = json_decode($raw, true) ?? [];
+            }
         } catch (\Throwable $e) {
             $photoKeys = [];
         }
@@ -272,35 +284,31 @@ class PatientController extends Controller
             $names = [];
             $preloaded = [];
 
-            $old_img = Patient::whereId($patient->id)->get()->toArray();
-            $old_img_arr = json_decode($old_img[0]['photo']);
-            
+            // Safely resolve the existing photo array regardless of cast state.
+            $raw = $patient->getRawOriginal('photo') ?? '[]';
+            $old_img_arr = is_array($raw) ? $raw : (json_decode($raw, true) ?? []);
 
-            if($request->preloaded){
+            if ($request->preloaded) {
                 // imageUploader sends preloaded values as array; keep only non-empty strings.
                 $preloaded = array_values(array_filter((array) $request->preloaded));
             }
 
-            if($request->images)
-            {  
-                foreach($request->images as $image)
-                {
+            if ($request->images) {
+                foreach ($request->images as $image) {
                     $filename = time().'_'.rand(1,99).'_'.$image->getClientOriginalName();
                     $path = 'patient-photos/' . $patient->clinic->prefix . '/' . $filename;
-                    Storage::disk('s3')->put($path, file_get_contents($image));
-                    // Persist the full S3 key so rendering/deletion is consistent.
+                    \App\Services\S3Service::disk()->put($path, file_get_contents($image));
                     $names[] = $path;
-
                 }
             }
-            
+
             $image_all = array_merge($names, $preloaded);
 
-            if($old_img_arr){
-                foreach($old_img_arr as $img){
+            if (is_array($old_img_arr)) {
+                foreach ($old_img_arr as $img) {
                     if (!$img) continue;
-                    if (!in_array($img, $image_all)){
-                        Storage::disk('s3')->delete($img);
+                    if (!in_array($img, $image_all)) {
+                        \App\Services\S3Service::disk()->delete($img);
                     }
                 }
             }
@@ -338,12 +346,11 @@ class PatientController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Delete Patient
-            $old_img = Patient::whereId($patient->id)->get()->toArray();
-            $old_img_arr = json_decode($old_img[0]['photo']);
+            // Delete Patient — use model directly; 'photo' cast already returns array
+            $old_img_arr = $patient->photo ?? [];
             if($old_img_arr){
                 foreach($old_img_arr as $img){
-                    Storage::disk('s3')->delete($img);
+                    \App\Services\S3Service::disk()->delete($img);
                 }
             }
             $patient = Patient::whereId($patient->id)->delete();

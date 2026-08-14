@@ -16,6 +16,10 @@ class Patient extends Model
      */
     protected $guarded = [];
 
+    protected $casts = [
+        'photo' => 'array',   // JSON array of filenames stored in patients.photo
+    ];
+
     /**
      * Get the user's full name.
      *
